@@ -1,0 +1,37 @@
+.child_container_1{
+    background-image: url('pexels-cottonbro-4761785.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 60rem;
+
+}
+.child_container_2{
+    height: 45rem;
+}
+
+.child_3_1{
+  background-image: url('pexels-cottonbro-4761779.jpg');
+  background-size: cover;
+  background-position: center;
+  position:relative;
+
+}
+
+.child_container_3{
+    
+
+
+    height: 45rem;
+
+}
+.child_container_4{
+    height: 45rem;
+
+}
+.child_container_absolute{
+   height: 35rem; 
+   width: 70%;
+   margin-left: 15%;
+   margin-top: 52%;
+   
+}
