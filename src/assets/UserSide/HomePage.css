@@ -5,6 +5,8 @@
     height: 60rem;
 
 }
+
+
 .child_container_2{
     height: 45rem;
 }
@@ -18,9 +20,6 @@
 }
 
 .child_container_3{
-    
-
-
     height: 45rem;
 
 }
@@ -29,9 +28,157 @@
 
 }
 .child_container_absolute{
-   height: 35rem; 
+   height: 34rem; 
    width: 70%;
    margin-left: 15%;
-   margin-top: 52%;
+   margin-top: 48%;
    
 }
+
+@media(min-width:2000px){
+
+    .child_container_absolute{
+        margin-top:40%;
+    }
+    
+
+}
+
+@media(min-width:2200px){
+
+    .child_container_absolute{
+        margin-top:35%;
+    }
+
+}
+@media(min-width:2400px){
+
+    .child_container_absolute{
+        margin-top:30%;
+    }
+
+}
+
+@media(min-width:2800px){
+
+    .child_container_absolute{
+        margin-top:25%;
+    }
+
+}
+
+@media(min-width:1780px) and (max-width:2000px){
+
+    .child_container_absolute{
+        margin-top:40%;
+    }
+
+}
+
+@media(min-width:1470px) and (max-width:1780px){
+
+    .child_container_absolute{
+        margin-top:49%;
+    }
+
+}
+
+@media(min-width:1240px) and (max-width:1460px){
+
+    .child_container_absolute{
+        margin-top:60%;
+    }
+
+}
+
+@media(min-width:1080px) and (max-width:1240px){
+
+    .child_container_absolute{
+        margin-top:70%;
+    }
+
+}
+
+@media(min-width:900px) and (max-width:1080px){
+
+    .child_container_absolute{
+        margin-top:80%;
+    }
+
+}
+
+
+@media(min-width:780px) and (max-width:899px){
+
+    .child_container_absolute{
+        margin-top:100%;
+    }
+
+}
+
+
+@media(min-width:680px) and (max-width:789px){
+
+    .child_container_absolute{
+        margin-top:115%;
+    }
+
+}
+
+@media(min-width:580px) and (max-width:679px){
+
+    .child_container_absolute{
+        margin-top:135%;
+    }
+
+}
+
+@media(min-width:500px) and (max-width:579px){
+
+    .child_container_absolute{
+        margin-top:160%;
+    }
+
+}
+
+@media(min-width:404px) and (max-width:499px){
+
+    .child_container_absolute{
+        margin-top:190%;
+    }
+
+}
+
+@media(min-width:340px) and (max-width:403px){
+     
+    .child_container_absolute{
+        margin-top:230%;
+    }
+
+}
+
+@media(min-width:290px) and (max-width:339px){
+     
+    .child_container_absolute{
+        margin-top:280%;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
