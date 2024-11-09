@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false); // State to control menu toggle
@@ -31,22 +33,27 @@ function Header() {
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-20">
-            <li className="hover:text-gray-400 transition">Home</li>
-            <li className="hover:text-gray-400 transition">Contact us</li>
-            <li className="hover:text-gray-400 transition">About us</li>
+            <li >
+              <Link to="/" className="hover:text-gray-400 transition">Home</Link>
+            </li>
+            <li >
+              <Link to="/contact" className="hover:text-gray-400 transition">Contact us</Link>
+            </li>
+            <li >
+              <Link to="/about" className="hover:text-gray-400 transition">About us</Link>
+            </li>
             <li className="hover:text-gray-400 transition">Course</li>
           </ul>
         </nav>
 
         {/* Off-canvas Menu for Mobile/Tablet */}
         <div
-          className={`fixed top-0 right-0 h-full w-64 bg-black text-white transform ${
-            isOpen ? 'translate-x-0' : 'translate-x-full'
-          } transition-transform duration-300 ease-in-out z-50 md:hidden`}
+          className={`fixed top-0 right-0 h-full w-64 bg-black text-white transform ${isOpen ? 'translate-x-0' : 'translate-x-full'
+            } transition-transform duration-300 ease-in-out z-50 md:hidden`}
         >
-           {/* Close Button */}
-           <button 
-            className="absolute top-4 right-4 focus:outline-none" 
+          {/* Close Button */}
+          <button
+            className="absolute top-4 right-4 focus:outline-none"
             onClick={() => setIsOpen(false)}
           >
             <svg
@@ -65,9 +72,16 @@ function Header() {
             </svg>
           </button>
           <ul className="mt-16 space-y-8 px-6">
-            <li className="hover:text-gray-400 transition">Home</li>
-            <li className="hover:text-gray-400 transition">Contact us</li>
-            <li className="hover:text-gray-400 transition">About us</li>
+            <li >
+              <Link to="/" className="hover:text-gray-400 transition "  onClick={() => setIsOpen(false)}>Home</Link>
+            </li>
+            <li >
+              <Link to="/contact" className="hover:text-gray-400 transition"  onClick={() => setIsOpen(false)}>Contact us</Link>
+            </li>
+            <li >
+              <Link to="/about" className="hover:text-gray-400 transition" onClick={() => setIsOpen(false)}>About us</Link>
+              
+            </li>
             <li className="hover:text-gray-400 transition">Course</li>
           </ul>
         </div>

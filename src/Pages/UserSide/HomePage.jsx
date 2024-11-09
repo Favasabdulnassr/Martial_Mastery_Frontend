@@ -27,6 +27,12 @@ function HomePage() {
                   Our platform allows you to progress according to your schedule and personal goals. With expert guidance,
                   you’ll receive the support and training needed to build confidence and skill in self-defensemin.
                 </p>
+                <div className='flex items-center '>
+                <button className='bg-red-600 mx-auto px-6 py-3 rounded-lg  mt-14'>
+                  GET STARTED
+                </button>
+
+                </div>
               </div>
 
             </div>
