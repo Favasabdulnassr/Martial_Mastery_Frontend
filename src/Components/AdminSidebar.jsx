@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Home,
   Users,
@@ -10,23 +10,31 @@ import {
   Calendar,
 } from 'lucide-react';
 import { useSidebar } from './SidebarProvider';
+import { Link, useLocation } from 'react-router-dom';
 
 const AdminSidebar = () => {
   const { isSidebarOpen, setSidebarOpen } = useSidebar();
+  const location = useLocation();
 
 
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
+  const [activeMenu, setActiveMenu] = useState(location.pathname);
+
   
   const menuItems = [
-    { icon: <Home />, label: 'Dashboard'},
-    { icon: <Users />, label: 'Students' },
-    { icon: <UserPlus />, label: 'Tutors' },
-    { icon: <Target />, label: 'Courses' },
-    { icon: <BarChart2 />, label: 'Analytics' },
-    { icon: <Mail />, label: 'Messages' },
-    { icon: <Settings />, label: 'Settings' },
-    { icon: <Calendar />, label: 'clalendar' }
+    { icon: <Home />, label: 'Dashboard',path: '/admin'},
+    { icon: <Users />, label: 'Students' ,path: '/students'},
+    { icon: <UserPlus />, label: 'Tutors' ,path: '/tutors'},
+    { icon: <Target />, label: 'Courses' ,path: '/Courses'},
+    { icon: <BarChart2 />, label: 'Analytics' ,path: '/Analytics'},
+    { icon: <Mail />, label: 'Messages',path: '/Messages' },
+    { icon: <Settings />, label: 'Settings' ,path: '/Settings'},
+    { icon: <Calendar />, label: 'clalendar' ,path: '/clalendar'}
   ];
+
+  useEffect(()=>{
+    setActiveMenu(location.pathname);
+
+  },[location.pathname])
 
 
   return (
@@ -57,13 +65,14 @@ const AdminSidebar = () => {
           <ul className="space-y-2 px-4">
             {menuItems.map((item, index) => (
               <li key={index}>
+                <Link to={item.path}>
                 <button
                   onClick={() => {
-                    setActiveMenu(item.label);
+                    setActiveMenu(item.path);
                     setSidebarOpen(false);
                   }}
                   className={`w-full flex items-center p-3.5 rounded-xl transition-all duration-300 ${
-                    activeMenu === item.label
+                    activeMenu === item.path
                       ? 'bg-gray-900 text-white'
                       : 'hover:bg-gray-100 text-gray-600'
                   }`}
@@ -74,6 +83,7 @@ const AdminSidebar = () => {
                   <span className="font-medium">{item.label}</span>
                  
                 </button>
+                </Link>
               </li>
             ))}
           </ul>

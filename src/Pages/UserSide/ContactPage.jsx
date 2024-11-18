@@ -1,79 +1,101 @@
 import React from 'react'
 import Header from '../../Components/Header'
 import Footer from '../../Components/Footer'
+import { motion } from 'framer-motion'
 
 function ContactPage() {
-
     return (
-        <>
+        <div className="bg-black min-h-screen">
             <Header />
-            <h1 className='font-serif text-center text-zinc-700 mt-40 text-5xl'>Contact us</h1>
-
             
-            <div className="flex justify-center mt-16">
+            {/* Title with gradient */}
+            <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className='font-serif text-center pt-40 text-5xl bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-400 bg-clip-text text-transparent'
+            >
+                Contact us
+            </motion.h1>
+
+            <div className="flex justify-center mt-16 px-4">
                 {/* Left Side Content */}
-                <div className="w-1/3 bg-gray-100 p-8 rounded-lg shadow-lg mr-10">
-                    <h2 className="text-2xl font-bold mb-4 text-blue-500">Get in Touch</h2>
-                    <p className="text-lg text-gray-700 mb-4">
-                        We’d love to hear from you! Whether you have questions about our programs, feedback, or just want to say hi, feel free to reach out.
+                <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="w-1/3 bg-[#0a0a0a] p-8 rounded-lg shadow-lg shadow-cyan-500/10 mr-10 border border-cyan-900/20"
+                >
+                    <h2 className="text-2xl font-bold mb-4 text-cyan-400">Get in Touch</h2>
+                    <p className="text-lg text-zinc-400 mb-4">
+                        We'd love to hear from you! Whether you have questions about our programs, feedback, or just want to say hi, feel free to reach out.
                     </p>
-                    <p className="text-lg text-gray-700">
+                    <p className="text-lg text-zinc-400">
                         You can also visit us at:
                         <br /><br />
-                        <strong>Address:</strong> 123 Martial Arts Ave, City, Country
+                        <strong className="text-fuchsia-400">Address:</strong> 123 Martial Arts Ave, City, Country
                         <br />
-                        <strong>Phone:</strong> +123 456 7890
+                        <strong className="text-violet-400">Phone:</strong> +123 456 7890
                         <br />
-                        <strong>Email:</strong> info@martialarts.com
+                        <strong className="text-cyan-400">Email:</strong> info@martialarts.com
                     </p>
-                </div>
+                </motion.div>
 
                 {/* Contact Form */}
-                <form className='w-1/2 bg-white shadow-lg p-8 rounded-lg'>
+                <motion.form 
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className='w-1/2 bg-[#0a0a0a] shadow-lg shadow-violet-500/10 p-8 rounded-lg border border-violet-900/20'
+                >
                     <div className='mb-4'>
-                        <label className='block text-lg font-medium text-gray-700'>Name:</label>
+                        <label className='block text-lg font-medium text-zinc-300'>Name:</label>
                         <input
                             type="text"
                             placeholder="Your Name"
-                            className='mt-2 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            className='mt-2 w-full p-2 bg-black border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-zinc-300 placeholder-zinc-600'
                         />
                     </div>
                     <div className='mb-4'>
-                        <label className='block text-lg font-medium text-gray-700'>Email:</label>
+                        <label className='block text-lg font-medium text-zinc-300'>Email:</label>
                         <input
                             type="email"
                             placeholder="Your Email"
-                            className='mt-2 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            className='mt-2 w-full p-2 bg-black border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500 text-zinc-300 placeholder-zinc-600'
                         />
                     </div>
                     <div className='mb-4'>
-                        <label className='block text-lg font-medium text-gray-700'>Message:</label>
+                        <label className='block text-lg font-medium text-zinc-300'>Message:</label>
                         <textarea
                             placeholder="Your Message"
-                            className='mt-2 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-32'
+                            className='mt-2 w-full p-2 bg-black border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 text-zinc-300 placeholder-zinc-600 h-32'
                         />
                     </div>
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         type="submit"
-                        className='w-full p-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                        className='w-full p-3 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-md hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300'
                     >
                         Submit
-                    </button>
-                </form>
+                    </motion.button>
+                </motion.form>
             </div>
 
-
-            <div className="mx-auto mt-20 text-center text-gray-700 p-6">
-                <p className="text-sm whitespace-break-spaces">
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mx-auto mt-20 text-center p-6"
+            >
+                <p className="text-sm text-zinc-400 whitespace-break-spaces max-w-3xl mx-auto pb-20">
                     At Martial Mastery, we are dedicated to providing top-notch martial arts training for all ages and skill levels. Whether you're a beginner or an experienced practitioner,
-                     our programs are designed to help you improve, achieve your goals,  and build lifelong skills in a supportive and inclusive environment.
+                     our programs are designed to help you improve, achieve your goals, and build lifelong skills in a supportive and inclusive environment.
                 </p>
-            </div>
-
+            </motion.div>
 
             <Footer/>
-
-        </>
+        </div>
     )
 }
 
