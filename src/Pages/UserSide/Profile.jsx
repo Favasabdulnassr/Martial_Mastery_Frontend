@@ -11,32 +11,83 @@ import {
 } from 'lucide-react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '@/Redux/LoginReducer';
+import { useFormik } from 'formik';
+import { updateProfileAsync } from '@/Redux/UpdateAction';
+import { toast } from 'react-toastify';
 
 const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState(null);
-  const {isAuthenticated, is_superuser, first_name, is_tutor, phone_number, email} = useSelector((state)=> state.login)
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [Email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const { isAuthenticated, is_superuser, first_name, is_tutor, phone_number, email, last_name } = useSelector((state) => state.login)
   const navigate = useNavigate()
-  
+  const dispatch = useDispatch()
+
+  const handleLogout = () => {
+    dispatch(logout())
+    toast.success('Successfully logged out')
+  }
+
+
   const slideInUp = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.8 }
   };
 
-  useEffect(()=>{
-    if(isAuthenticated && !is_superuser && !is_tutor){
-      
-    }else{
-      navigate('/login')
+  useEffect(() => {
+    if (isAuthenticated && !is_superuser) {
+      setFirstName(first_name);
+      setLastName(last_name);
+      setEmail(email);
+      setPhoneNumber(phone_number);
+    } else {
+      navigate('/login');
     }
-  },[isAuthenticated,is_superuser,is_tutor])
+  }, [isAuthenticated, is_superuser, first_name, last_name, email, phone_number]);
+
+
+
+
+
+  const ProfileUpdate = () => {
+    try {
+      console.log('kkkkkkkkkkkkkkkk')
+      const data = {
+        first_name: firstName,
+        last_name: lastName,
+        email: Email,
+        phone_number: phoneNumber
+
+      }
+      dispatch(updateProfileAsync(data))
+        .unwrap()
+        .then(() => {
+          toast.success('profile update successfully');
+        })
+        .catch((error) => {
+          toast.error('Error updating profile', error)
+        })
+
+
+    } catch (error) {
+
+      console.log('errrrrrrrrrrrror', error)
+
+    }
+  }
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
-      
+
       <main className="flex-1 pt-20">
         <div className="container mx-auto px-4 py-12">
           {/* Profile Header Section */}
@@ -47,7 +98,7 @@ const ProfilePage = () => {
             className="relative bg-[#0a0a0a] rounded-2xl p-8 mb-8 border border-zinc-900"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-fuchsia-500/10 to-violet-500/10 rounded-2xl opacity-20" />
-            
+
             <div className="relative flex flex-col md:flex-row items-start gap-8">
               {/* Profile Image */}
               <div className="relative group">
@@ -132,7 +183,9 @@ const ProfilePage = () => {
                       <input
                         type="text"
                         className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
-                        placeholder={first_name ? first_name : "Enter your first name"}
+                        placeholder="Enter your first name"
+                        onChange={(e) => setFirstName(e.target.value)}
+                        value={firstName}
                       />
                     </div>
                     <div>
@@ -143,6 +196,8 @@ const ProfilePage = () => {
                         type="text"
                         className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
                         placeholder="Enter your last name"
+                        onChange={(e) => setLastName(e.target.value)}
+                        value={lastName}
                       />
                     </div>
                     <div>
@@ -152,7 +207,9 @@ const ProfilePage = () => {
                       <input
                         type="email"
                         className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
-                        placeholder={email ? email : "Enter your email"}
+                        placeholder="Enter your email"
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={Email}
                       />
                     </div>
                     <div>
@@ -162,12 +219,18 @@ const ProfilePage = () => {
                       <input
                         type="tel"
                         className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
-                        placeholder={phone_number ? phone_number : "Enter your phone number"}
+                        placeholder="Enter your phone number"
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        value={phoneNumber}
                       />
                     </div>
                   </div>
-                  
+
                   <motion.button
+                    onClick={(e)=>{
+                      e.preventDefault(); // Prevent the default form submission behavior
+                      ProfileUpdate()
+                    }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-full shadow-lg shadow-cyan-500/25 transition-all duration-300 flex items-center justify-center gap-2"
@@ -263,6 +326,7 @@ const ProfilePage = () => {
 
               {/* Logout Button */}
               <motion.button
+                onClick={handleLogout}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-full px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-full shadow-lg shadow-red-500/25 transition-all duration-300 flex items-center justify-center gap-2"

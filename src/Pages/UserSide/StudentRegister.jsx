@@ -4,7 +4,7 @@
   import { useNavigate } from 'react-router-dom';
   import { BASE_URL } from '@/services/constents';
   import { useFormik } from 'formik';
-  import { handleRegister } from '@/services/api/auth';
+  import { handleRegister } from '@/services/api/register';
   import { RegisterValidationSchema } from '@/services/validation/Register';
 import { toast } from 'react-toastify';
 
@@ -28,10 +28,12 @@ import { toast } from 'react-toastify';
         console.log('form_values',values)
         try {
           const response = await handleRegister(values);
-          console.log('Api Response',response);
+          console.log('Api Response',response.message,'suuuuuuuuuuuuuuuuuuui',response.otp_expiration);
           formik.resetForm();
-          toast.success('students registered successfully')
-          navigate('/login')
+          localStorage.setItem('otpExpirationTime', response.otp_expiration);
+          localStorage.setItem('session_id',response.session_id)
+          toast.success('Enter six digit otp')
+          navigate('/otp');
 
         } catch (error) {
           console.error('Api error:',error,error.message)

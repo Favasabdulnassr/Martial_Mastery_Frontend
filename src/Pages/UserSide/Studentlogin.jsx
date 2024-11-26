@@ -13,6 +13,8 @@ const LoginPage = () => {
     const dispatch = useDispatch()
     const {isAuthenticated,is_superuser,is_tutor,error} = useSelector((state)=>state.login)
     const navigate = useNavigate()
+    const adminUrls = ['/admin', '/students']; 
+
 
 
 
@@ -40,19 +42,12 @@ const LoginPage = () => {
     
     useEffect(()=>{
         if(isAuthenticated && is_superuser){
-            toast.success('Welcome Superuser!');
-            navigate('/admin-dashboard');
-
-        }else if(isAuthenticated && is_tutor){
-            toast.success('Welcome Tutor!');
-            navigate('/admin')
-
-
+            adminUrls.forEach((url)=>{
+                navigate(url);
+            })
 
         }else if(isAuthenticated){
             navigate('/')
-    
-
         }else{
             navigate('/login')
         }

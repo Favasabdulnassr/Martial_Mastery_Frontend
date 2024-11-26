@@ -9,6 +9,7 @@ import StudentPage from './Pages/Adminside/StudentDetail'
 import LoginPage from './Pages/UserSide/Studentlogin'
 import SignupPage from './Pages/UserSide/StudentRegister'
 import Profile from './Pages/UserSide/Profile'
+import OTPVerificationPage from './Pages/UserSide/Otp'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
             <Route path = '/login' element={<LoginPage/>} />
             <Route path = '/signup' element={<SignupPage/>} />
             <Route path = '/profile' element={<Profile/>}/>
+            <Route path = '/otp' element={<OTPVerificationPage/>}/>
           </Routes>
 
 

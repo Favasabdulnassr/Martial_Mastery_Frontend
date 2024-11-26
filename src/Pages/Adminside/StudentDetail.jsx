@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Plus, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import AdminSidebar from '@/Components/AdminSidebar';
 import AdminTopbar from '@/Components/AdminTopbar';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const StudentPage = () => {
+  const navigate = useNavigate()
+  const {isAuthenticated, is_superuser, first_name, is_tutor, phone_number, email} = useSelector((state)=> state.login)
+
+  useEffect(()=>{
+    if(!isAuthenticated || !is_superuser){
+      navigate('\login')
+
+    }
+  },[isAuthenticated,is_superuser])
+
   const [students] = useState([
     {
       id: 1,

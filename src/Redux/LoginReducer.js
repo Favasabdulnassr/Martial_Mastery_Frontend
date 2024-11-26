@@ -1,11 +1,12 @@
 import {createAsyncThunk,createSlice} from '@reduxjs/toolkit'
 import { BASE_URL } from '@/services/constents'
 import axios from 'axios'
-import Cookies from 'js-cookie'
+import { updateProfileAsync } from './UpdateAction';
 
 
 const initialState = {
     first_name:null,
+    last_name:null,
     loader:false,
     isAuthenticated:false,
     error:null,
@@ -34,11 +35,11 @@ export const loginAsync = createAsyncThunk(
             const decodeToken = JSON.parse(atob(token.access.split('.')[1]));
             console.log('Decoded Token Payload:', decodeToken);
 
-            const { is_superuser,is_tutor,email,first_name,phone_number  } = decodeToken;
+            const { is_superuser,is_tutor,email,first_name,phone_number,last_name } = decodeToken;
             console.log('is_superuser:aaaaaaaaaaaayesffffffffffffffff9y',is_superuser,is_tutor,email);
 
             // Return required details
-            return { is_superuser,is_tutor,email,first_name,phone_number};
+            return { is_superuser,is_tutor,email,first_name,phone_number,last_name};
         }catch(error){
             console.error(error,'ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui')
             return rejectWithValue(error?.message || 'something went wrong');
@@ -54,6 +55,7 @@ const loginSlice = createSlice({
        
         logout(state,action){
             state.first_name = null,
+            state.last_name = null,
             state.loader = false;
             state.isAuthenticated = false;
             state.error  = null
@@ -77,6 +79,7 @@ const loginSlice = createSlice({
             state.is_tutor = action.payload.is_tutor;
             state.phone_number = action.payload.phone_number
             state.first_name = action.payload.first_name
+            state.last_name = action.payload.last_name
             state.email = action.payload.email
 
         })
@@ -89,8 +92,25 @@ const loginSlice = createSlice({
             state.is_tutor = false
             state.phone_number = null
             state.first_name = null
+            state.last_name = null
             state.email = null
         })
+        .addCase(updateProfileAsync.pending,(state)=>{
+            state.loader = true
+        })
+        .addCase(updateProfileAsync.fulfilled,(state,action)=>{
+            state.loader = false
+            state.first_name = action.payload.first_name || state.first_name,
+            state.last_name = action.payload.last_name || state.last_name
+            state.email = action.payload.email || state.email
+            state.phone_number = action.payload.phone_number || state.phone_number
+            state.is_tutor = action.payload.is_tutor || state.is_tutor;
+            state.is_superuser = action.payload.is_superuser || state.is_superuser   
+             })
+             .addCase(updateProfileAsync.rejected, (state, action) => {
+                state.loader = false;
+                state.error = action.payload || 'Profile update failed';
+            });
     }
 })
 

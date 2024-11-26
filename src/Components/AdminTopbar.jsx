@@ -1,11 +1,22 @@
 import { Bell, ChevronDown, LogOut, Menu, Search, Settings, X } from 'lucide-react'
 import React,{useState} from 'react'
 import { useSidebar } from './SidebarProvider';
+import { useDispatch } from 'react-redux';
+import { logout } from '@/Redux/LoginReducer';
 
 function AdminTopbar() {
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const { isSidebarOpen, setSidebarOpen } = useSidebar();
+  const dispatch = useDispatch()
+
+
+  
+  const handleLogout = ()=>{
+    dispatch(logout())
+    toast.success('Successfully logged out')
+  }
+
 
 
 
@@ -55,7 +66,7 @@ function AdminTopbar() {
                       <Settings className="w-4 h-4" />
                       <span>Settings</span>
                     </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-50 flex items-center space-x-2">
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-50 flex items-center space-x-2">
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>
                     </button>

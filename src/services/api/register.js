@@ -1,14 +1,6 @@
 import axios from "axios"
 import { BASE_URL } from "../constents"
 
-export const handleLogin = (data)=>{
-    try {
-        const response = axios.post(BASE_URL + '/login', data)
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}
 
 
 export const handleRegister = async (data) =>{
@@ -20,3 +12,6 @@ export const handleRegister = async (data) =>{
         throw error
     }
 };
+
+
+
