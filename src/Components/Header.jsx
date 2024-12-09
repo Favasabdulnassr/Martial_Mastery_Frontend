@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Phone, Info, BookOpen, LogIn, Menu, X, User, LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '@/Redux/LoginReducer';
+import { logout } from '@/Redux/Reducers/LoginReducer';
 import { toast } from 'react-toastify';
 
 function Header() {

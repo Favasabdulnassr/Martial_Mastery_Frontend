@@ -1,47 +1,40 @@
 import HomePage from './Pages/UserSide/HomePage'
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import ContactPage from './Pages/UserSide/ContactPage'
-import AboutUs from './Pages/UserSide/AboutUs'
-import Dashboard from './Pages/Adminside/AdminDashboard'
-import { SidebarProvider } from './Components/SidebarProvider'
-import StudentPage from './Pages/Adminside/StudentDetail'
-import LoginPage from './Pages/UserSide/Studentlogin'
-import SignupPage from './Pages/UserSide/StudentRegister'
-import Profile from './Pages/UserSide/Profile'
-import OTPVerificationPage from './Pages/UserSide/Otp'
+import AdminRoute from './Routes/AdminRoute'
+import StudentRoutes from './Routes/StudentRoutes'
+import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { setupAxiosInterceptors } from './services/interceptor'
+import TutorRoute from './Routes/TutorRoute'
+
+
+
+
 
 function App() {
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    // Call the setup function with dispatch so that it can be used in the interceptors
+    setupAxiosInterceptors(dispatch);
+  }, [dispatch]);
+
 
   return (
     <>
       <Router>
-        <div>
           <Routes>
-
-            <Route path='/' element={<HomePage />} />
-            <Route path='/contact' element={<ContactPage />} />
-            <Route path='/about' element={<AboutUs />} />
-            <Route path = '/login' element={<LoginPage/>} />
-            <Route path = '/signup' element={<SignupPage/>} />
-            <Route path = '/profile' element={<Profile/>}/>
-            <Route path = '/otp' element={<OTPVerificationPage/>}/>
+            <Route path = '/' element={<HomePage/>}/>
+            <Route path = 'tutor/*' element={<TutorRoute/>}/>
+            <Route path='/*' element={<StudentRoutes/>} />
+            <Route path='admin/*' element={<AdminRoute/>}/>
+            
           </Routes>
 
 
-          <SidebarProvider>
-            <Routes>
-
-
-              <Route path='/admin' element={<Dashboard />} />
-              <Route path ='/students' element={<StudentPage/>}/>
-            </Routes>
-
-          </SidebarProvider>
-
-
-
-        </div>
+       
       </Router>
     </>
   )

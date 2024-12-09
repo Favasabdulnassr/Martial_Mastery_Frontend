@@ -1,18 +1,31 @@
-  import React, { useState } from 'react';
+  import React, { useEffect, useState } from 'react';
   import { User, Lock, Mail, Phone, ArrowRight, Eye, EyeOff } from 'lucide-react';
   import { motion } from 'framer-motion';
   import { useNavigate } from 'react-router-dom';
-  import { BASE_URL } from '@/services/constents';
   import { useFormik } from 'formik';
   import { handleRegister } from '@/services/api/register';
   import { RegisterValidationSchema } from '@/services/validation/Register';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
   const SignupPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const {isAuthenticated,role} = useSelector((state)=>state.login)
+  
+    useEffect(()=>{
+      if(role === 'admin'){
+          navigate('/admin/dashboard')
+      }
+      else if(role === 'tutor'){
+        navigate('/tutor/dashboard')
+  
+      }
+      
+  },[isAuthenticated,role])
+   
 
 
     const formik = useFormik({
@@ -28,7 +41,6 @@ import { toast } from 'react-toastify';
         console.log('form_values',values)
         try {
           const response = await handleRegister(values);
-          console.log('Api Response',response.message,'suuuuuuuuuuuuuuuuuuui',response.otp_expiration);
           formik.resetForm();
           localStorage.setItem('otpExpirationTime', response.otp_expiration);
           localStorage.setItem('session_id',response.session_id)

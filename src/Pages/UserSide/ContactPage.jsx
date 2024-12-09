@@ -1,9 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from '../../Components/Header'
 import Footer from '../../Components/Footer'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 function ContactPage() {
+
+  const navigate = useNavigate()
+  const {isAuthenticated,role} = useSelector((state)=>state.login)
+
+  useEffect(()=>{
+    if(role === 'admin'){
+        navigate('/admin/dashboard')
+    }
+    else if(role === 'tutor'){
+      navigate('/tutor/dashboard')
+
+    }
+    
+},[isAuthenticated,role])
+
+
+
+
     return (
         <div className="bg-black min-h-screen">
             <Header />

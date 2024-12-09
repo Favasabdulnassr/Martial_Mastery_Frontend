@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
 import { motion } from 'framer-motion';
@@ -11,6 +11,8 @@ import {
   Upload,
   Award
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -19,6 +21,21 @@ const fadeInUp = {
 };
 
 function AboutUs() {
+  const navigate = useNavigate()
+  const {isAuthenticated,role} = useSelector((state)=>state.login)
+
+  useEffect(()=>{
+    if(role === 'admin'){
+        navigate('/admin/dashboard')
+    }
+    else if(role === 'tutor'){
+      navigate('/tutor/dashboard')
+
+    }
+    
+},[isAuthenticated,role])
+
+
   return (
     <div className="bg-black min-h-screen text-zinc-300">
       <Header />

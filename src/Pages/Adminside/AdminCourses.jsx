@@ -3,7 +3,7 @@ import AdminTopbar from '@/Components/AdminTopbar'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-function AdminDashboard() {
+function AdminCourses() {
 
   const {isAuthenticated,role} = useSelector((state)=> state.login)
 
@@ -22,6 +22,9 @@ function AdminDashboard() {
           <AdminTopbar />
 
 
+          Courses
+
+
           </div>
 
 
@@ -32,4 +35,4 @@ function AdminDashboard() {
   )
 }
 
-export default AdminDashboard
+export default AdminCourses

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
 import { 
@@ -15,6 +15,7 @@ import {
   Sparkles,
   GraduationCap
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const slideInUp = {
   initial: { opacity: 0, y: 30 },
@@ -31,6 +32,23 @@ const staggerChildren = {
 };
 
 function HomePage() {
+
+  const navigate = useNavigate()
+  const {isAuthenticated,role} = useSelector((state)=>state.login)
+
+  useEffect(()=>{
+    if(role === 'admin'){
+        navigate('/admin/dashboard')
+    }
+    else if(role === 'tutor'){
+      navigate('/tutor/dashboard')
+
+    }
+    
+},[isAuthenticated,role])
+
+
+
   return (
     <>
     <div className="h-20">
@@ -342,6 +360,7 @@ function HomePage() {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-full 
                     shadow-lg shadow-cyan-500/25 transition-all duration-300 group"
+                    onClick={()=> navigate('/login')}
                 >
                   <span className="flex items-center gap-2 text-lg">
                     Login as Tutor
@@ -354,6 +373,8 @@ function HomePage() {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-full
                     shadow-lg shadow-violet-500/25 transition-all duration-300 group"
+
+                    onClick={()=> navigate('/tutor/tutorRegister')}
                 >
                   <span className="flex items-center gap-2 text-lg">
                     Register as Tutor

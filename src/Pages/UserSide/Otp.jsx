@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { BASE_URL } from '@/services/constents';
+import { useSelector } from 'react-redux';
 
 const OTPVerificationPage = () => {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
@@ -13,6 +14,20 @@ const OTPVerificationPage = () => {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const sessionId = localStorage.getItem('session_id')
+
+  const {isAuthenticated,role} = useSelector((state)=>state.login)
+
+  useEffect(()=>{
+    if(role === 'admin'){
+        navigate('/admin/dashboard')
+    }
+    else if(role === 'tutor'){
+      navigate('/tutor/dashboard')
+
+    }
+    
+},[isAuthenticated,role])
+
 
 
 

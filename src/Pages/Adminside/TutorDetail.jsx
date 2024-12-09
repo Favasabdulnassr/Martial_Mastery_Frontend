@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import AdminSidebar from '@/Components/AdminSidebar';
 import AdminTopbar from '@/Components/AdminTopbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FetchUsers } from '@/Redux/Actions/UsersAction';
+import { Fetchtutors } from '@/Redux/Actions/TutorAction';
 
-const StudentDetails = () => {
+const TutorDetails = () => {
   const navigate = useNavigate()
   const { isAuthenticated, role } = useSelector((state) => state.login)
 
-  const { users, loading, error, totalPages, totalCount } = useSelector((state) => state.usersList);
+  const { tutors, loading, error, totalPages, totalCount } = useSelector((state) => state.tutorsList);
 
 
   const dispatch = useDispatch()
@@ -29,12 +29,9 @@ const StudentDetails = () => {
   }, [isAuthenticated, role])
 
 
+  
   useEffect(() => {
-    console.log('sshshshshshscndhiosfho', users)
-  })
-
-  useEffect(() => {
-    dispatch(FetchUsers({ search: searchQuery, page }));
+    dispatch(Fetchtutors({ search: searchQuery, page }));
   }, [dispatch, searchQuery, page]);
 
 
@@ -61,8 +58,8 @@ const StudentDetails = () => {
 
           <div className="p-6">
             <div className="mb-8">
-              <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-              <p className="text-gray-500 mt-1">Manage your martial arts students</p>
+              <h1 className="text-2xl font-bold text-gray-900">Tutors</h1>
+              <p className="text-gray-500 mt-1">Manage your martial arts Tutors</p>
             </div>
 
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -109,19 +106,19 @@ const StudentDetails = () => {
                           <td colSpan="6" className="text-center p-4 text-red-600">{error}</td>
                         </tr>
                       ) : (
-                        users.map((user) => (
-                          <tr key={user.id || user.email} className="border-b border-gray-200 hover:bg-gray-50">
+                        tutors.map((tutor) => (
+                          <tr key={tutor.id || tutor.email} className="border-b border-gray-200 hover:bg-gray-50">
                             <td className="p-4">
                               <div className="flex items-center space-x-3">
                                 <div className="h-10 w-10 rounded-lg bg-gray-900 flex items-center justify-center">
-                                  <span className="text-white text-sm">{user.first_name.split(' ').map(n => n[0]).join('')}</span>
+                                  <span className="text-white text-sm">{tutor.first_name.split(' ').map(n => n[0]).join('')}</span>
                                 </div>
-                                <span className="font-medium text-gray-900">{user.first_name}</span>
+                                <span className="font-medium text-gray-900">{tutor.first_name}</span>
                               </div>
                             </td>
-                            <td className="p-4 text-gray-600">{user.email}</td>
+                            <td className="p-4 text-gray-600">{tutor.email}</td>
                             {/* <td className="p-4 text-gray-600">{student.course}</td> */}
-                            <td className="p-4 text-gray-600">{user.phone_number},{user.role}</td>
+                            <td className="p-4 text-gray-600">{tutor.phone_number}</td>
                             {/* <td className="p-4 text-gray-600">
                               <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -195,4 +192,4 @@ const StudentDetails = () => {
   );
 };
 
-export default StudentDetails;
+export default TutorDetails;

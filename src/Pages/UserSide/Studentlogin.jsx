@@ -3,7 +3,7 @@ import { Lock, Mail, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useFormik } from 'formik';
 import {useDispatch, useSelector} from 'react-redux'
-import { loginAsync } from '@/Redux/LoginReducer';
+import { loginAsync } from '@/Redux/Reducers/LoginReducer';
 import { LoginValidationSchema } from '@/services/validation/login';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -11,12 +11,20 @@ import { toast } from 'react-toastify';
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch()
-    const {isAuthenticated,is_superuser,is_tutor,error} = useSelector((state)=>state.login)
+    const {isAuthenticated,role,error} = useSelector((state)=>state.login)
     const navigate = useNavigate()
-    const adminUrls = ['/admin', '/students']; 
-
-
-
+  
+    useEffect(()=>{
+      if(role === 'admin'){
+          navigate('/admin/dashboard')
+      }
+      else if(role === 'tutor'){
+        navigate('/tutor/dashboard')
+  
+      }
+      
+  },[isAuthenticated,role])
+  
 
 
     const formik = useFormik({
@@ -41,16 +49,10 @@ const LoginPage = () => {
     })
     
     useEffect(()=>{
-        if(isAuthenticated && is_superuser){
-            adminUrls.forEach((url)=>{
-                navigate(url);
-            })
-
-        }else if(isAuthenticated){
-            navigate('/')
-        }else{
-            navigate('/login')
-        }
+        if(isAuthenticated && role === 'admin'){
+            navigate('/admin/dashboard')
+        }else if(isAuthenticated && role === 'student')
+            navigate('/profile')
         
     },[isAuthenticated])
 

@@ -5,11 +5,6 @@ export const updateProfileAsync = createAsyncThunk(
     'update/updateProfileAsync',    
     async(profileData,{rejectWithValue}) => {
         try {
-
-            const tokens = JSON.parse(localStorage.getItem('authTokens'));
-            console.log('aaaaaaaceeess',tokens)
-            const token = tokens?.access;
-
             const response = await axiosInstance.put('/auth/profile/update/',profileData);
 
             console.log('profile updated',response.data)

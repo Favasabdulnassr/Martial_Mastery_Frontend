@@ -1,34 +1,39 @@
 import React, { useEffect, useState } from 'react';
+import { useSidebar } from './SidebarProvider';
+
 import {
   Home,
+  LogOut,
   Users,
-  UserPlus,
-  Target,
-  BarChart2,
-  Settings,
-  Mail,
+  BookOpen,
+  MessageCircle,
   Calendar,
+  Clipboard,
+  Settings,
+  Search,
+  Bell,
+  Menu,
+  X,
+  ChevronDown,
+  User,
+  UserCircle
 } from 'lucide-react';
-import { useSidebar } from './SidebarProvider';
-import { Link, useLocation } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 
-const AdminSidebar = () => {
-  const { isSidebarOpen, setSidebarOpen } = useSidebar();
+const TutorSidebar = () => {
   const location = useLocation();
-
-
   const [activeMenu, setActiveMenu] = useState(location.pathname);
+  const { isSidebarOpen, setSidebarOpen } = useSidebar();
 
+//   const [isProfileOpen, setProfileOpen] = useState(false);
   
   const menuItems = [
-    { icon: <Home />, label: 'Dashboard',path: '/admin/dashboard'},
-    { icon: <Users />, label: 'Students' ,path: '/admin/students'},
-    { icon: <UserPlus />, label: 'Tutors' ,path: '/admin/tutors'},
-    { icon: <Target />, label: 'Courses' ,path: '/admin/courses'},
-    // { icon: <BarChart2 />, label: 'Analytics' ,path: ''},
-    // { icon: <Mail />, label: 'Messages',path: '' },
-    // { icon: <Settings />, label: 'Settings' ,path: ''},
-    // { icon: <Calendar />, label: 'clalendar' ,path: ''}
+    { icon: <UserCircle />, label: 'Profile',path: '/tutor/Profile' },
+    { icon: <Users />, label: 'My Students', path: '/tutor/students' },
+    { icon: <BookOpen />, label: 'Courses', path: '/tutor/courses'},
+    // { icon: <Clipboard />, label: 'Assignments', path: '/tutor/dashboard' },
+    // { icon: <MessageCircle />, label: 'Messages', path: '/tutor/dashboard' },
+    // { icon: <Settings />, label: 'Settings', path: '/tutor/dashboard' },
   ];
 
   useEffect(()=>{
@@ -37,26 +42,31 @@ const AdminSidebar = () => {
   },[location.pathname])
 
 
+
+  
+
+
+
   return (
     <>
       {/* Sidebar */}
       <div className={`
         fixed top-0 left-0 h-full 
         w-72 lg:w-80 
-        bg-white 
-        border-r border-gray-200
+        bg-gray-800 
+        border-r border-gray-700
         transition-transform duration-300 ease-in-out
         lg:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         z-20
       `}>
         {/* Logo */}
-        <div className="p-8 border-b border-gray-200">
+        <div className="p-8 border-b border-gray-700">
           <div className="flex items-center space-x-3">
-            <div className="h-12 w-12 rounded-xl bg-gray-900 flex items-center justify-center">
-              <span className="text-white text-2xl font-bold">M</span>
+            <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center">
+              <span className="text-white text-2xl font-bold">T</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900 tracking-tight">MartialMaster</span>
+            <span className="text-2xl font-bold text-gray-100 tracking-tight">TutorPro</span>
           </div>
         </div>
 
@@ -73,15 +83,19 @@ const AdminSidebar = () => {
                   }}
                   className={`w-full flex items-center p-3.5 rounded-xl transition-all duration-300 ${
                     activeMenu === item.path
-                      ? 'bg-gray-900 text-white'
-                      : 'hover:bg-gray-100 text-gray-600'
+                      ? 'bg-blue-600 text-white'
+                      : 'hover:bg-gray-700 text-gray-300'
                   }`}
                 >
                   <span className="w-5 h-5 mr-3">
                     {item.icon}
                   </span>
                   <span className="font-medium">{item.label}</span>
-                 
+                  {item.notifications > 0 && (
+                    <span className="ml-auto bg-blue-900 text-blue-300 text-xs font-bold px-2.5 py-1 rounded-full">
+                      {item.notifications}
+                    </span>
+                  )}
                 </button>
                 </Link>
               </li>
@@ -90,10 +104,9 @@ const AdminSidebar = () => {
         </nav>
       </div>
 
-   
-        
+     
       </>
   );
 };
 
-export default AdminSidebar
+export default TutorSidebar;

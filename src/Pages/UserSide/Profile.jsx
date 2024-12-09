@@ -13,18 +13,21 @@ import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '@/Redux/LoginReducer';
+import { logout } from '@/Redux/Reducers/LoginReducer';
 import { useFormik } from 'formik';
-import { updateProfileAsync } from '@/Redux/UpdateAction';
+import { updateProfileAsync } from '@/Redux/Actions/UpdateAction';
 import { toast } from 'react-toastify';
+import { DeleteImage, UploadImage } from '@/Redux/Actions/imageAction';
+import { BASE_URL } from '@/services/constents';
 
 const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [Email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { isAuthenticated, is_superuser, first_name, is_tutor, phone_number, email, last_name } = useSelector((state) => state.login)
+  const { isAuthenticated, first_name, role, phone_number, email, last_name, profile } = useSelector((state) => state.login)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -41,15 +44,17 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated && !is_superuser) {
+    if (isAuthenticated && role === 'student') {
       setFirstName(first_name);
       setLastName(last_name);
       setEmail(email);
       setPhoneNumber(phone_number);
-    } else {
+    }
+    else {
+      dispatch(logout())
       navigate('/login');
     }
-  }, [isAuthenticated, is_superuser, first_name, last_name, email, phone_number]);
+  }, [isAuthenticated, first_name, last_name, email, phone_number, dispatch, profile]);
 
 
 
@@ -84,6 +89,46 @@ const ProfilePage = () => {
 
 
 
+  const handleUploadImage = () => {
+    if (profileImage) {
+      console.log('profileImagedududududud:', profileImage)
+      const formData = new FormData();
+      console.log(formData, 'ffffffffffffffffffff');
+
+
+      formData.append('profile', profileImage); // Use append method to add file to FormData
+      console.log('afterappend formdata:', formData)
+
+      dispatch(UploadImage(formData)).unwrap().then(() => {
+        // Optional: You can fetch updated user profile or image after successful upload
+        navigate("/profile")
+        setPreviewImage(null)
+        toast.success('image uploaded')
+      }).catch((error) => {
+        toast.error(error)
+        console.error('Error uploading image:', error);
+        // Handle error state or show toast/message to user
+      });
+    }
+  };
+
+
+  const handleDeleteImage = () => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this image?");
+
+    if (isConfirmed) {
+      // If the user confirmed, proceed with the deletion
+      dispatch(DeleteImage());
+      setPreviewImage(null);
+      toast.success("Image Deleted Successfully");
+      navigate("/profile");
+    } else {
+      // If the user canceled, do nothing
+      toast.info("Image deletion canceled");
+    }
+  };
+
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
@@ -101,59 +146,79 @@ const ProfilePage = () => {
 
             <div className="relative flex flex-col md:flex-row items-start gap-8">
               {/* Profile Image */}
+              {/* Profile Image Section */}
               <div className="relative group">
                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-violet-500/20">
-                  {profileImage ? (
+                  {profile ? (
+                    // If profileImage exists, show the profile image
                     <img
-                      src={profileImage}
+                      src={`http://127.0.0.1:8000${profile}`}
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />
+                  ) : previewImage ? (
+                    // If no profileImage but previewImage exists (i.e., user selected an image)
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
+                    // If no profileImage and no previewImage, show placeholder (camera icon)
                     <div className="w-full h-full flex items-center justify-center">
                       <Shield className="w-12 h-12 text-cyan-400" />
                     </div>
                   )}
                 </div>
-                <label className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-cyan-500 to-cyan-400 rounded-full flex items-center justify-center cursor-pointer hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300">
-                  <Camera className="w-5 h-5 text-black" />
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setProfileImage(reader.result);
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                </label>
+
+                {/* Camera Upload Button */}
+                {!profile && (
+                  <label className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-cyan-500 to-cyan-400 rounded-full flex items-center justify-center cursor-pointer hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300">
+                    <Camera className="w-5 h-5 text-black" />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setPreviewImage(URL.createObjectURL(file));
+                          setProfileImage(file)
+                          console.log(previewImage)
+                        }
+                      }}
+                    />
+                  </label>
+                )}
               </div>
+
 
               {/* Profile Info */}
               <div className="flex-1">
                 <h1 className="text-3xl font-bold text-white mb-2">John Doe</h1>
                 <p className="text-zinc-400 mb-4">Martial Arts Enthusiast • Member since 2024</p>
                 <div className="flex flex-wrap gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-full shadow-lg shadow-cyan-500/25 transition-all duration-300"
-                  >
-                    Edit Profile
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-6 py-2 bg-[#1a1a1a] text-white rounded-full hover:bg-[#222] transition-all duration-300"
-                  >
-                    View Public Profile
-                  </motion.button>
+                  {!profile ? (
+                    // If profileImage exists, show the "Upload" button
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-full shadow-lg shadow-cyan-500/25 transition-all duration-300"
+                      onClick={handleUploadImage}
+                    >
+                      Upload New Image
+                    </motion.button>
+                  ) : (
+                    // If profileImage does not exist, show the "Delete" button
+                    <motion.button
+                      onClick={handleDeleteImage}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold rounded-full shadow-lg shadow-red-500/25 transition-all duration-300"
+                    >
+                      Delete Image
+                    </motion.button>
+                  )}
                 </div>
               </div>
             </div>
@@ -227,7 +292,7 @@ const ProfilePage = () => {
                   </div>
 
                   <motion.button
-                    onClick={(e)=>{
+                    onClick={(e) => {
                       e.preventDefault(); // Prevent the default form submission behavior
                       ProfileUpdate()
                     }}

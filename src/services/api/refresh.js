@@ -11,15 +11,23 @@ import axios from 'axios'
 
 export const fetchNewAccessToken = async () =>{
     try {
-        const refreshToken = localStorage.getItem('refresh');
+        const token = JSON.parse(localStorage.getItem('authTokens'))
+        console.log('token from refresh.js=====',token);
+        
+        const refreshToken = token?.refresh
+        console.log('============================',refreshToken);
+        
         if(!refreshToken){
             throw new Error('No refresh token found')
             
         }
-        const response = await axios.post(BASE_URL + 'auth/token/refresh/',{refresh:refreshToken});
+        const response = await axios.post(BASE_URL + '/auth/token/refresh/',{refresh:refreshToken});
+
         return response;
         
     } catch (error) {
+        console.log('===error from refresh ==',error);
+        
         throw error
         
     }

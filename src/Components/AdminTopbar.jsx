@@ -2,7 +2,7 @@ import { Bell, ChevronDown, LogOut, Menu, Search, Settings, X } from 'lucide-rea
 import React,{useState} from 'react'
 import { useSidebar } from './SidebarProvider';
 import { useDispatch } from 'react-redux';
-import { logout } from '@/Redux/LoginReducer';
+import { logout } from '@/Redux/Reducers/LoginReducer';
 
 function AdminTopbar() {
 
@@ -29,14 +29,14 @@ function AdminTopbar() {
             </div>
 
             <div className="flex items-center space-x-4 ml-auto">
-              <div className="hidden md:flex relative">
+              {/* <div className="hidden md:flex relative">
                 <input
                   type="text"
                   placeholder="Search..."
                   className="w-64 pl-4 pr-10 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              </div>
+              </div> */}
 
               <button className="relative p-2 rounded-lg hover:bg-gray-100">
                 <Bell className="w-6 h-6 text-gray-600" />
