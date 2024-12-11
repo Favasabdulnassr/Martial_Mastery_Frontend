@@ -167,7 +167,7 @@ const OTPVerificationPage = () => {
             )}
           </div>
 
-          <div className="text-center mt-4">
+          {/* <div className="text-center mt-4">
             <p className="text-sm text-gray-400">
               Didn't receive the code?
               <button
@@ -177,7 +177,7 @@ const OTPVerificationPage = () => {
                 Resend OTP
               </button>
             </p>
-          </div>
+          </div> */}
 
           <motion.button
             whileHover={{ scale: 1.02 }}

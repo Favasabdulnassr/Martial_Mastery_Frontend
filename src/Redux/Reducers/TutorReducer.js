@@ -13,8 +13,8 @@ const TutorSlice = createSlice({
         status: 'idle',
         error: null,
         // currentPage: 1,
-        totalPages: 1,
-        totalCount: 0,
+        next:null,
+        previous:null,
         searchQuery: '',
     },
     reducers: {
@@ -33,7 +33,8 @@ const TutorSlice = createSlice({
                 state.tutors = results;
                 state.totalCount = count;
                 // Adjust pagination handling as per the response
-                state.totalPages = next ;
+                state.next = next ;
+                state.previous = previous
                 state.error = null
             })
             .addCase(Fetchtutors.rejected, (state, action) => {

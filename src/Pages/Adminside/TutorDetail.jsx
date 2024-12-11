@@ -11,7 +11,9 @@ const TutorDetails = () => {
   const navigate = useNavigate()
   const { isAuthenticated, role } = useSelector((state) => state.login)
 
-  const { tutors, loading, error, totalPages, totalCount } = useSelector((state) => state.tutorsList);
+  const { tutors, loading, error, next,previous, totalCount } = useSelector((state) => state.tutorsList);
+  const itemsPerPage = 5;  // this number set what we backend setup itemsPerpage
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
 
   const dispatch = useDispatch()
@@ -40,9 +42,13 @@ const TutorDetails = () => {
     setPage(1)
   }
 
-  const handlePageChange = (newPage) => {
-    setPage(newPage)
-  }
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && next) {
+      setPage(page + 1);
+    } else if (direction === 'previous' && previous) {
+      setPage(page - 1);
+    }
+  };
 
 
 
@@ -148,8 +154,8 @@ const TutorDetails = () => {
 
             <div className='mt-4 flex justify-between items-center'>
               <button
-                disabled={page <= 1}
-                onClick={() => handlePageChange(page - 1)}
+                disabled={!previous}
+                onClick={() => handlePageChange('previous')}
                 className='bg-gray-200 px-4 py-2 rounded-lg disabled:opacity-50'
               >
                 Previous
@@ -157,12 +163,12 @@ const TutorDetails = () => {
               </button>
 
               <span className='text-gray-600'>
-                Page of {page} of {totalCount}
+                Page of {page} of {totalPages}
               </span>
 
               <button
-                disabled={page >= totalPages}
-                onClick={() => handlePageChange(page + 1)}
+                disabled={!next}
+                onClick={() => handlePageChange('next')}
 
                 className="bg-gray-200 px-4 py-2 rounded-lg disabled:opacity-50"
 

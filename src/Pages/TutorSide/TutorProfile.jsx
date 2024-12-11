@@ -18,6 +18,9 @@ import { toast } from 'react-toastify';
 import { DeleteImage, UploadImage } from '@/Redux/Actions/imageAction';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
+import { useFormik } from 'formik';
+import { TutorPasswordValidationSchema } from '@/services/validation/TutorPassword';
+import axiosInstance from '@/services/interceptor';
 
 const TutorProfilePage = () => {
     const [profileImage, setProfileImage] = useState(null);
@@ -120,6 +123,39 @@ const TutorProfilePage = () => {
             value: '22'
         }
     ];
+     
+
+    
+  const formik = useFormik({
+    initialValues: {
+      current_password: '',
+      new_password: '',
+      confirm_password: '',  // Added confirm_password
+    },
+    validationSchema: TutorPasswordValidationSchema,
+    onSubmit: async (values) => {
+      try {
+        const { current_password, new_password, confirm_password } = values;
+
+        const response = await axiosInstance.post('/auth/change_password/', {
+          current_password,
+          new_password,
+          confirm_password,  // Send confirm_password to backend
+        });
+
+        if (response.data.success) {
+          toast.success('Password changed successfully!');
+          formik.resetForm();  // Reset form after successful submission
+          navigate('/tutor/Profile');  // Redirect to profile or another page
+        } else {
+          toast.error('Password change failed');
+        }
+      } catch (error) {
+        console.error('API error:', error);
+        toast.error('An error occurred while changing password');
+      }
+    },
+  });
 
     return (
         <div className="flex min-h-screen bg-gray-900 text-gray-100">
@@ -339,16 +375,23 @@ const TutorProfilePage = () => {
                                     <Lock className="w-6 h-6 mr-2 text-blue-400" />
                                     Change Password
                                 </h2>
-                                <form className="space-y-6">
+                                <form className="space-y-6" onSubmit={formik.handleSubmit}>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-400 mb-2">
                                             Current Password
                                         </label>
                                         <input
                                             type="password"
+                                            name='current_password'
                                             className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-white"
                                             placeholder="Enter current password"
+                                            value={formik.values.current_password}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
                                         />
+                                          {formik.touched.current_password && formik.errors.current_password && (
+                      <div className="text-red-500 text-sm">{formik.errors.current_password}</div>
+                    )}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-400 mb-2">
@@ -356,9 +399,16 @@ const TutorProfilePage = () => {
                                         </label>
                                         <input
                                             type="password"
+                                            name='new_password'
                                             className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-white"
                                             placeholder="Enter new password"
+                                            value={formik.values.new_password}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
                                         />
+                                        {formik.touched.new_password && formik.errors.new_password && (
+                      <div className="text-red-500 text-sm">{formik.errors.new_password}</div>
+                    )}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-400 mb-2">
@@ -366,9 +416,16 @@ const TutorProfilePage = () => {
                                         </label>
                                         <input
                                             type="password"
+                                            name='confirm_password'
                                             className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-white"
                                             placeholder="Confirm new password"
+                                            value={formik.values.confirm_password}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
                                         />
+                                         {formik.touched.confirm_password && formik.errors.confirm_password && (
+                      <div className="text-red-500 text-sm">{formik.errors.confirm_password}</div>
+                    )}
                                     </div>
                                     <button
                                         className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center gap-2"

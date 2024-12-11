@@ -19,8 +19,10 @@ const LoginPage = () => {
           navigate('/admin/dashboard')
       }
       else if(role === 'tutor'){
-        navigate('/tutor/dashboard')
-  
+        navigate('/tutor/Profile')
+      }
+      else if (role === 'student') {
+        navigate('/profile')
       }
       
   },[isAuthenticated,role])
@@ -48,13 +50,7 @@ const LoginPage = () => {
         },
     })
     
-    useEffect(()=>{
-        if(isAuthenticated && role === 'admin'){
-            navigate('/admin/dashboard')
-        }else if(isAuthenticated && role === 'student')
-            navigate('/profile')
-        
-    },[isAuthenticated])
+    
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-pink-400 flex items-center justify-center p-4">
@@ -126,7 +122,7 @@ const LoginPage = () => {
                     </div>
 
                     {/* Remember me & Forgot password */}
-                    <div className="flex items-center justify-between">
+                    {/* <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <input
                                 type="checkbox"
@@ -135,7 +131,7 @@ const LoginPage = () => {
                             <label className="ml-2 text-sm text-gray-400">Remember me</label>
                         </div>
                         <button className="text-sm text-cyan-500 hover:text-cyan-700 transition-colors">Forgot password?</button>
-                    </div>
+                    </div> */}
 
                     {/* Submit Button */}
                     <motion.button

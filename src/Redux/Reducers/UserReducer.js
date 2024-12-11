@@ -14,7 +14,8 @@ const UsersSlice = createSlice({
         status: 'idle',
         error: null,
         // currentPage: 1,
-        totalPages: 1,
+        next: null,
+        previous:null,
         totalCount: 0,
         searchQuery: '',
     },
@@ -34,7 +35,8 @@ const UsersSlice = createSlice({
                 state.users = results;
                 state.totalCount = count
                 // Adjust pagination handling as per the response
-                state.totalPages = next ;
+                state.next = next ;
+                state.previous = previous
                 state.error = null
             })
             .addCase(FetchUsers.rejected, (state, action) => {

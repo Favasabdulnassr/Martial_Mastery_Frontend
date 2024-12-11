@@ -19,6 +19,8 @@ import { updateProfileAsync } from '@/Redux/Actions/UpdateAction';
 import { toast } from 'react-toastify';
 import { DeleteImage, UploadImage } from '@/Redux/Actions/imageAction';
 import { BASE_URL } from '@/services/constents';
+import { PasswordValidationSchema } from '@/services/validation/Password';
+import axiosInstance from '@/services/interceptor';
 
 const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -129,6 +131,39 @@ const ProfilePage = () => {
   };
 
 
+  const formik = useFormik({
+    initialValues: {
+      current_password: '',
+      new_password: '',
+      confirm_password: '',  // Added confirm_password
+    },
+    validationSchema: PasswordValidationSchema,
+    onSubmit: async (values) => {
+      try {
+        const { current_password, new_password, confirm_password } = values;
+
+        const response = await axiosInstance.post('/auth/change_password/', {
+          current_password,
+          new_password,
+          confirm_password,  // Send confirm_password to backend
+        });
+
+        if (response.data.success) {
+          toast.success('Password changed successfully!');
+          formik.resetForm();  // Reset form after successful submission
+          navigate('/profile');  // Redirect to profile or another page
+        } else {
+          toast.error('Password change failed');
+        }
+      } catch (error) {
+        console.error('API error:', error);
+        toast.error('An error occurred while changing password');
+      }
+    },
+  });
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
@@ -195,7 +230,7 @@ const ProfilePage = () => {
 
               {/* Profile Info */}
               <div className="flex-1">
-                <h1 className="text-3xl font-bold text-white mb-2">John Doe</h1>
+                <h1 className="text-3xl font-bold text-white mb-2">{firstName}</h1>
                 <p className="text-zinc-400 mb-4">Martial Arts Enthusiast • Member since 2024</p>
                 <div className="flex flex-wrap gap-4">
                   {!profile ? (
@@ -312,16 +347,23 @@ const ProfilePage = () => {
                   <Lock className="w-6 h-6 mr-2 text-cyan-400" />
                   Change Password
                 </h2>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={formik.handleSubmit}>
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-2">
                       Current Password
                     </label>
                     <input
                       type="password"
+                      name='current_password'
                       className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
                       placeholder="Enter current password"
+                      value={formik.values.current_password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
+                    {formik.touched.current_password && formik.errors.current_password && (
+                      <div className="text-red-500 text-sm">{formik.errors.current_password}</div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-2">
@@ -329,9 +371,16 @@ const ProfilePage = () => {
                     </label>
                     <input
                       type="password"
+                      name='new_password'
                       className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
                       placeholder="Enter new password"
+                      value={formik.values.new_password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
+                    {formik.touched.new_password && formik.errors.new_password && (
+                      <div className="text-red-500 text-sm">{formik.errors.new_password}</div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-2">
@@ -339,9 +388,16 @@ const ProfilePage = () => {
                     </label>
                     <input
                       type="password"
+                      name='confirm_password'
                       className="w-full p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white"
                       placeholder="Confirm new password"
+                      value={formik.values.confirm_password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
+                    {formik.touched.confirm_password && formik.errors.confirm_password && (
+                      <div className="text-red-500 text-sm">{formik.errors.confirm_password}</div>
+                    )}
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
