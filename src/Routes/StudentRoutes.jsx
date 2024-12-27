@@ -7,6 +7,7 @@ import ContactPage from "@/Pages/UserSide/ContactPage";
 import AboutUs from "@/Pages/UserSide/AboutUs";
 import ProfilePage from "@/Pages/UserSide/Profile";
 import {Route, Routes } from 'react-router-dom'
+import CoursesPage from "@/Pages/UserSide/Courses";
 
 
 const StudentRoutes = () =>{
@@ -24,6 +25,8 @@ const StudentRoutes = () =>{
 
         <Route element={<StudentPrivateRoutes/>}>
             <Route path = '/profile' element={<ProfilePage/>}/>
+            <Route path='/courses' element={<CoursesPage/>}/>
+
         </Route>
 
     </Routes>

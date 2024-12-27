@@ -73,7 +73,7 @@ function Header() {
               </Link>
             </li>
             <li>
-              <Link to="/" className="flex items-center space-x-2 hover:text-cyan-400 transition-all duration-300 group">
+              <Link to="/courses" className="flex items-center space-x-2 hover:text-cyan-400 transition-all duration-300 group">
                 <BookOpen className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 <span className="relative overflow-hidden">
                   <span className="inline-block transition-transform duration-300 group-hover:translate-y-[-100%]">Course</span>
@@ -165,7 +165,7 @@ function Header() {
               </li>
               <li>
                 <Link 
-                  to="/" 
+                  to="/courses" 
                   className="flex items-center space-x-4 hover:text-cyan-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
                   onClick={() => setIsOpen(false)}
                 >

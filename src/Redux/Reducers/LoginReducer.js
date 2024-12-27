@@ -15,7 +15,6 @@ const initialState = {
     error:null,
     role:null,
     email:null,
-    is_tutor:false,
     phone_number:null
 
 };
@@ -40,11 +39,11 @@ export const loginAsync = createAsyncThunk(
             const decodeToken = JSON.parse(atob(token.access.split('.')[1]));
             console.log('Decoded Token Payload:', decodeToken);
 
-            const {role,email,first_name,phone_number,last_name,profile } = decodeToken;
+            const {role,email,first_name,phone_number,last_name,profile,user_id } = decodeToken;
             console.log('is_superuser:aaaaaaaaaaaayesffffffffffffffff9y',role,email);
 
             // Return required details
-            return { role,email,first_name,phone_number,last_name,profile};
+            return { role,email,first_name,phone_number,last_name,profile,user_id};
         }catch(error){
             console.error(error,'ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui')
             return rejectWithValue(error?.message || 'something went wrong');
@@ -66,6 +65,7 @@ const loginSlice = createSlice({
             state.error  = null
             state.role = null
             state.email = null;
+            state.user = null;
             state.phone_number = null;
             state.profile = null,
             localStorage.removeItem('authTokens');
@@ -86,6 +86,15 @@ const loginSlice = createSlice({
             state.first_name = action.payload.first_name
             state.last_name = action.payload.last_name
             state.email = action.payload.email
+            state.user = {  // Store the whole user object here
+                id: action.payload.user_id,
+                first_name: action.payload.first_name,
+                last_name: action.payload.last_name,
+                role: action.payload.role,
+                email: action.payload.email,
+                phone_number: action.payload.phone_number,
+                profile: action.payload.profile,
+            };
 
         })
         .addCase(loginAsync.rejected,(state,action)=>{

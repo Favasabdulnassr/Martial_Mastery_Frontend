@@ -30,7 +30,8 @@ const TutorSidebar = () => {
   const menuItems = [
     { icon: <UserCircle />, label: 'Profile',path: '/tutor/Profile' },
     { icon: <Users />, label: 'My Students', path: '/tutor/students' },
-    { icon: <BookOpen />, label: 'Courses', path: '/tutor/courses'},
+    { icon: <BookOpen />, label: 'My Tutorials', path: '/tutor/tutorials'},
+    // {icon:<Bell/>,label:'MyTutorial', path:'/tutor/Tutorial'}
     // { icon: <Clipboard />, label: 'Assignments', path: '/tutor/dashboard' },
     // { icon: <MessageCircle />, label: 'Messages', path: '/tutor/dashboard' },
     // { icon: <Settings />, label: 'Settings', path: '/tutor/dashboard' },

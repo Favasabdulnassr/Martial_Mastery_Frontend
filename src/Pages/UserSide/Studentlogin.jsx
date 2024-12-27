@@ -25,7 +25,7 @@ const LoginPage = () => {
         navigate('/profile')
       }
       
-  },[isAuthenticated,role])
+  },[isAuthenticated,role,navigate])
   
 
 

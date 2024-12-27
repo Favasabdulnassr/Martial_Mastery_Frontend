@@ -7,6 +7,10 @@ import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setupAxiosInterceptors } from './services/interceptor'
 import TutorRoute from './Routes/TutorRoute'
+import CoursesPage from './Pages/UserSide/Courses'
+import TutorTutorial from './Pages/TutorSide/MyTutorial'
+import { SidebarProvider } from './Components/SidebarProvider'
+import AddVideo from './Pages/TutorSide/AddVideo'
 
 
 
@@ -32,6 +36,13 @@ function App() {
             <Route path='admin/*' element={<AdminRoute/>}/>
             
           </Routes>
+
+        <SidebarProvider>
+          <Routes>
+
+
+          </Routes>
+          </SidebarProvider>
 
 
        
