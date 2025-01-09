@@ -178,7 +178,7 @@ const TutorProfilePage = () => {
                                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-700">
                                     {profile ? (
                                         <img
-                                            src={`http://127.0.0.1:8000${profile}`}
+                                            src={profile}
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />

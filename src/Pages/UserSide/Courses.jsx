@@ -1,90 +1,68 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Sword, 
-  Zap, 
-  Target, 
-  Medal, 
-  Star, 
-  ChevronRight, 
+import {
+  Sword,
+  Zap,
+  Target,
+  Medal,
+  Star,
+  ChevronRight,
   Filter,
   Search
 } from 'lucide-react';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
+import axiosInstance from '@/services/interceptor';
+import { useNavigate } from 'react-router-dom';
+import TutorialPaymentFlow from './Payments/TutorialPaymentFlow';
 
-const courseCategories = [
-  {
-    name: 'Karate',
-    icon: <Sword className="w-12 h-12" />,
-    color: 'cyan',
-    description: 'Traditional Japanese martial art focusing on striking techniques',
-    tutors: [
-      { 
-        name: 'John Nakamura', 
-        expertise: '5th Dan Black Belt', 
-        experience: '20+ years', 
-        rating: 4.8,
-        price: 49
-      },
-      { 
-        name: 'Sarah Kim', 
-        expertise: '4th Dan Black Belt', 
-        experience: '15 years', 
-        rating: 4.6,
-        price: 45
-      }
-    ]
-  },
-  {
-    name: 'Muay Thai',
-    icon: <Zap className="w-12 h-12" />,
-    color: 'fuchsia',
-    description: 'Traditional Thai striking art known as the "Art of Eight Limbs"',
-    tutors: [
-      { 
-        name: 'Alex Rodriguez', 
-        expertise: 'Professional Fighter', 
-        experience: '12+ years', 
-        rating: 4.9,
-        price: 55
-      },
-      { 
-        name: 'Elena Patel', 
-        expertise: 'National Champion', 
-        experience: '10 years', 
-        rating: 4.7,
-        price: 52
-      }
-    ]
-  },
-  {
-    name: 'Brazilian Jiu-Jitsu',
-    icon: <Target className="w-12 h-12" />,
-    color: 'violet',
-    description: 'Grappling-based martial art and combat sport',
-    tutors: [
-      { 
-        name: 'Marcus Silva', 
-        expertise: 'Black Belt', 
-        experience: '18 years', 
-        rating: 4.7,
-        price: 59
-      },
-      { 
-        name: 'Lisa Chen', 
-        expertise: 'World Champion', 
-        experience: '14 years', 
-        rating: 4.6,
-        price: 54
-      }
-    ]
-  }
-];
+
+
+
+
+
+
 
 function CoursesPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [courseCategories, setCourseCategories] = useState([])
+
+  const navigate = useNavigate()
+
+
+
+
+
+  useEffect(() => {
+
+    const fetchCourse = async () => {
+
+      try {
+        const response = await axiosInstance.get('courses/')
+        setCourseCategories(response.data)
+
+
+      } catch (error) {
+        console.log('errrrrrrrrr', error);
+
+
+      }
+
+    }
+
+    fetchCourse()
+
+
+
+
+  }, [])
+
+
+  const handleBookTutor = (tutorial) => {
+    navigate(`/tutorials/${tutorial.id}/list`)
+  }
+
 
   const slideInUp = {
     initial: { opacity: 0, y: 30 },
@@ -92,10 +70,10 @@ function CoursesPage() {
     transition: { duration: 0.8 }
   };
 
-  const filteredTutors = selectedCategory 
-    ? selectedCategory.tutors.filter(tutor => 
-        tutor.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+  const filteredTutorials = selectedCategory
+    ? selectedCategory.tutorials.filter(tutorial =>
+      tutorial.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : [];
 
   return (
@@ -105,7 +83,7 @@ function CoursesPage() {
       </div>
       <main className="flex-1 overflow-hidden">
         {/* Hero Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -125,7 +103,7 @@ function CoursesPage() {
         </motion.div>
 
         {/* Course Categories */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -140,11 +118,10 @@ function CoursesPage() {
                   variants={slideInUp}
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setSelectedCategory(course)}
-                  className={`p-8 bg-black rounded-2xl shadow-xl border border-${course.color}-900/20
-                    group relative overflow-hidden cursor-pointer ${
-                      selectedCategory?.name === course.name 
-                        ? `ring-2 ring-${course.color}-400` 
-                        : ''
+                  className={`p-8 bg-black rounded-2xl shadow-xl border border-cyan-900/20
+                    group relative overflow-hidden cursor-pointer ${selectedCategory?.name === course.name
+                      ? `ring-2 ring-cyan-400`
+                      : ''
                     }`}
                 >
                   <motion.div
@@ -157,11 +134,11 @@ function CoursesPage() {
                       repeat: Infinity,
                       repeatType: "reverse"
                     }}
-                    className={`absolute inset-0 bg-gradient-to-br from-${course.color}-500/10 to-transparent`}
+                    className={`absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent`}
                   />
                   <div className="relative">
-                    <div className={`text-${course.color}-400 mb-4`}>
-                      {course.icon}
+                    <div className={`text-cyan-400 mb-4`}>
+                      <Target className="w-12 h-12" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-3">
                       {course.name}
@@ -169,7 +146,7 @@ function CoursesPage() {
                     <p className="text-zinc-400 mb-4">
                       {course.description}
                     </p>
-                    <div className={`text-${course.color}-400 flex items-center font-semibold`}>
+                    <div className={`text-violet-400 flex items-center font-semibold`}>
                       Select Course
                       <ChevronRight className="ml-2 group-hover:translate-x-2 transition-transform" />
                     </div>
@@ -194,7 +171,7 @@ function CoursesPage() {
                   {selectedCategory.name} Tutors
                 </h2>
                 <div className="relative">
-                  <input 
+                  <input
                     type="text"
                     placeholder="Search tutors..."
                     value={searchQuery}
@@ -205,47 +182,12 @@ function CoursesPage() {
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-8">
-                {filteredTutors.map((tutor, index) => (
-                  <motion.div
+                {filteredTutorials.map((tutorial, index) => (
+                  <TutorialPaymentFlow
                     key={index}
-                    variants={slideInUp}
-                    whileHover={{ scale: 1.05 }}
-                    className={`p-8 bg-black rounded-2xl shadow-xl border border-${selectedCategory.color}-900/20
-                      group relative overflow-hidden`}
-                  >
-                    <div className="flex justify-between items-center mb-4">
-                      <div className={`text-${selectedCategory.color}-400`}>
-                        <Medal className="w-12 h-12" />
-                      </div>
-                      <div className="flex items-center text-yellow-400">
-                        <Star className="w-5 h-5 mr-2" />
-                        {tutor.rating}
-                      </div>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">
-                      {tutor.name}
-                    </h3>
-                    <div className="text-zinc-400 mb-4">
-                      <p>{tutor.expertise}</p>
-                      <p>Experience: {tutor.experience}</p>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div className="text-2xl font-bold text-cyan-400">
-                        ${tutor.price}/session
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`px-6 py-3 bg-gradient-to-r from-${selectedCategory.color}-500 to-${selectedCategory.color}-400 
-                          text-black font-semibold rounded-full shadow-lg transition-all duration-300 group`}
-                      >
-                        <span className="flex items-center gap-2">
-                          Book Tutor
-                          <ChevronRight className="group-hover:translate-x-2 transition-transform" />
-                        </span>
-                      </motion.button>
-                    </div>
-                  </motion.div>
+                    tutorial={tutorial}
+                    onSuccess={() => handleBookTutor(tutorial)}
+                  />
                 ))}
               </div>
             </div>

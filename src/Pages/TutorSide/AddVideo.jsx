@@ -18,9 +18,13 @@ const AddVideo = () => {
   const [formData, setFormData] = useState({
     title: '',
     video_file: null,
+    thumbnail: null,
     order: '',
     is_active: true,
   });
+
+  const [errors, setErrors] = useState({}); // For validation errors
+
 
   useEffect(() => {
     if (role !== 'tutor') {
@@ -33,8 +37,8 @@ const AddVideo = () => {
   // Fetch the selected tutorial
   const fetchTutorial = async () => {
     try {
-        console.log('kkkkkkkkkkkkkkkkeeeeeeeeeeeeeeeeeeee',tutorialId);
-        
+      console.log('kkkkkkkkkkkkkkkkeeeeeeeeeeeeeeeeeeee', tutorialId);
+
 
       const response = await axiosInstance.get(`tutorials/tutorial/${tutorialId}/`);
       setTutorial(response.data);
@@ -53,31 +57,69 @@ const AddVideo = () => {
     }));
   };
 
-  const handlFileChange = (e) =>{
-    const {name,files} = e.target;
-    setFormData((prev)=>({
-        ...prev,
-        [name]:files[0],
+  const handlFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files[0],
     }));
   }
 
-  const handleCheckboxChange = () =>{
+  const handleCheckboxChange = () => {
     setFormData((prev) => ({
       ...prev,
-      is_active:e.target.checked,
+      is_active: e.target.checked,
     }));
+  };
+
+
+
+  // Regex Validation Function
+  const validateForm = () => {
+    const errors = {};
+
+    // Title validation: Allow only alphanumeric and specific symbols
+    if (!formData.title.trim()) {
+      errors.title = 'Title is required';
+    } else if (!/^[a-zA-Z0-9\s:.-]+$/.test(formData.title)) {
+      errors.title = 'Invalid title. Only letters, numbers, spaces, :, ., - are allowed.';
+    }
+
+    // Order validation: Must be a positive number
+    if (!formData.order) {
+      errors.order = 'Order is required';
+    } else if (isNaN(formData.order) || formData.order <= 0) {
+      errors.order = 'Order must be a positive number';
+    }
+
+    // Video file validation: Ensure a file is selected
+    if (!formData.video_file) {
+      errors.video_file = 'Video file is required';
+    }
+
+    // Thumbnail validation: Ensure image file is selected
+    if (!formData.thumbnail) {
+      errors.thumbnail = 'Thumbnail is required';
+    } else if (!/\.(jpg|jpeg|png|gif)$/i.test(formData.thumbnail.name)) {
+      errors.thumbnail = 'Thumbnail must be an image (jpg, jpeg, png, gif)';
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Stop if validation fails
     setLoading(true);
 
     try {
       const videoData = new FormData();
-      videoData.append('tutorial',tutorialId)
+      videoData.append('tutorial', tutorialId)
       videoData.append('title', formData.title);
       videoData.append('video_file', formData.video_file); // Add video file
+      videoData.append('thumbnail', formData.thumbnail); // Add thumbnail
       videoData.append('order', formData.order);
       videoData.append('is_active', formData.is_active);
 
@@ -127,9 +169,12 @@ const AddVideo = () => {
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                      className={`w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 ${errors.title ? 'border-red-500' : ''
+                        }`}
                       required
                     />
+                    {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+
                   </div>
 
                   {/* Video Filw */}
@@ -143,6 +188,10 @@ const AddVideo = () => {
                       accept="video/*" // Only allow video files
                       required
                     />
+
+                    {errors.video_file && (
+                      <p className="text-red-500 text-sm mt-1">{errors.video_file}</p>
+                    )}
                   </div>
 
                   {/* Video Order */}
@@ -153,10 +202,31 @@ const AddVideo = () => {
                       name="order"
                       value={formData.order}
                       onChange={handleInputChange}
-                      className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                      className={`w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 ${errors.order ? 'border-red-500' : ''
+                        }`}
                       required
                     />
+                    {errors.order && <p className="text-red-500 text-sm mt-1">{errors.order}</p>}
                   </div>
+
+
+                  {/* Thumbnail Field */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Upload Thumbnail</label>
+                    <input
+                      type="file"
+                      name="thumbnail"
+                      onChange={handlFileChange}
+                      className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                      accept="image/*" // Only allow image files
+                      required
+                    />
+
+                    {errors.thumbnail && (
+                      <p className="text-red-500 text-sm mt-1">{errors.thumbnail}</p>
+                    )}
+                  </div>
+
 
                   {/* Active Status */}
                   <div>

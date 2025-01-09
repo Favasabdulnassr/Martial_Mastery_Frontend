@@ -25,8 +25,26 @@ const AddTutorial = () => {
   const [formData, setFormData] = useState({
     course: '',  // For Course ForeignKey
     title: '',
-    description: ''
+    description: '',
+    price: '' 
+
   });
+
+
+    // Error state
+    const [errors, setErrors] = useState({
+      title: '',
+      description: '',
+      price: ''
+    });
+  
+    // Regular expressions for validation
+    const regex = {
+      title: /^[a-zA-Z0-9 ]{3,50}$/,  // Title can contain letters, numbers, and spaces (3-50 characters)
+      description: /^.{10,500}$/,  // Description should be between 10 to 500 characters
+      price: /^[0-9]+(\.[0-9]{1,2})?$/  // Price should be a valid number (optional decimal places)
+    };
+  
 
   useEffect(() => {
     if (role !== 'tutor') {
@@ -51,10 +69,52 @@ const AddTutorial = () => {
       ...prev,
       [name]: value
     }));
+    
+
+      // Clear error message for the field as user types
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    };
+  
+
+
+  
+  // Validate form data
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {};
+
+    // Title validation
+    if (!regex.title.test(formData.title)) {
+      newErrors.title = 'Title should be alphanumeric and between 3 to 50 characters.';
+      valid = false;
+    }
+
+    // Description validation
+    if (!regex.description.test(formData.description)) {
+      newErrors.description = 'Description should be between 10 and 500 characters.';
+      valid = false;
+    }
+
+    // Price validation
+    if (!regex.price.test(formData.price)) {
+      newErrors.price = 'Price should be a valid number (e.g., 19.99).';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;  // Prevent submission if validation fails
+    }
     setLoading(true);
 
     try {
@@ -142,6 +202,8 @@ const AddTutorial = () => {
                     className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
                     required
                   />
+                                    {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+
                 </div>
 
                 {/* Tutorial Description */}
@@ -157,6 +219,25 @@ const AddTutorial = () => {
                     className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
                     required
                   />
+                                    {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
+
+                </div>
+
+
+                {/* Price */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Price
+                  </label>
+                  <input
+                    type="text"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    required
+                  />
+                  {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
                 </div>
 
                 {/* Submit Button */}

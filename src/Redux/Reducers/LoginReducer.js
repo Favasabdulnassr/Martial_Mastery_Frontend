@@ -4,12 +4,13 @@ import axios from 'axios'
 import { updateProfileAsync } from '../Actions/UpdateAction';
 import { DeleteImage, UploadImage } from '../Actions/imageAction';
 import { act } from 'react';
+import { handleGoogleSuccess } from '../Actions/GoogleLogin';
 
 
 const initialState = {
     first_name:null,
     last_name:null,
-    image :null,
+    profile :null,
     loader:false,
     isAuthenticated:false,
     error:null,
@@ -147,6 +148,25 @@ const loginSlice = createSlice({
         .addCase(DeleteImage.rejected,(state,action) =>{
             state.error = action.payload || 'image uploading failed'
             state.loader = null
+        })
+        .addCase(handleGoogleSuccess.pending,(state)=>{
+            state.loader = true;
+
+        })
+        .addCase(handleGoogleSuccess.fulfilled,(state,action) =>{
+            state.role = action.payload.role
+            state.email = action.payload.email
+            state.first_name = action.payload.first_name
+            state.last_name = action.payload.last_name
+            state.profile = action.payload.profile
+            state.isAuthenticated = true;
+            state.error = null
+            state.loader = null
+        })
+        .addCase(handleGoogleSuccess.rejected,(state,action)=>{
+            state.error = action.payload
+            state.loader = null
+
         })
 
     }

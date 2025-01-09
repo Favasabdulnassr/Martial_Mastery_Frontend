@@ -9,6 +9,7 @@ import TutorCourse from '@/Pages/TutorSide/AddTutorial'
 import TutorTutorial from '@/Pages/TutorSide/MyTutorial'
 import AddTutorial from '@/Pages/TutorSide/AddTutorial'
 import AddVideo from '@/Pages/TutorSide/AddVideo'
+import TutorWallet from '@/Pages/TutorSide/TutorWallet'
 
 function TutorRoute() {
     return (
@@ -26,6 +27,8 @@ function TutorRoute() {
 
                     <Route path='/students' element={<TutorStudents />} />
                     <Route path='/Profile' element={<TutorProfilePage />} />
+                    <Route path='/wallet' element={<TutorWallet />} />
+
 
 
                 </Route>

@@ -7,17 +7,19 @@ import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setupAxiosInterceptors } from './services/interceptor'
 import TutorRoute from './Routes/TutorRoute'
-import CoursesPage from './Pages/UserSide/Courses'
-import TutorTutorial from './Pages/TutorSide/MyTutorial'
 import { SidebarProvider } from './Components/SidebarProvider'
-import AddVideo from './Pages/TutorSide/AddVideo'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import ForgotPassword from './Components/ForgotPassword'
+import ResetPassword from './Components/ResetPassword'
 
 
 
 
 
 function App() {
-
+  const GoogleClientId = process.env.GOOGLE_CLIENT_ID
+  console.log(GoogleClientId);
+  
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -28,8 +30,16 @@ function App() {
 
   return (
     <>
+    <GoogleOAuthProvider
+     clientId={GoogleClientId}
+     
+
+     
+     >
       <Router>
           <Routes>
+            <Route path='/ResetPassword/:token' element={<ResetPassword/>} />
+            <Route path='/forgotPassword' element={<ForgotPassword/>}/>
             <Route path = '/' element={<HomePage/>}/>
             <Route path = 'tutor/*' element={<TutorRoute/>}/>
             <Route path='/*' element={<StudentRoutes/>} />
@@ -47,6 +57,9 @@ function App() {
 
        
       </Router>
+
+
+      </GoogleOAuthProvider>
     </>
   )
 }

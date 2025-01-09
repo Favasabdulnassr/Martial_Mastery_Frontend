@@ -8,6 +8,7 @@ import AboutUs from "@/Pages/UserSide/AboutUs";
 import ProfilePage from "@/Pages/UserSide/Profile";
 import {Route, Routes } from 'react-router-dom'
 import CoursesPage from "@/Pages/UserSide/Courses";
+import TutorialVideoList from "@/Pages/UserSide/TutorialVideoList";
 
 
 const StudentRoutes = () =>{
@@ -24,6 +25,7 @@ const StudentRoutes = () =>{
 
 
         <Route element={<StudentPrivateRoutes/>}>
+            <Route path="/tutorials/:tutorialId/list" element={<TutorialVideoList/>}/>
             <Route path = '/profile' element={<ProfilePage/>}/>
             <Route path='/courses' element={<CoursesPage/>}/>
 

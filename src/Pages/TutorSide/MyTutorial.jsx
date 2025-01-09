@@ -17,6 +17,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axiosInstance from '@/services/interceptor';
+import Modal from '@/Components/Modal/ModalPortal';
+import VideoModal from '@/Components/Modal/Videos/VideoModal';
 
 const TutorTutorial = () => {
   // Sample data - In real app, fetch from API
@@ -86,7 +88,6 @@ const TutorTutorial = () => {
   const fetchTutorials = async () => {
     try {
       const tutorId = user?.id
-      console.log('onnnnnnnnnnnnnnnnnnnnnnnnn',tutorId);
       
       const response = await axiosInstance.get(`tutorials/list/${tutorId}/`)
       console.log(response);
@@ -99,7 +100,7 @@ const TutorTutorial = () => {
       
 
     } catch (error) {
-      console.log('errrrrrrrrrrorrrrradichutttttttttttta', error)
+      console.log(error)
 
     }
 
@@ -117,14 +118,42 @@ const TutorTutorial = () => {
     navigate(`/tutor/tutorials/${tutorial.id}/addVideo`)
   };
 
-  const handleDeleteTutorial = (tutorial) => {
-    setItemToDelete({ type: 'tutorial', item: tutorial });
-    setShowDeleteModal(true);
+  const handleDeleteTutorial = async (tutorial) => {
+    try {
+      const response = await axiosInstance.delete(`tutorials/delete-tutorial/${tutorial.id}/`);
+      if (response.status === 200) {
+        // Remove the tutorial from state
+        setTutorials(tutorials.filter(t => t.id !== tutorial.id));
+        setShowDeleteModal(false);
+        // You might want to add a success toast notification here
+      }
+    } catch (error) {
+      console.error('Error deleting tutorial:', error);
+      // You might want to add an error toast notification here
+    }
   };
-
-  const handleDeleteVideo = (video, tutorial) => {
-    setItemToDelete({ type: 'video', item: video, tutorial });
-    setShowDeleteModal(true);
+  const handleDeleteVideo = async (video, tutorial) => {
+    try {
+      const response = await axiosInstance.delete(`tutorials/delete-video/${video.id}/`);
+      if (response.status === 200) {
+        // Update the tutorials state to remove the deleted video
+        const updatedTutorials = tutorials.map(t => {
+          if (t.id === tutorial.id) {
+            return {
+              ...t,
+              videos: t.videos.filter(v => v.id !== video.id)
+            };
+          }
+          return t;
+        });
+        setTutorials(updatedTutorials);
+        setShowDeleteModal(false);
+        // You might want to add a success toast notification here
+      }
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      // You might want to add an error toast notification here
+    }
   };
 
   const confirmDelete = () => {
@@ -326,32 +355,16 @@ const TutorTutorial = () => {
       )}
 
 
-{showVideoModal && selectedVideo && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div className="bg-gray-800 border-gray-700 p-6 w-full max-w-3xl mx-4 rounded-lg">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-100">Watch: {selectedVideo.title}</h3>
-        <button
-          onClick={() => setShowVideoModal(false)} // Close the modal
-          className="text-white hover:text-gray-400"
-        >
-          <X className="w-6 h-6" />
-        </button>
-      </div>
 
-      <div className="mt-4">
-        <video
-          controls={true}
-          className="w-full h-auto bg-black"
-          src={selectedVideo.video_file} // Use the actual video file URL
-        >
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-  </div>
+{showVideoModal&& selectedVideo&&(
+<Modal isOpen={showVideoModal} onClose={()=>setShowVideoModal(false)}>
+  <VideoModal
+  video={selectedVideo}
+  onClose={()=>setShowVideoModal(false)}
+  />
+
+</Modal>
 )}
-
 
       
 
