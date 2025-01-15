@@ -41,7 +41,7 @@ function HomePage() {
         navigate('/admin/dashboard')
     }
     else if(role === 'tutor'){
-      navigate('/tutor/dashboard')
+      navigate('/tutor/Profile')
 
     }
     

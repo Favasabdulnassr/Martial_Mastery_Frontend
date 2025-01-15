@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { TutorRegistrationSchema } from '@/services/validation/TutorRegister';
-import {  handleRegister } from '@/services/api/register';
+import { handleRegister } from '@/services/api/register';
 import { toast } from 'react-toastify';
 
 const TutorRegistrationPage = () => {
@@ -13,37 +13,31 @@ const TutorRegistrationPage = () => {
   const navigate = useNavigate();
 
   const formik = useFormik({
-    initialValues:{
+    initialValues: {
       first_name: '',
-      email:     '',
-      phone_number:'',
-      password:'',
-      confirm_password:'',
-      role:'tutor'
+      email: '',
+      phone_number: '',
+      password: '',
+      confirm_password: '',
+      experience: '',
+      role: 'tutor'
     },
     validationSchema: TutorRegistrationSchema,
     onSubmit: async (values) => {
-      console.log('valuuuuuuuuesaaaaaaaaanue',values);
-
       try {
-        console.log('valuuuuuuuues',values);
-        
         const response = await handleRegister(values)
         formik.resetForm();
         localStorage.setItem('otpExpirationTime', response.otp_expiration);
-        localStorage.setItem('session_id',response.session_id)
+        localStorage.setItem('session_id', response.session_id)
         toast.success('Enter six digit otp')
         navigate('/otp');
-
       } catch (error) {
         console.error('Registration Error:', error);
-        toast.error('Registration failed',error.message)
-
+        toast.error('Registration failed', error.message)
       }
     }
   });
 
-  // Animation variants for page and form sections
   const pageVariants = {
     initial: { opacity: 0, scale: 0.95 },
     in: { opacity: 1, scale: 1 },
@@ -58,8 +52,8 @@ const TutorRegistrationPage = () => {
 
   const formSectionVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         delayChildren: 0.2,
@@ -74,53 +68,53 @@ const TutorRegistrationPage = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial="initial"
       animate="in"
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
-      className="min-h-screen bg-gradient-to-br from-indigo-500 to-pink-400 flex items-center justify-center p-4"
+      className="min-h-screen bg-gradient-to-br from-black to-zinc-900 flex items-center justify-center p-4"
     >
-      <div className="container max-w-4xl mx-auto bg-[#1a1a1a] shadow-xl rounded-2xl overflow-hidden grid md:grid-cols-2">
+      <div className="container max-w-4xl mx-auto bg-zinc-900 shadow-xl rounded-2xl overflow-hidden grid md:grid-cols-2">
         {/* Left Side - Illustration */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="hidden md:flex flex-col justify-center bg-gradient-to-r from-[#1F2937] to-[#374151] p-12 text-white"
+          className="hidden md:flex flex-col justify-center bg-gradient-to-r from-black to-zinc-900 p-12 text-white"
         >
           <div className="space-y-6 text-center">
             <div className="flex justify-center mb-6">
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="bg-white/20 p-6 rounded-full"
+                className="bg-zinc-800/50 p-6 rounded-full"
               >
-                <User size={64} className="text-white" />
+                <User size={64} className="text-cyan-400" />
               </motion.div>
             </div>
             <h2 className="text-4xl font-bold text-white">
               Become a Martial Arts Tutor
             </h2>
-            <p className="text-xl text-white/80 leading-relaxed">
-              Join our platform and help shape the next generation of martial artists. 
+            <p className="text-xl text-gray-300 leading-relaxed">
+              Join our platform and help shape the next generation of martial artists.
               Share your passion, expertise, and inspire students to reach their full potential.
             </p>
           </div>
         </motion.div>
 
         {/* Right Side - Registration Form */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={formSectionVariants}
-          className="p-10 flex flex-col justify-center bg-[#1a1a1a]"
+          className="p-10 flex flex-col justify-center bg-zinc-900"
         >
-          <motion.h1 
+          <motion.h1
             variants={inputVariants}
-            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500 mb-8 text-center"
+            className="text-3xl font-bold text-white mb-8 text-center"
           >
             Create Your Tutor Account
           </motion.h1>
@@ -133,11 +127,11 @@ const TutorRegistrationPage = () => {
                   First Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500" size={18} />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400" size={18} />
                   <input
                     name="first_name"
                     type="text"
-                    className="pl-10 w-full p-3 text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    className="pl-10 w-full p-3 text-white bg-black border border-zinc-700 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
                     placeholder="John Doe"
                     value={formik.values.first_name}
                     onChange={formik.handleChange}
@@ -155,11 +149,11 @@ const TutorRegistrationPage = () => {
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500" size={18} />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400" size={18} />
                   <input
                     name="email"
                     type="email"
-                    className="pl-10 w-full p-3 text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    className="pl-10 w-full p-3 text-white bg-black border border-zinc-700 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
                     placeholder="you@example.com"
                     value={formik.values.email}
                     onChange={formik.handleChange}
@@ -172,17 +166,39 @@ const TutorRegistrationPage = () => {
               </div>
             </motion.div>
 
+            {/* Experience */}
+            <motion.div variants={inputVariants}>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Experience (in years)
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400" size={18} />
+                <textarea
+                  name="experience"
+                  className="pl-10 w-full p-3 text-white bg-black border border-zinc-700 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+                  placeholder="e.g., I have 3 years of experience teaching karate."
+                  value={formik.values.experience}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+
+              </div>
+              {formik.touched.experience && formik.errors.experience && (
+                <div className="text-red-400 text-sm mt-1">{formik.errors.experience}</div>
+              )}
+            </motion.div>
+
             {/* Phone Number */}
             <motion.div variants={inputVariants}>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Phone Number
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500" size={18} />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400" size={18} />
                 <input
                   name="phone_number"
                   type="tel"
-                  className="pl-10 w-full p-3 text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                  className="pl-10 w-full p-3 text-white bg-black border border-zinc-700 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
                   placeholder="+1 (555) 000-0000"
                   value={formik.values.phone_number}
                   onChange={formik.handleChange}
@@ -194,18 +210,18 @@ const TutorRegistrationPage = () => {
               )}
             </motion.div>
 
-            {/* Password */}
+            {/* Password Fields */}
             <motion.div variants={inputVariants} className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500" size={18} />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400" size={18} />
                   <input
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    className="pl-10 pr-10 w-full p-3 text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    className="pl-10 pr-10 w-full p-3 text-white bg-black border border-zinc-700 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
                     placeholder="••••••••"
                     value={formik.values.password}
                     onChange={formik.handleChange}
@@ -214,7 +230,7 @@ const TutorRegistrationPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-500 transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-400"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -224,17 +240,16 @@ const TutorRegistrationPage = () => {
                 )}
               </div>
 
-              {/* Confirm Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-500" size={18} />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400" size={18} />
                   <input
                     name="confirm_password"
                     type={showConfirmPassword ? "text" : "password"}
-                    className="pl-10 pr-10 w-full p-3 text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                    className="pl-10 pr-10 w-full p-3 text-white bg-black border border-zinc-700 rounded-xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
                     placeholder="••••••••"
                     value={formik.values.confirm_password}
                     onChange={formik.handleChange}
@@ -243,7 +258,7 @@ const TutorRegistrationPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-500 transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-400"
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -255,36 +270,33 @@ const TutorRegistrationPage = () => {
             </motion.div>
 
             {/* Submit Button */}
-            <motion.div 
-              variants={inputVariants} 
-              className="text-center mt-6"
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold p-3 rounded-xl flex items-center justify-center gap-2"
             >
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black py-3 rounded-lg hover:bg-cyan-500 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2 font-semibold"
-              >
-                Register
-                <ChevronRight size={20} />
-              </button>
+              Register
+              <ChevronRight size={20} />
+            </motion.button>
+
+            {/* Sign in link */}
+            <motion.div
+              variants={inputVariants}
+              className="mt-6 text-center"
+            >
+              <p className="text-gray-400">
+                Already have an account?{' '}
+                <a href="/login" className="text-cyan-400 hover:text-cyan-300">
+                  Sign in
+                </a>
+              </p>
             </motion.div>
           </form>
-
-          {/* Sign in link */}
-          <motion.div 
-            variants={inputVariants}
-            className="mt-6 text-center"
-          >
-            <p className="text-sm text-gray-400">
-              Already have an account? 
-              <a href="/login" className="font-medium text-cyan-500 hover:text-cyan-700 hover:underline transition-colors">
-                Sign in
-              </a>
-            </p>
-          </motion.div>
         </motion.div>
       </div>
     </motion.div>
   );
 };
 
-export default TutorRegistrationPage;    
+export default TutorRegistrationPage;

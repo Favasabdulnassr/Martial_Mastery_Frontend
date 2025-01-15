@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 function TutorialPaymentFlow({ tutorial, onSuccess }) {
     const [loading, setLoading] = useState(false);
-    const [hasAccess, setHasAccess] = useState(false);
+    const [hasAccess, setHasAccess] = useState(true);
     const [bool,setBool]  =useState(false)
     const navigate = useNavigate()
 

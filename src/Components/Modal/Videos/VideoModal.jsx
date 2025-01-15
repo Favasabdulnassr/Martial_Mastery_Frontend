@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { Pause, Play, Volume2, VolumeX, X } from 'lucide-react';
 
 const VideoModal = ({ video, onClose }) => {
   const videoRef = useRef(null);
@@ -15,12 +15,24 @@ const VideoModal = ({ video, onClose }) => {
   const [isDragging, setIsDragging] = useState(false);
 
 
-  useEffect(()=>{
-    console.log('vvvvvvvvvvvvvvvvv',video);
+  useEffect(() => {
+    console.log('vvvvvvvvvvvvvvvvv', video);
     
+    // Clean the URL by removing the redundant 'video/upload/' part
+    let videoUrl = video.cloudinary_url;
+    if (videoUrl && videoUrl.startsWith('video/upload/')) {
+      // Remove the "video/upload/" prefix
+      videoUrl = videoUrl.replace('video/upload/', '');
+    }
+  
+    if (videoRef.current && videoUrl) {
+      videoRef.current.src = videoUrl;
+    }
+  
+  }, [video]);
 
 
-  },[video])
+  
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -83,15 +95,29 @@ const VideoModal = ({ video, onClose }) => {
   };
 
   const handleVolumeChange = (e) => {
+    const value = e.target.value / 100;
+
     const videoElement = videoRef.current;
-    videoElement.volume = e.target.value / 100;
-    setVolume(e.target.value / 100);
+    videoElement.volume = value
+    setVolume(value);
+    setIsMuted(value === 0);
+
   };
 
   const toggleMute = () => {
     const videoElement = videoRef.current;
-    videoElement.muted = !isMuted;
-    setIsMuted(!isMuted);
+    const newMutedState = !isMuted;
+
+    videoElement.muted =  newMutedState;
+    setIsMuted( newMutedState);
+
+    if (newMutedState) {
+      videoElement.volume = 0;
+      setVolume(0);
+    } else {
+      videoElement.volume = 0.5;
+      setVolume(0.5);
+    }
   };
 
   const handleSpeedChange = (e) => {
@@ -123,14 +149,18 @@ const VideoModal = ({ video, onClose }) => {
         </div>
 
         <div className="relative w-full">
+        <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
+
           <video
             ref={videoRef}
-            className="w-full"
+            className="absolute top-0 left-0 w-full h-full object-contain"
             crossOrigin="anonymous"
             onClick={togglePlayPause}
           >
-            <source src={video.video_url} type="video/mp4" />
+            <source src={video.cloudinary_url} type="video/mp4" />
           </video>
+          </div>
+
         </div>
 
         {/* Custom Video Controls */}
@@ -162,7 +192,8 @@ const VideoModal = ({ video, onClose }) => {
                 onClick={togglePlayPause}
                 className="text-white hover:text-gray-400 px-3 py-1 bg-gray-700 rounded"
               >
-                {isPlaying ? 'Pause' : 'Play'}
+              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+
               </button>
 
               {/* Mute Button */}
@@ -170,7 +201,8 @@ const VideoModal = ({ video, onClose }) => {
                 onClick={toggleMute}
                 className="text-white hover:text-gray-400 px-3 py-1 bg-gray-700 rounded"
               >
-                {isMuted ? 'Unmute' : 'Mute'}
+                                      {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+
               </button>
 
               {/* Volume Control */}

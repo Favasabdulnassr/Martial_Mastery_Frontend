@@ -16,7 +16,9 @@ const initialState = {
     error:null,
     role:null,
     email:null,
-    phone_number:null
+    phone_number:null,
+    bio:null,
+    experience:null,
 
 };
 
@@ -40,11 +42,11 @@ export const loginAsync = createAsyncThunk(
             const decodeToken = JSON.parse(atob(token.access.split('.')[1]));
             console.log('Decoded Token Payload:', decodeToken);
 
-            const {role,email,first_name,phone_number,last_name,profile,user_id } = decodeToken;
+            const {role,email,first_name,phone_number,last_name,profile,user_id,bio,experience } = decodeToken;
             console.log('is_superuser:aaaaaaaaaaaayesffffffffffffffff9y',role,email);
 
             // Return required details
-            return { role,email,first_name,phone_number,last_name,profile,user_id};
+            return { role,email,first_name,phone_number,last_name,profile,user_id,bio,experience};
         }catch(error){
             console.error(error,'ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui')
             return rejectWithValue(error?.message || 'something went wrong');
@@ -69,6 +71,8 @@ const loginSlice = createSlice({
             state.user = null;
             state.phone_number = null;
             state.profile = null,
+            state.bio = null,
+            state.experience = null
             localStorage.removeItem('authTokens');
         },
     },
@@ -87,6 +91,8 @@ const loginSlice = createSlice({
             state.first_name = action.payload.first_name
             state.last_name = action.payload.last_name
             state.email = action.payload.email
+            state.bio = action.payload.bio
+            state.experience = action.payload.experience
             state.user = {  // Store the whole user object here
                 id: action.payload.user_id,
                 first_name: action.payload.first_name,
@@ -108,6 +114,8 @@ const loginSlice = createSlice({
             state.last_name = null
             state.email = null
             state.image = null
+            state.bio = action.payload.bio
+            state.experience = action.payload.experience
         })
         .addCase(updateProfileAsync.pending,(state)=>{
             state.loader = true
@@ -115,15 +123,18 @@ const loginSlice = createSlice({
         .addCase(updateProfileAsync.fulfilled,(state,action)=>{
             state.loader = false
             state.first_name = action.payload.first_name || state.first_name,
-            state.last_name = action.payload.last_name || state.last_name
+            state.last_name = action.payload.last_name 
             state.email = action.payload.email || state.email
             state.phone_number = action.payload.phone_number || state.phone_number
             state.role = action.payload.role || state.role   
             state.profile = action.payload.profile || state.profile
+            state.bio = action.payload.bio 
+            state.experience = action.payload.experience 
         })
         .addCase(updateProfileAsync.rejected, (state, action) => {
         state.loader = false;
         state.error = action.payload || 'Profile update failed';
+        
         })
         .addCase(UploadImage.pending,(state)=>{
             state.loader = true;

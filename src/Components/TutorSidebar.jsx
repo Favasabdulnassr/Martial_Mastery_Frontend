@@ -31,8 +31,10 @@ const TutorSidebar = () => {
   const menuItems = [
     { icon: <UserCircle />, label: 'Profile',path: '/tutor/Profile' },
     { icon: <Users />, label: 'My Students', path: '/tutor/students' },
-    { icon: <BookOpen />, label: 'My Tutorials', path: '/tutor/tutorials'},
-    { icon: <Wallet />, label: 'My Wallet', path: '/tutor/wallet' },
+    // { icon: <BookOpen />, label: 'My Tutorials', path: '/tutor/tutorials'},
+    { icon: <BookOpen />, label: 'Course Management', path: '/tutor/courseManagement'},
+
+    // { icon: <Wallet />, label: 'My Wallet', path: '/tutor/wallet' },
 
     // {icon:<Bell/>,label:'MyTutorial', path:'/tutor/Tutorial'}
     // { icon: <Clipboard />, label: 'Assignments', path: '/tutor/dashboard' },

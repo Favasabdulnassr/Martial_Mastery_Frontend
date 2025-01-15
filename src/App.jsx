@@ -38,6 +38,7 @@ function App() {
      >
       <Router>
           <Routes>
+
             <Route path='/ResetPassword/:token' element={<ResetPassword/>} />
             <Route path='/forgotPassword' element={<ForgotPassword/>}/>
             <Route path = '/' element={<HomePage/>}/>
@@ -49,6 +50,7 @@ function App() {
 
         <SidebarProvider>
           <Routes>
+
 
 
           </Routes>

@@ -9,18 +9,18 @@ import TutorSidebar from '@/Components/TutorSidebar';  // Import Sidebar
 import TutorTopbar from '@/Components/TutorTopbar';  // Import Topbar
 
 const AddVideo = () => {
-  const { tutorialId } = useParams(); // To get the tutorial ID from URL
+  const { CourseId } = useParams(); // To get the tutorial ID from URL
   const navigate = useNavigate();
   const { role, user } = useSelector((state) => state.login);
 
   const [loading, setLoading] = useState(false);
-  const [tutorial, setTutorial] = useState(null);
+  const [Course, setCourse] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
+    description:'',
     video_file: null,
     thumbnail: null,
     order: '',
-    is_active: true,
   });
 
   const [errors, setErrors] = useState({}); // For validation errors
@@ -30,18 +30,18 @@ const AddVideo = () => {
     if (role !== 'tutor') {
       navigate('/');
     } else {
-      fetchTutorial();
+      fetchCourse();
     }
-  }, [role, navigate, tutorialId]);
+  }, [role, navigate, CourseId]);
 
   // Fetch the selected tutorial
-  const fetchTutorial = async () => {
+  const fetchCourse = async () => {
     try {
-      console.log('kkkkkkkkkkkkkkkkeeeeeeeeeeeeeeeeeeee', tutorialId);
+      console.log('kkkkkkkkkkkkkkkkeeeeeeeeeeeeeeeeeeee', CourseId);
 
 
-      const response = await axiosInstance.get(`tutorials/tutorial/${tutorialId}/`);
-      setTutorial(response.data);
+      const response = await axiosInstance.get(`course/${CourseId}/`);
+      setCourse(response.data);
     } catch (error) {
       console.error('Error fetching tutorial:', error);
       toast.error('Failed to load tutorial');
@@ -65,12 +65,12 @@ const AddVideo = () => {
     }));
   }
 
-  const handleCheckboxChange = () => {
-    setFormData((prev) => ({
-      ...prev,
-      is_active: e.target.checked,
-    }));
-  };
+  // const handleCheckboxChange = () => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     is_active: e.target.checked,
+  //   }));
+  // };
 
 
 
@@ -83,6 +83,10 @@ const AddVideo = () => {
       errors.title = 'Title is required';
     } else if (!/^[a-zA-Z0-9\s:.-]+$/.test(formData.title)) {
       errors.title = 'Invalid title. Only letters, numbers, spaces, :, ., - are allowed.';
+    }
+
+    if (!formData.description.trim()) {
+      errors.description = 'Description is required';
     }
 
     // Order validation: Must be a positive number
@@ -116,17 +120,17 @@ const AddVideo = () => {
 
     try {
       const videoData = new FormData();
-      videoData.append('tutorial', tutorialId)
+      videoData.append('course',CourseId )
       videoData.append('title', formData.title);
+      videoData.append('description',formData.description)
       videoData.append('video_file', formData.video_file); // Add video file
       videoData.append('thumbnail', formData.thumbnail); // Add thumbnail
       videoData.append('order', formData.order);
-      videoData.append('is_active', formData.is_active);
+      
 
-
-      await axiosInstance.post(`tutorials/tutorial/${tutorialId}/upload_video/`, videoData);
+      await axiosInstance.post(`course/${CourseId}/upload_lesson/`, videoData);
       toast.success('Video added successfully');
-      navigate(`/tutor/tutorials/`);
+      navigate(`/tutor/CourseManagement`);
     } catch (error) {
       console.error('Error adding video:', error);
       toast.error('Failed to add video');
@@ -155,10 +159,10 @@ const AddVideo = () => {
 
           <Card className="bg-gray-800 border-gray-700">
             <CardContent className="p-6">
-              {tutorial && (
+              {Course && (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Tutorial: {tutorial.title}</h3>
+                    <h3 className="text-lg font-semibold mb-4">course: {Course.title}</h3>
                   </div>
 
                   {/* Video Title */}
@@ -174,6 +178,22 @@ const AddVideo = () => {
                       required
                     />
                     {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+
+                  </div>
+
+
+                   <div>
+                    <label className="block text-sm font-medium mb-2">Description</label>
+                    <textarea
+                      type="text"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      className={`w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 ${errors.description ? 'border-red-500' : ''
+                        }`}
+                      required
+                    />
+                    {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
 
                   </div>
 
@@ -229,7 +249,7 @@ const AddVideo = () => {
 
 
                   {/* Active Status */}
-                  <div>
+                  {/* <div>
                     <label className="flex items-center">
                       <input
                         type="checkbox"
@@ -240,7 +260,7 @@ const AddVideo = () => {
                       />
                       Active
                     </label>
-                  </div>
+                  </div> */}
 
                   {/* Submit Button */}
                   <div className="flex justify-end">

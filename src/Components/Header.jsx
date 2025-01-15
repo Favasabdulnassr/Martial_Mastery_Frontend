@@ -7,16 +7,16 @@ import { toast } from 'react-toastify';
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [showDropdown,setShowDropdown] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
   const dispatch = useDispatch()
-  const {isAuthenticated,first_name} = useSelector((state)=> state.login)
+  const { isAuthenticated, first_name } = useSelector((state) => state.login)
 
-  const handleLogout = ()=>{
+  const handleLogout = () => {
     dispatch(logout())
     toast.success('Successfully logged out')
   }
 
-  
+
   return (
     <>
       <header className="bg-black border-b border-zinc-900 text-white py-6 fixed top-0 w-full z-10 shadow-lg">
@@ -31,8 +31,8 @@ function Header() {
 
           {/* Hamburger Menu */}
           <div className="md:hidden">
-            <button 
-              onClick={() => setIsOpen(!isOpen)} 
+            <button
+              onClick={() => setIsOpen(!isOpen)}
               className="focus:outline-none hover:text-cyan-400 transition-colors duration-300"
             >
               {!isOpen ? (
@@ -81,6 +81,22 @@ function Header() {
                 </span>
               </Link>
             </li>
+
+
+            <li>
+              <Link to="/purchased-courses" className="flex items-center space-x-2 hover:text-fuchsia-400 transition-all duration-300 group">
+                <BookOpen className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <span className="relative overflow-hidden">
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-y-[-100%]">My Courses</span>
+                  <span className="absolute top-0 left-0 translate-y-full transition-transform duration-300 text-fuchsia-400 group-hover:translate-y-0">My Courses</span>
+                </span>
+              </Link>
+            </li>
+
+
+
+
+
             <li>
               {isAuthenticated ? (
                 <div className="relative">
@@ -120,9 +136,8 @@ function Header() {
 
         {/* Mobile Menu */}
         <div
-          className={`fixed top-0 right-0 h-full w-72 bg-black border-l border-zinc-900 text-white transform ${
-            isOpen ? 'translate-x-0' : 'translate-x-full'
-          } transition-transform duration-300 ease-in-out z-50 md:hidden shadow-2xl`}
+          className={`fixed top-0 right-0 h-full w-72 bg-black border-l border-zinc-900 text-white transform ${isOpen ? 'translate-x-0' : 'translate-x-full'
+            } transition-transform duration-300 ease-in-out z-50 md:hidden shadow-2xl`}
         >
           <div className="flex flex-col h-full">
             <button
@@ -131,11 +146,11 @@ function Header() {
             >
               <X className="w-8 h-8" />
             </button>
-            
+
             <ul className="mt-20 space-y-6 px-8">
               <li>
-                <Link 
-                  to="/" 
+                <Link
+                  to="/"
                   className="flex items-center space-x-4 hover:text-cyan-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
                   onClick={() => setIsOpen(false)}
                 >
@@ -144,8 +159,8 @@ function Header() {
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/contact" 
+                <Link
+                  to="/contact"
                   className="flex items-center space-x-4 hover:text-fuchsia-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
                   onClick={() => setIsOpen(false)}
                 >
@@ -154,8 +169,8 @@ function Header() {
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/about" 
+                <Link
+                  to="/about"
                   className="flex items-center space-x-4 hover:text-violet-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
                   onClick={() => setIsOpen(false)}
                 >
@@ -164,8 +179,8 @@ function Header() {
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/courses" 
+                <Link
+                  to="/courses"
                   className="flex items-center space-x-4 hover:text-cyan-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
                   onClick={() => setIsOpen(false)}
                 >
@@ -173,46 +188,65 @@ function Header() {
                   <span>Course</span>
                 </Link>
               </li>
+
+
+
+
               {isAuthenticated ? (
-        <>
-          <li>
-            <Link 
-              to="/profile" 
-              className="flex items-center space-x-4 hover:text-green-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
-              onClick={() => setIsOpen(false)}
-            >
-              <User className="w-5 h-5" />
-              <span>Profile</span>
-            </Link>
-          </li>
-          <li>
-            <button 
-              className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-full hover:shadow-[0_0_20px_rgba(255,100,100,0.3)] transition-all duration-300"
-              onClick={() => {
-                // Add your logout logic here
-                handleLogout;
-                setIsOpen(false);
-              }}
-            >
-              <LogOut className="w-5 h-5" />
-              <span>Logout</span>
-            </button>
-          </li>
-        </>
-      ) : (
-        <li>
-          <Link 
-            to="/login" 
-            className="block"
-            onClick={() => setIsOpen(false)}
-          >
-            <button className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-violet-500 text-white rounded-full hover:shadow-[0_0_20px_rgba(79,236,255,0.3)] transition-all duration-300">
-              <LogIn className="w-5 h-5" />
-              <span>Login</span>
-            </button>
-          </Link>
-        </li>
-      )}
+                <>
+                  <li>
+                    <Link
+                      to="/profile"
+                      className="flex items-center space-x-4 hover:text-green-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <User className="w-5 h-5" />
+                      <span>Profile</span>
+                    </Link>
+                  </li>
+
+
+                  <li>
+                    <Link
+                      to="/purchased-courses"
+                      className="flex items-center space-x-4 hover:text-fuchsia-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-900"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <BookOpen className="w-5 h-5" />
+                      <span>My Courses</span>
+                    </Link>
+                  </li>
+
+
+
+                  <li>
+                    <button
+                      className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-full hover:shadow-[0_0_20px_rgba(255,100,100,0.3)] transition-all duration-300"
+                      onClick={() => {
+                        // Add your logout logic here
+                        handleLogout;
+                        setIsOpen(false);
+                      }}
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Logout</span>
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <Link
+                    to="/login"
+                    className="block"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <button className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-violet-500 text-white rounded-full hover:shadow-[0_0_20px_rgba(79,236,255,0.3)] transition-all duration-300">
+                      <LogIn className="w-5 h-5" />
+                      <span>Login</span>
+                    </button>
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>

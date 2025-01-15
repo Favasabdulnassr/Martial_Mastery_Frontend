@@ -17,7 +17,7 @@ function AdminTopbar() {
     toast.success('Successfully logged out')
   }
 
-
+ 
 
 
   return (
@@ -25,7 +25,7 @@ function AdminTopbar() {
      <nav className="sticky top-0 bg-white border-b border-gray-200 z-30 px-4 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="lg:hidden">
-              <span className="text-xl font-bold text-gray-900">MartialMaster</span>
+              <span className="text-xl font-bold text-gray-900">MartialMastery</span>
             </div>
 
             <div className="flex items-center space-x-4 ml-auto">

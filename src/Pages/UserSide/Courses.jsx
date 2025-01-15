@@ -1,80 +1,105 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-  Sword,
-  Zap,
-  Target,
-  Medal,
-  Star,
-  ChevronRight,
-  Filter,
-  Search
-} from 'lucide-react';
+import { Search,  } from 'lucide-react';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
 import axiosInstance from '@/services/interceptor';
-import { useNavigate } from 'react-router-dom';
-import TutorialPaymentFlow from './Payments/TutorialPaymentFlow';
-
-
-
-
-
-
-
+import { useLocation, useNavigate  } from 'react-router-dom';
+import { toast } from 'react-toastify';
+// import { useDispatch, useSelector } from 'react-redux';
 
 function CoursesPage() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [courseCategories, setCourseCategories] = useState([])
-
+  const [courses, setCourses] = useState([]);
   const navigate = useNavigate()
+
+
+  const [loading,setLoading] = useState(false)
+  // const dispatch = useDispatch();
+  // const cartItems = useSelector((state) => state.cart );
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const success = queryParams.get('success');
+  const cancel = queryParams.get('cancel');
 
 
 
 
 
   useEffect(() => {
+    if (success === 'true') {
+      toast.success('Payment successful! You have access to the course.');
+      navigate('/courses', { replace: true });
+    }
 
-    const fetchCourse = async () => {
-
-      try {
-        const response = await axiosInstance.get('courses/')
-        setCourseCategories(response.data)
-
-
-      } catch (error) {
-        console.log('errrrrrrrrr', error);
-
-
-      }
+    if (cancel === 'true') {
+      toast.error('Payment failed or was canceled. Please try again.');
+      navigate('/courses', { replace: true });
 
     }
 
-    fetchCourse()
+    const fetchCourses = async () => {
+      try {
+        const response = await axiosInstance.get('user/completed-courses/');
+        setCourses(response.data);  // Assuming response.data is an array of courses
+      } catch (error) {
+        console.log('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+
+  }, [success, cancel]);  // Re-run effect if success or cancel changes
 
 
 
 
-  }, [])
+  const handlePayment = async(courseId) =>{
+    try {
+      setLoading(true)
+      const response = await axiosInstance.post(`payment/purchase/${courseId}/`)
+
+      console.log('paymenttttttttttttttttttttt',response.data);
+      if (response.data &&  response.data.checkout_url){
+        window.location.href = response.data.checkout_url;
+      }else{
+        console.log('ssssssssssssss');
+        
+        toast.error('Unable to initiate payment')
+
+      }
+      
+      
+    } catch (error) {
+      console.log('Payment errror',error);
+      toast.error(error.response?.data?.message || 'Payment initiation failed');
+
+      
+
+      
+    }finally{
+      setLoading(false);
+
+    }
 
 
-  const handleBookTutor = (tutorial) => {
-    navigate(`/tutorials/${tutorial.id}/list`)
   }
 
 
-  const slideInUp = {
-    initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8 }
-  };
 
-  const filteredTutorials = selectedCategory
-    ? selectedCategory.tutorials.filter(tutorial =>
-      tutorial.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    : [];
+
+
+
+
+  // Filter courses based on search query
+  const filteredCourses = courses.filter(course =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-black">
@@ -102,7 +127,8 @@ function CoursesPage() {
           </div>
         </motion.div>
 
-        {/* Course Categories */}
+        {/* Courses Section */}
+        {/* Courses Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -111,44 +137,55 @@ function CoursesPage() {
           className="py-16 bg-[#0a0a0a]"
         >
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-3 gap-8">
-              {courseCategories.map((course, index) => (
-                <motion.div
-                  key={index}
-                  variants={slideInUp}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={() => setSelectedCategory(course)}
-                  className={`p-8 bg-black rounded-2xl shadow-xl border border-cyan-900/20
-                    group relative overflow-hidden cursor-pointer ${selectedCategory?.name === course.name
-                      ? `ring-2 ring-cyan-400`
-                      : ''
-                    }`}
-                >
-                  <motion.div
-                    animate={{
-                      opacity: [0.1, 0.2],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }}
-                    className={`absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent`}
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-white">Available Courses</h2>
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search courses..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 pr-4 py-2 bg-zinc-900 text-white rounded-full border border-zinc-700 focus:ring-2 focus:ring-cyan-400"
                   />
+                  <Search className="absolute left-3 top-3 text-zinc-400" />
+                </div>
+                
+              </div>
+            </div>
+
+            {/* Display filtered courses */}
+            <div className="grid md:grid-cols-3 gap-8">
+              {filteredCourses.map((course) => (
+                <motion.div
+                  key={course.id}
+                  whileHover={{ scale: 1.05 }}
+                  className="p-8 bg-black rounded-2xl shadow-xl border border-cyan-900/20"
+                >
                   <div className="relative">
-                    <div className={`text-cyan-400 mb-4`}>
-                      <Target className="w-12 h-12" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">
-                      {course.name}
-                    </h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">{course.title}</h3>
+                    <p className="text-zinc-400 mb-4">{course.description}</p>
                     <p className="text-zinc-400 mb-4">
-                      {course.description}
+                      <strong>Fees:</strong> {course.fees} USD
                     </p>
-                    <div className={`text-violet-400 flex items-center font-semibold`}>
-                      Select Course
-                      <ChevronRight className="ml-2 group-hover:translate-x-2 transition-transform" />
+                    <p className="text-zinc-400 mb-4">
+                      <strong>Duration:</strong> {course.duration_weeks} weeks
+                    </p>
+                    <div className="text-violet-400 flex items-center font-semibold mb-4">
+                      <span className="mr-2">Tutor: {course.tutor.first_name} {course.tutor.last_name || ''}</span>
+                    </div>
+
+                    <div className="flex space-x-4">
+                      
+                      {course.tutorials && (
+                        <button
+                          onClick={() => handlePayment(course.id)}
+                          disabled={loading}
+                          className="px-6 py-2 bg-violet-500 text-white rounded-full hover:bg-violet-600 transition disabled:opacity-50"
+                        >
+                          {loading ? 'Processing...' : 'Purchase Now'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -156,43 +193,6 @@ function CoursesPage() {
             </div>
           </div>
         </motion.div>
-
-        {/* Tutors Section */}
-        {selectedCategory && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="py-16 bg-black"
-          >
-            <div className="container mx-auto px-4">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-3xl font-bold text-white">
-                  {selectedCategory.name} Tutors
-                </h2>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search tutors..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-4 py-2 bg-zinc-900 text-white rounded-full border border-zinc-700 focus:ring-2 focus:ring-cyan-400"
-                  />
-                  <Search className="absolute left-3 top-3 text-zinc-400" />
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2 gap-8">
-                {filteredTutorials.map((tutorial, index) => (
-                  <TutorialPaymentFlow
-                    key={index}
-                    tutorial={tutorial}
-                    onSuccess={() => handleBookTutor(tutorial)}
-                  />
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
       </main>
       <Footer />
     </div>

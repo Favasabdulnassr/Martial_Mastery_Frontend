@@ -26,7 +26,9 @@ const TutorialVideoList = () => {
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
-        const response = await axiosInstance.get(`tutorials/tutorial/${tutorialId}/videos/`);
+        const response = await axiosInstance.get(`payment/purchased-courses/${tutorialId}/lessons/`);
+        console.log('entte ',response.data);
+        
         setTutorial(response.data);
         setLoading(false);
       } catch (error) {
@@ -39,13 +41,19 @@ const TutorialVideoList = () => {
   }, [tutorialId]);
 
   const openVideoModal = (video) => {
+    console.log('ttttttttttt',video)
     setSelectedVideo(video);
     setShowVideoModal(true);
   };
 
-  const filteredVideos = tutorial?.videos?.filter(video =>
+  const filteredVideos = tutorial?.filter(video =>
     video.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+
+  
+
+
 
   const slideInUp = {
     initial: { opacity: 0, y: 30 },
@@ -60,6 +68,10 @@ const TutorialVideoList = () => {
       </div>
     );
   }
+
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-black">
@@ -145,6 +157,8 @@ const TutorialVideoList = () => {
                     </div>
 
                     <h3 className="text-xl font-bold text-white mb-3">{video.title}</h3>
+                    <p className="text-l font-bold text-white mb-3">{video.description}</p>
+
                     
                     <div className="flex justify-between items-center text-zinc-400 mb-4">
                       <div className="flex items-center">

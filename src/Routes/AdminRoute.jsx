@@ -7,6 +7,7 @@ import StudentDetails from "@/Pages/Adminside/StudentDetail";
 import TutorDetails from "@/Pages/Adminside/TutorDetail";
 import AdminCourses from "@/Pages/Adminside/AdminCourses";
 import Demo from "@/Pages/Adminside/demo";
+import AdminCourseDetail from "@/Pages/Adminside/AdminCourseDetail";
 
 
 const AdminRoute = () =>{
@@ -20,6 +21,9 @@ const AdminRoute = () =>{
             <Route path ='/tutors' element = {<TutorDetails/>}/>
             <Route path = '/courses' element = {<AdminCourses/>}/>
             <Route path='/add' element={<Demo/>}/>
+            <Route path='/courseDetails/:courseId' element={<AdminCourseDetail/>}/>
+
+
 
 
         </Route>

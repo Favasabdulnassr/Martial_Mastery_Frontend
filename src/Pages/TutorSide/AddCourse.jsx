@@ -14,63 +14,62 @@ import TutorTopbar from '@/Components/TutorTopbar';
 import axiosInstance from '@/services/interceptor';
 import { toast } from 'react-toastify';
 
-const AddTutorial = () => {
+const AddCourse = () => {
   const navigate = useNavigate();
   const { role, user } = useSelector((state) => state.login);
   
   const [loading, setLoading] = useState(false);
-  const [courses, setCourses] = useState([]);
   
   // Form state matching your Tutorial model
   const [formData, setFormData] = useState({
-    course: '',  // For Course ForeignKey
     title: '',
     description: '',
-    price: '' 
+    duration_weeks: '' ,
+    fees:'',
+    status:'pending'
 
   });
 
+  // useEffect( () =>{
+
+  //   console.log(user.id)
+
+  // },[])
 
     // Error state
     const [errors, setErrors] = useState({
       title: '',
       description: '',
-      price: ''
+      duration_weeks: '' ,
+      fees: ''
+
+
     });
   
     // Regular expressions for validation
     const regex = {
-      title: /^[a-zA-Z0-9 ]{3,50}$/,  // Title can contain letters, numbers, and spaces (3-50 characters)
+      title: /^[a-zA-Z0-9 ]{3,200}$/,  // Title can contain letters, numbers, and spaces (3-200 characters)
       description: /^.{10,500}$/,  // Description should be between 10 to 500 characters
-      price: /^[0-9]+(\.[0-9]{1,2})?$/  // Price should be a valid number (optional decimal places)
+      duration_weeks: /^[1-9][0-9]*$/,  // Duration should be a positive integer
+      fees: /^[0-9]+(\.[0-9]{1,2})?$/  // Fees should be a valid number (optional decimal places)
     };
   
 
-  useEffect(() => {
-    if (role !== 'tutor') {
-      navigate('/');
-    } else {
-      fetchCourses();
-    }
-  }, [role, navigate]);
+    useEffect(() => {
+      if (role !== 'tutor') {
+        navigate('/');
+      }
+    }, [role, navigate]);
 
-  const fetchCourses = async () => {
-    try {
-      const response = await axiosInstance.get('courses/');
-      setCourses(response.data);
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-    }
-  };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
 
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      
       // Clear error message for the field as user types
       setErrors(prev => ({
         ...prev,
@@ -88,7 +87,7 @@ const AddTutorial = () => {
 
     // Title validation
     if (!regex.title.test(formData.title)) {
-      newErrors.title = 'Title should be alphanumeric and between 3 to 50 characters.';
+      newErrors.title = 'Title should be alphanumeric and between 3 to 200 characters.';
       valid = false;
     }
 
@@ -98,9 +97,15 @@ const AddTutorial = () => {
       valid = false;
     }
 
-    // Price validation
-    if (!regex.price.test(formData.price)) {
-      newErrors.price = 'Price should be a valid number (e.g., 19.99).';
+    // Duration validation
+    if (!regex.duration_weeks.test(formData.duration_weeks)) {
+      newErrors.duration_weeks = 'Duration should be a positive integer.';
+      valid = false;
+    }
+
+    // Fees validation
+    if (!regex.fees.test(formData.fees)) {
+      newErrors.fees = 'Fees should be a valid number (e.g., 19.99).';
       valid = false;
     }
 
@@ -108,9 +113,9 @@ const AddTutorial = () => {
     return valid;
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Submitting form data:', formData);
 
     if (!validateForm()) {
       return;  // Prevent submission if validation fails
@@ -119,16 +124,16 @@ const AddTutorial = () => {
 
     try {
       // Create tutorial with the selected course and tutor
-      const tutorialData = {
+      const CourseData = {
         ...formData,
         tutor: user.id  // Current logged-in tutor's ID
       };
-      console.log('useeeeeeeeeeeeeeeeeeeeeer',user)
-      console.log('ddddddddddddddddddddda',tutorialData)
+      console.log('Course creation response:', CourseData);
 
-      await axiosInstance.post('tutorials/create/', tutorialData);
-      toast.success('Tutorial created  Successfully')
-      navigate('/tutor/tutorials')
+
+      await axiosInstance.post('course/', CourseData);
+      toast.success('Course created  Successfully')
+      navigate('/tutor/CourseManagement')
     } catch (error) {
       console.error('Error creating tutorial:', error);
     } finally {
@@ -152,7 +157,7 @@ const AddTutorial = () => {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-2xl font-bold">Create New Tutorial</h1>
+            <h1 className="text-2xl font-bold">Create New Course</h1>
           </div>
 
           {/* {error && (
@@ -168,32 +173,9 @@ const AddTutorial = () => {
                 {/* Course Selection */}
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Select Course
+                    Course Title
                   </label>
                   <div className="relative">
-                    <select
-                      name="course"
-                      value={formData.course}
-                      onChange={handleInputChange}
-                      className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 appearance-none"
-                      required
-                    >
-                      <option value="">Select a course</option>
-                      {courses.map(course => (
-                        <option key={course.id} value={course.id}>
-                          {course.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  </div>
-                </div>
-
-                {/* Tutorial Title */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Tutorial Title
-                  </label>
                   <input
                     type="text"
                     name="title"
@@ -202,15 +184,14 @@ const AddTutorial = () => {
                     className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
                     required
                   />
-                                    {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
-
+                  {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  </div>
                 </div>
 
-                {/* Tutorial Description */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Description
-                  </label>
+                 {/* Course Description */}
+                 <div>
+                  <label className="block text-sm font-medium mb-2">Description</label>
                   <textarea
                     name="description"
                     value={formData.description}
@@ -219,26 +200,40 @@ const AddTutorial = () => {
                     className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
                     required
                   />
-                                    {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-
+                  {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
                 </div>
 
-
-                {/* Price */}
+                {/* Duration */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Price
-                  </label>
+                  <label className="block text-sm font-medium mb-2">Duration (in weeks)</label>
                   <input
-                    type="text"
-                    name="price"
-                    value={formData.price}
+                    type="number"
+                    name="duration_weeks"
+                    value={formData.duration_weeks}
                     onChange={handleInputChange}
                     className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    min="1"
                     required
                   />
-                  {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
+                  {errors.duration_weeks && <p className="text-red-500 text-sm">{errors.duration_weeks}</p>}
                 </div>
+
+                {/* Fees */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Fees</label>
+                  <input
+                    type="number"
+                    name="fees"
+                    value={formData.fees}
+                    onChange={handleInputChange}
+                    className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    step="0.01" // Allow decimal points
+                    min="0"
+                    required
+                  />
+                  {errors.fees && <p className="text-red-500 text-sm">{errors.fees}</p>}
+                </div>
+
 
                 {/* Submit Button */}
                 <div className="flex justify-end">
@@ -263,4 +258,4 @@ const AddTutorial = () => {
   );
 };
 
-export default AddTutorial;
+export default AddCourse;

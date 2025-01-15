@@ -22,11 +22,13 @@ const TutorStudents = () => {
   const fetchStudents = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`tutorials/tutor/students/?search=${searchQuery}&page=${page}`);
-      setStudents(response.data.students);
-      setTotalCount(response.data.total_count);
-      setHasNext(response.data.has_next);
-      setHasPrevious(response.data.has_previous);
+      const response = await axiosInstance.get(`auth/tutor/students/`);
+      console.log('vallathum nadakko',response.data);
+      
+      setStudents(response.data.results.students);
+      setTotalCount(response.data.results.total_count);
+      setHasNext(response.data.results.has_next);
+      setHasPrevious(response.data.results.has_previous);
     } catch (error) {
       console.error('Error fetching students:', error);
     } finally {
@@ -76,10 +78,6 @@ const TutorStudents = () => {
                   {loading ? (
                     <tr>
                       <td colSpan="4" className="text-center p-4">Loading...</td>
-                    </tr>
-                  ) : students.length === 0 ? (
-                    <tr>
-                      <td colSpan="4" className="text-center p-4">No students found</td>
                     </tr>
                   ) : (
                     students.map((student) => (

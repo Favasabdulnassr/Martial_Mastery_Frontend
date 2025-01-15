@@ -29,13 +29,12 @@ const TutorProfilePage = () => {
     const [lastName, setLastName] = useState('');
     const [Email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    // const [expertise, setExpertise] = useState('');
-    // const [bio, setBio] = useState('');
+    const [Experience, setExperience] = useState('');
+    const [Bio, setBio] = useState('');
 
-    const { isAuthenticated, first_name, last_name, role, phone_number, email, profile } = useSelector((state) => state.login);
+    const { isAuthenticated, first_name, last_name, role, phone_number, email, profile,bio,experience } = useSelector((state) => state.login);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
 
     useEffect(() => {
         if (isAuthenticated && role === 'tutor') {
@@ -43,13 +42,14 @@ const TutorProfilePage = () => {
           setLastName(last_name);
           setEmail(email);
           setPhoneNumber(phone_number);
+          setExperience(experience);
+          setBio(bio)
         }
         else {
           dispatch(logout())
           navigate('/login');
         }
-      }, [isAuthenticated, first_name, last_name, email, phone_number, dispatch, profile]);
-    
+    }, [isAuthenticated, first_name, last_name, email, phone_number, dispatch, profile,experience,bio]);
 
     const ProfileUpdate = () => {
         try {
@@ -58,7 +58,8 @@ const TutorProfilePage = () => {
                 last_name: lastName,
                 email: email,
                 phone_number: phoneNumber,
-
+                experience: Experience,
+                bio: Bio
             };
 
             dispatch(updateProfileAsync(data))
@@ -123,39 +124,36 @@ const TutorProfilePage = () => {
             value: '22'
         }
     ];
-     
 
-    
-  const formik = useFormik({
-    initialValues: {
-      current_password: '',
-      new_password: '',
-      confirm_password: '',  // Added confirm_password
-    },
-    validationSchema: TutorPasswordValidationSchema,
-    onSubmit: async (values) => {
-      try {
-        const { current_password, new_password, confirm_password } = values;
+    const formik = useFormik({
+        initialValues: {
+            current_password: '',
+            new_password: '',
+            confirm_password: '',
+        },
+        validationSchema: TutorPasswordValidationSchema,
+        onSubmit: async (values) => {
+            try {
+                const { current_password, new_password, confirm_password } = values;
+                const response = await axiosInstance.post('/auth/change_password/', {
+                    current_password,
+                    new_password,
+                    confirm_password,
+                });
 
-        const response = await axiosInstance.post('/auth/change_password/', {
-          current_password,
-          new_password,
-          confirm_password,  // Send confirm_password to backend
-        });
-
-        if (response.data.success) {
-          toast.success('Password changed successfully!');
-          formik.resetForm();  // Reset form after successful submission
-          navigate('/tutor/Profile');  // Redirect to profile or another page
-        } else {
-          toast.error('Password change failed');
-        }
-      } catch (error) {
-        console.error('API error:', error);
-        toast.error('An error occurred while changing password');
-      }
-    },
-  });
+                if (response.data.success) {
+                    toast.success('Password changed successfully!');
+                    formik.resetForm();
+                    navigate('/tutor/Profile');
+                } else {
+                    toast.error('Password change failed');
+                }
+            } catch (error) {
+                console.error('API error:', error);
+                toast.error('An error occurred while changing password');
+            }
+        },
+    });
 
     return (
         <div className="flex min-h-screen bg-gray-900 text-gray-100">
@@ -178,7 +176,7 @@ const TutorProfilePage = () => {
                                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-700">
                                     {profile ? (
                                         <img
-                                            src={profile}
+                                            src={`http://127.0.0.1:8000/${profile}`}
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />
@@ -215,13 +213,11 @@ const TutorProfilePage = () => {
                                 )}
                             </div>
 
-
                             <div className="flex-1">
                                 <h1 className="text-3xl font-bold text-white mb-2">{firstName}</h1>
                                 <p className="text-zinc-400 mb-4">Martial Arts Enthusiast • Member since 2024</p>
                                 <div className="flex flex-wrap gap-4">
                                     {!profile ? (
-                                        // If profileImage exists, show the "Upload" button
                                         <motion.button
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
@@ -231,7 +227,6 @@ const TutorProfilePage = () => {
                                             Upload New Image
                                         </motion.button>
                                     ) : (
-                                        // If profileImage does not exist, show the "Delete" button
                                         <motion.button
                                             onClick={handleDeleteImage}
                                             whileHover={{ scale: 1.05 }}
@@ -330,19 +325,19 @@ const TutorProfilePage = () => {
                                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                             />
                                         </div>
-                                        {/* <div>
+                                        <div>
                                             <label className="block text-sm font-medium text-gray-400 mb-2">
-                                                Area of Expertise
+                                                Experience
                                             </label>
                                             <input
                                                 type="text"
                                                 className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-white"
-                                                placeholder="e.g., Martial Arts, Programming"
-                                                value={expertise}
-                                                onChange={(e) => setExpertise(e.target.value)}
+                                                placeholder="Brief description of your experience"
+                                                value={Experience}
+                                                onChange={(e) => setExperience(e.target.value)}
                                             />
-                                        </div> */}
-                                        {/* <div className="md:col-span-2">
+                                        </div>
+                                        <div className="md:col-span-2">
                                             <label className="block text-sm font-medium text-gray-400 mb-2">
                                                 Professional Bio
                                             </label>
@@ -350,10 +345,10 @@ const TutorProfilePage = () => {
                                                 className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 text-white"
                                                 rows={4}
                                                 placeholder="Tell us about your professional background and teaching philosophy"
-                                                value={bio}
+                                                value={Bio}
                                                 onChange={(e) => setBio(e.target.value)}
                                             />
-                                        </div> */}
+                                        </div>
                                     </div>
 
                                     <button
