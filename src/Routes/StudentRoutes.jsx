@@ -10,6 +10,8 @@ import {Route, Routes } from 'react-router-dom'
 import CoursesPage from "@/Pages/UserSide/Courses";
 import TutorialVideoList from "@/Pages/UserSide/TutorialVideoList";
 import PurchasedCoursesPage from "@/Pages/UserSide/PurchasedCourses";
+import PaymentStatus from "@/Pages/UserSide/Payment";
+import VideoPage from "@/Pages/UserSide/VideoPage";
 
 
 const StudentRoutes = () =>{
@@ -31,7 +33,11 @@ const StudentRoutes = () =>{
 
 
             <Route path = '/profile' element={<ProfilePage/>}/>
+            <Route path="/payment" element={<PaymentStatus/>}/>
+
             <Route path='/courses' element={<CoursesPage/>}/>
+            <Route path='/VideoPage/:tutorialId/:videoId' element={<VideoPage/>}/>
+
 
         </Route>
 

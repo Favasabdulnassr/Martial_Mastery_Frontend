@@ -28,7 +28,6 @@ export const setupAxiosInterceptors = (dispatch) => {
   // Response Interceptor to handle token expiration
   axiosInstance.interceptors.response.use(
     (response) => {
-        console.log('=====res  ',response);
         
       return response
     },
@@ -38,14 +37,10 @@ export const setupAxiosInterceptors = (dispatch) => {
 
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-         console.log('gettttt');
          
         try {
           // Fetch new access token
-          console.log('gettttt');
           const response = await fetchNewAccessToken();
-          console.log('gettttt',response);
-          console.log('ressssssssssssssssssss',response?.data)
           const newAccessToken = response.data;
           const tokens = { access: newAccessToken.access, refresh: newAccessToken.refresh };
           

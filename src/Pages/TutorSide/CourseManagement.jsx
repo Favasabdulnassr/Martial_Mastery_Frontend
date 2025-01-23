@@ -194,8 +194,7 @@ const CourseManagement = () => {
     SetCompleted(Mark)
     setIsModalOpen(true);
     setCourseId(Id); // Set the action to "complete"
-  };
-
+  };  
 
 
   const handleConfirmAction = async (Id) => {

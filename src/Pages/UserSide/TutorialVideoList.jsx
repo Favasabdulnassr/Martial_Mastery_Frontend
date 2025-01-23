@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { 
   Play, 
   Clock, 
@@ -19,9 +19,10 @@ const TutorialVideoList = () => {
   const { tutorialId } = useParams();
   const [tutorial, setTutorial] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [showVideoModal, setShowVideoModal] = useState(false);
+  // const [showVideoModal, setShowVideoModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchTutorial = async () => {
@@ -40,16 +41,20 @@ const TutorialVideoList = () => {
     fetchTutorial();
   }, [tutorialId]);
 
-  const openVideoModal = (video) => {
-    console.log('ttttttttttt',video)
-    setSelectedVideo(video);
-    setShowVideoModal(true);
-  };
+  // const openVideoModal = (video) => {
+  //   console.log('ttttttttttt',video)
+  //   setSelectedVideo(video);
+  //   setShowVideoModal(true);
+  // };
 
   const filteredVideos = tutorial?.filter(video =>
     video.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+
+  const navigateVideo = (video) => {
+    navigate(`/videoPage/${tutorialId}/${video.id}`,{replace:true})
+  };
 
   
 
@@ -144,7 +149,7 @@ const TutorialVideoList = () => {
                   <div className="relative">
                     <div 
                       className="relative cursor-pointer mb-4" 
-                      onClick={() => openVideoModal(video)}
+                      onClick={() => navigateVideo(video)}
                     >
                       <img
                         src={video.thumbnail || '/api/placeholder/320/180'}
@@ -172,7 +177,7 @@ const TutorialVideoList = () => {
                     </div>
 
                     <button
-                      onClick={() => openVideoModal(video)}
+                      onClick={() => navigateVideo(video)}
                       className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-400 
                         text-black font-semibold rounded-full shadow-lg transition-all duration-300 group
                         hover:shadow-[0_0_20px_rgba(79,236,255,0.3)]"
@@ -190,7 +195,7 @@ const TutorialVideoList = () => {
         </div>
       </main>
 
-      {showVideoModal && selectedVideo && (
+      {/* {showVideoModal && selectedVideo && (
         <Modal isOpen={showVideoModal} onClose={() => setShowVideoModal(false)}>
           <VideoModal
             video={selectedVideo}
@@ -198,7 +203,7 @@ const TutorialVideoList = () => {
           />
         </Modal>
       )}
-      
+       */}
       <Footer />
     </div>
   );
