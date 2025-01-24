@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { MessageCircle, Send, ThumbsUp, Reply, Trash2, Edit2 } from 'lucide-react';
+import { MessageCircle, Send, Reply, Trash2, Edit2 } from 'lucide-react';
 import axiosInstance from '@/services/interceptor';
 import { toast } from 'react-toastify';
 import Modal from './Modal/ModalPortal';
 import DeleteCommentModal from './Modal/CommentDelete';
+import { useSelector } from 'react-redux';
 
-const Comment = ({ comment, onReply,onDelete, onUpdate,onLike,currentUser }) => {
+const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSubmitReply, onCancelReply  }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [replyContent, setReplyContent] = useState('');
+
 
 
   const isAuthor = true; // You should replace this with logic to check against logged-in user's email
-
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -35,13 +36,21 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,onLike,currentUser }) => 
     setIsModalOpen(false);
   };
 
+  const handleSubmitReply = (e) => {
+    e.preventDefault();
+    onSubmitReply(replyContent);
+    setReplyContent('');
+  };
 
+
+  // const isAuthor = currentUser?.id === comment.user.id;
+   const isReplying = replyTo === comment.id;
 
 
   return (
     <div className="flex space-x-4" style={{ marginLeft: `${comment.parent ? '2rem' : '0'}` }}>
       <img
-        src={comment.user.avatar || '/api/placeholder/40/40'}
+        src={`http://127.0.0.1:8000/${comment.user.profile}` || '/api/placeholder/40/40'}
         alt={comment.user.name}
         className="w-10 h-10 rounded-full"
       />
@@ -53,7 +62,7 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,onLike,currentUser }) => 
           }`}>
             {comment.user.role}
           </span>
-          <span className="text-gray-400 text-sm">{comment.timestamp}</span>
+          <span className="text-gray-400 text-sm">{comment.time_ago}</span>
         </div>
         
         {isEditing ? (
@@ -84,13 +93,7 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,onLike,currentUser }) => 
         )}
 
         <div className="flex items-center space-x-4 mt-2">
-          <button 
-            className="flex items-center space-x-1 text-gray-400 hover:text-white"
-            onClick={() => onLike(comment.id)}
-          >
-            <ThumbsUp className={`w-4 h-4 ${comment.liked ? 'text-cyan-400' : ''}`} />
-            <span>{comment.likes_count}</span>
-          </button>
+         
           <button 
             className="flex items-center space-x-1 text-gray-400 hover:text-white"
             onClick={() => onReply(comment.id)}
@@ -117,6 +120,34 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,onLike,currentUser }) => 
             </>
           )}
         </div>
+
+
+        {isReplying && (
+          <form onSubmit={handleSubmitReply} className="mt-4">
+            <textarea
+              value={replyContent}
+              onChange={(e) => setReplyContent(e.target.value)}
+              placeholder="Write a reply..."
+              className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:ring-2 focus:ring-cyan-400"
+              rows="3"
+            />
+            <div className="flex space-x-2 mt-2">
+              <button
+                type="submit"
+                className="px-3 py-1 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400"
+              >
+                Post Reply
+              </button>
+              <button
+                type="button"
+                onClick={() => onCancelReply()}
+                className="px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
         
         {comment.replies && comment.replies.map(reply => (
           <Comment
@@ -125,7 +156,6 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,onLike,currentUser }) => 
             onReply={onReply}
             onDelete={onDelete}
             onUpdate={onUpdate}
-            onLike={onLike}
             currentUser={currentUser}
           />
         ))}
@@ -153,9 +183,12 @@ const CommentsSection = ({ lessonId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pointer,setPointer] = useState(false)
+  const {user}= useSelector((state) => state.login);
 
 
   useEffect(() => {
+    console.log('aaaaaa',user);
+    
     fetchComments();
   }, [lessonId,pointer]);
 
@@ -169,7 +202,7 @@ const CommentsSection = ({ lessonId }) => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.get(`comments/get-comments/${lessonId}/`);
-      console.log(response.data);
+      console.log('appo angane',response.data);
       
       
       setComments(response.data);
@@ -241,27 +274,29 @@ const CommentsSection = ({ lessonId }) => {
     }
   };
 
-  const handleLikeComment = async (commentId) => {
+
+
+
+  const handleSubmitReply = async (content) => {
+    if (!content.trim()) return;
+
     try {
-      await axiosInstance.post(`comments/toggle-like/${commentId}/`);
-      setComments(prevComments =>
-        prevComments.map(comment =>
-          comment.id === commentId
-            ? {
-                ...comment,
-                liked: !comment.liked,
-                likes_count: comment.liked
-                  ? comment.likes_count - 1
-                  : comment.likes_count + 1
-              }
-            : comment
-        )
-      );
+      await axiosInstance.post(`comments/create/${lessonId}/`, {
+        content: content,
+        parent_id: replyTo
+      });
+
+      handlePointer();
+      setReplyTo(null);
+      toast.success('Reply added successfully');
     } catch (error) {
-      console.error('Error toggling like:', error);
-      setError('Failed to like comment');
+      console.error('Error posting reply:', error);
+      setError('Failed to post reply');
     }
   };
+
+
+  
 
   if (isLoading) {
     return <div className="text-white text-center py-8">Loading comments...</div>;
@@ -282,26 +317,19 @@ const CommentsSection = ({ lessonId }) => {
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder={replyTo ? "Write a reply..." : "Ask a question or share your thoughts..."}
+          placeholder={ "Ask a question or share your thoughts..."}
           className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
           rows="3"
         />
+
         <div className="flex justify-between mt-2">
-          {replyTo && (
-            <button
-              type="button"
-              onClick={() => setReplyTo(null)}
-              className="text-gray-400 hover:text-white"
-            >
-              Cancel Reply
-            </button>
-          )}
+          
           <button
             type="submit"
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black rounded-lg hover:from-cyan-400 hover:to-cyan-300 transition-colors"
           >
             <Send className="w-4 h-4" />
-            <span>{replyTo ? 'Post Reply' : 'Post Comment'}</span>
+            <span>Post Comment</span>
           </button>
         </div>
       </form>
@@ -314,7 +342,9 @@ const CommentsSection = ({ lessonId }) => {
             onReply={setReplyTo}
             onDelete={handleDeleteComment}
             onUpdate={handleUpdateComment}
-            onLike={handleLikeComment}
+            replyTo={replyTo}
+            onSubmitReply={handleSubmitReply}
+            onCancelReply={() => setReplyTo(null)}
           />
         ))}
       </div>

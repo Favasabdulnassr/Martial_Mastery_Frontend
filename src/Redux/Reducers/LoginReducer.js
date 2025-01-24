@@ -129,7 +129,17 @@ const loginSlice = createSlice({
             state.role = action.payload.role || state.role   
             state.profile = action.payload.profile || state.profile
             state.bio = action.payload.bio 
-            state.experience = action.payload.experience 
+            state.experience = action.payload.experience
+            state.user = {  // Store the whole user object here
+                id: action.payload.user_id,
+                first_name: action.payload.first_name,
+                last_name: action.payload.last_name,
+                role: action.payload.role,
+                email: action.payload.email,
+                phone_number: action.payload.phone_number,
+                profile: action.payload.profile,
+            };
+ 
         })
         .addCase(updateProfileAsync.rejected, (state, action) => {
         state.loader = false;
@@ -173,6 +183,16 @@ const loginSlice = createSlice({
             state.isAuthenticated = true;
             state.error = null
             state.loader = null
+            state.user = {  // Store the whole user object here
+                id: action.payload.user_id,
+                first_name: action.payload.first_name,
+                last_name: action.payload.last_name,
+                role: action.payload.role,
+                email: action.payload.email,
+                phone_number: action.payload.phone_number,
+                profile: action.payload.profile,
+            };
+
         })
         .addCase(handleGoogleSuccess.rejected,(state,action)=>{
             state.error = action.payload
