@@ -13,12 +13,13 @@ import {
   Reply,
   ChevronLeft
 } from 'lucide-react';
-import Header from '@/Components/Header';
-import Footer from '@/Components/Footer';
+
 import axiosInstance from '@/services/interceptor';
 import CommentsSection from '@/Components/comment';
+import TutorSidebar from '@/Components/TutorSidebar';
+import TutorTopbar from '@/Components/TutorTopbar';
 
-const VideoPage = () => {
+const TutorVideoPage = () => {
   const { tutorialId, videoId } = useParams();
   const videoRef = useRef(null);
 
@@ -45,7 +46,7 @@ const VideoPage = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const videoResponse = await axiosInstance.get(`payment/purchased-course/${tutorialId}/lesson/${videoId}/`);
+        const videoResponse = await axiosInstance.get(`payment/tutor-purchased-course/${tutorialId}/lesson/${videoId}/`);
         setVideo(videoResponse.data);
 
         // // const commentsResponse = await axiosInstance.get(`/videos/${videoId}/comments`);
@@ -158,13 +159,16 @@ const VideoPage = () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  
-
   return (
-    <div className="min-h-screen bg-[#0f0f0f]">
-      <Header />
+    <div className="flex min-h-screen bg-gray-900 text-gray-100">
+    <TutorSidebar />
 
-      <main className="container mx-auto  pt-4 px-4 lg:px-8">
+     
+      <div className="flex-1 lg:ml-80">
+      <TutorTopbar />
+
+      <div className="p-6">
+
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Video Section */}
           <div className="lg:w-3/4">
@@ -288,19 +292,17 @@ const VideoPage = () => {
             <CommentsSection lessonId = {videoId} />
           </div>
 
-          {/* Suggested Videos Section - You can add this later */}
           <div className="lg:w-1/4 hidden lg:block">
-            <div className="bg-[#0f0f0f] rounded-lg p-4">
-              <h3 className="text-white font-medium mb-4">Up Next</h3>
-              {/* Add suggested videos here */}
+              <div className="bg-gray-800 rounded-lg p-4">
+                <h3 className="text-white font-medium mb-4">Up Next</h3>
+              </div>
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 };
 
-export default VideoPage;
+export default TutorVideoPage;
+  

@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { MessageCircle, Send, Reply, Trash2, Edit2 } from 'lucide-react';
+import { MessageCircle, Send, Reply, Trash2, Edit2, ChevronDown, ChevronUp } from 'lucide-react';
 import axiosInstance from '@/services/interceptor';
 import { toast } from 'react-toastify';
 import Modal from './Modal/ModalPortal';
 import DeleteCommentModal from './Modal/CommentDelete';
 import { useSelector } from 'react-redux';
 
-const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSubmitReply, onCancelReply  }) => {
+const Comment = ({ comment, onReply, onDelete, onUpdate, currentUser, replyTo, onSubmitReply, onCancelReply }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [replyContent, setReplyContent] = useState('');
+  const [isRepliesHidden, setIsRepliesHidden] = useState(true);
 
 
 
-  const isAuthor = true; // You should replace this with logic to check against logged-in user's email
+
+  const hasReplies = comment.replies && comment.replies.length > 0;
+
+  const isAuthor = currentUser?.email === comment.user.email;
+
+  const toggleRepliesVisibility = () => {
+    setIsRepliesHidden(!isRepliesHidden);
+  };
+
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -24,7 +34,7 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSu
     setIsModalOpen(true);
   };
 
-  
+
 
   const handleUpdate = async () => {
     await onUpdate(comment.id, editContent);
@@ -44,27 +54,54 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSu
 
 
   // const isAuthor = currentUser?.id === comment.user.id;
-   const isReplying = replyTo === comment.id;
+  const isReplying = replyTo === comment.id;
 
 
   return (
     <div className="flex space-x-4" style={{ marginLeft: `${comment.parent ? '2rem' : '0'}` }}>
-      <img
-        src={`http://127.0.0.1:8000/${comment.user.profile}` || '/api/placeholder/40/40'}
-        alt={comment.user.name}
-        className="w-10 h-10 rounded-full"
-      />
+      <div
+        className={`w-10 h-10 rounded-full flex items-center justify-center ${comment.user.profile ? '' : 'bg-gray-500 text-white font-semibold'}`}
+      >
+        {comment.user.profile ? (
+          <img
+            src={comment.user.profile}
+            className="w-full h-full rounded-full"
+          />
+        ) : (
+          comment.user.name[0].toUpperCase()
+        )}
+      </div>
       <div className="flex-1">
         <div className="flex items-center space-x-2">
           <span className="font-semibold text-white">{comment.user.name}</span>
-          <span className={`px-2 py-0.5 rounded text-xs ${
-            comment.user.role === 'tutor' ? 'bg-cyan-500' : 'bg-violet-500'
-          }`}>
+          <span className={`px-2 py-0.5 rounded text-xs ${comment.user.role === 'tutor' ? 'bg-cyan-500' : 'bg-violet-500'
+            }`}>
             {comment.user.role}
           </span>
           <span className="text-gray-400 text-sm">{comment.time_ago}</span>
+
+
+
+          {isAuthor && (
+            <>
+              <button
+                className="flex items-center space-x-1 p-4 text-gray-400 hover:text-white"
+                onClick={() => setIsEditing(true)}
+              >
+                <Edit2 className="w-4 h-4" />
+                <span>Edit</span>
+              </button>
+              <button
+                className="flex items-center space-x-1 text-gray-400 hover:text-red-400"
+                onClick={handleDeleteClick}
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete</span>
+              </button>
+            </>
+          )}
         </div>
-        
+
         {isEditing ? (
           <div className="mt-2">
             <textarea
@@ -93,31 +130,34 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSu
         )}
 
         <div className="flex items-center space-x-4 mt-2">
-         
-          <button 
+
+          <button
             className="flex items-center space-x-1 text-gray-400 hover:text-white"
             onClick={() => onReply(comment.id)}
           >
             <Reply className="w-4 h-4" />
             <span>Reply</span>
           </button>
-          {isAuthor && (
-            <>
-              <button 
-                className="flex items-center space-x-1 text-gray-400 hover:text-white"
-                onClick={() => setIsEditing(true)}
-              >
-                <Edit2 className="w-4 h-4" />
-                <span>Edit</span>
-              </button>
-              <button 
-                className="flex items-center space-x-1 text-gray-400 hover:text-red-400"
-                onClick={handleDeleteClick}
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
-              </button>
-            </>
+
+
+
+          {hasReplies && (
+            <button
+              className="flex items-center space-x-1 text-gray-400 hover:text-white"
+              onClick={toggleRepliesVisibility}
+            >
+              {isRepliesHidden ? (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  <span>Show Replies ({comment.replies.length})</span>
+                </>
+              ) : (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  <span>Hide Replies</span>
+                </>
+              )}
+            </button>
           )}
         </div>
 
@@ -148,8 +188,8 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSu
             </div>
           </form>
         )}
-        
-        {comment.replies && comment.replies.map(reply => (
+
+        {comment.replies && !isRepliesHidden && comment.replies.map(reply => (
           <Comment
             key={reply.id}
             comment={reply}
@@ -157,14 +197,17 @@ const Comment = ({ comment, onReply,onDelete, onUpdate,currentUser,replyTo, onSu
             onDelete={onDelete}
             onUpdate={onUpdate}
             currentUser={currentUser}
+            replyTo={replyTo}
+            onSubmitReply={onSubmitReply}
+            onCancelReply={onCancelReply}
           />
         ))}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <DeleteCommentModal
-        onClose={handleCloseModal}
-        onConfirm={handleDeleteConfirm} 
+          onClose={handleCloseModal}
+          onConfirm={handleDeleteConfirm}
         />
 
       </Modal>
@@ -182,29 +225,29 @@ const CommentsSection = ({ lessonId }) => {
   const [replyTo, setReplyTo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pointer,setPointer] = useState(false)
-  const {user}= useSelector((state) => state.login);
+  const [pointer, setPointer] = useState(false)
+  const { user } = useSelector((state) => state.login);
 
 
   useEffect(() => {
-    console.log('aaaaaa',user);
-    
+    console.log('aaaaaa', user);
+
     fetchComments();
-  }, [lessonId,pointer]);
+  }, [lessonId, pointer]);
 
   const handlePointer = () => {
-    setPointer((prev)=> !prev)
+    setPointer((prev) => !prev)
   }
 
 
- 
+
   const fetchComments = async () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.get(`comments/get-comments/${lessonId}/`);
-      console.log('appo angane',response.data);
-      
-      
+      console.log('appo angane', response.data);
+
+
       setComments(response.data);
       // Assuming user info is available in the response or through another API
     } catch (error) {
@@ -217,8 +260,8 @@ const CommentsSection = ({ lessonId }) => {
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
-    console.log('nnnnnnnnnnnnnnnnnnnnnnnnnn',newComment,lessonId);
-    
+    console.log('nnnnnnnnnnnnnnnnnnnnnnnnnn', newComment, lessonId);
+
     if (!newComment.trim()) return;
 
     try {
@@ -227,12 +270,12 @@ const CommentsSection = ({ lessonId }) => {
         parent_id: replyTo
       });
 
-    
+
       handlePointer()
       setNewComment('');
       setReplyTo(null);
       toast.success('comment Added successfully')
-      
+
 
     } catch (error) {
       console.error('Error posting comment:', error);
@@ -243,7 +286,7 @@ const CommentsSection = ({ lessonId }) => {
   const handleDeleteComment = async (commentId) => {
     try {
       await axiosInstance.delete(`comments/manage/${commentId}/`);
-      setComments(prevComments => 
+      setComments(prevComments =>
         prevComments.filter(comment => comment.id !== commentId)
       );
 
@@ -263,7 +306,7 @@ const CommentsSection = ({ lessonId }) => {
         prevComments.map(comment =>
           comment.id === commentId ? { ...comment, ...response.data } : comment
         )
-        
+
       );
       setError('');
       handlePointer()
@@ -296,7 +339,7 @@ const CommentsSection = ({ lessonId }) => {
   };
 
 
-  
+
 
   if (isLoading) {
     return <div className="text-white text-center py-8">Loading comments...</div>;
@@ -317,13 +360,13 @@ const CommentsSection = ({ lessonId }) => {
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder={ "Ask a question or share your thoughts..."}
+          placeholder={"Ask a question or share your thoughts..."}
           className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
           rows="3"
         />
 
         <div className="flex justify-between mt-2">
-          
+
           <button
             type="submit"
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black rounded-lg hover:from-cyan-400 hover:to-cyan-300 transition-colors"
@@ -342,6 +385,7 @@ const CommentsSection = ({ lessonId }) => {
             onReply={setReplyTo}
             onDelete={handleDeleteComment}
             onUpdate={handleUpdateComment}
+            currentUser={user}
             replyTo={replyTo}
             onSubmitReply={handleSubmitReply}
             onCancelReply={() => setReplyTo(null)}
@@ -349,11 +393,11 @@ const CommentsSection = ({ lessonId }) => {
         ))}
       </div>
 
-  
+
 
 
     </div>
-    
+
   );
 };
 

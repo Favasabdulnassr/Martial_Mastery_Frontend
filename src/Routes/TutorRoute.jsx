@@ -11,6 +11,8 @@ import AddVideo from '@/Pages/TutorSide/AddVideo'
 import TutorWallet from '@/Pages/TutorSide/TutorWallet'
 import CourseManagement from '@/Pages/TutorSide/CourseManagement'
 import AddCourse from '@/Pages/TutorSide/AddCourse'
+import PurchasedCourses from '@/Pages/TutorSide/UserPurchasedCourses'
+import TutorVideoPage from '@/Pages/TutorSide/TutorVideoPage'
 
 function TutorRoute() {
     return (
@@ -28,6 +30,9 @@ function TutorRoute() {
                     <Route path='/students' element={<TutorStudents />} />
                     <Route path='/Profile' element={<TutorProfilePage />} />
                     <Route path='/wallet' element={<TutorWallet />} />
+                    <Route path='/PurchasedCourse' element={<PurchasedCourses/>}/>
+                     <Route path='/VideoPage/:tutorialId/:videoId' element={<TutorVideoPage/>}/>
+
 
 
 

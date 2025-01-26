@@ -67,6 +67,8 @@ const CourseManagement = () => {
     try {
       const tutorId = user?.id;
       const response = await axiosInstance.get(`course/`);
+      console.log('here is the daga',response.data);
+      
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);

@@ -33,6 +33,7 @@ const TutorSidebar = () => {
     { icon: <Users />, label: 'My Students', path: '/tutor/students' },
     // { icon: <BookOpen />, label: 'My Tutorials', path: '/tutor/tutorials'},
     { icon: <BookOpen />, label: 'Course Management', path: '/tutor/courseManagement'},
+    {icon:<BookOpen/>, label:'Purchased Course', path: '/tutor/PurchasedCourse'}
 
     // { icon: <Wallet />, label: 'My Wallet', path: '/tutor/wallet' },
 
