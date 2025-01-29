@@ -1,34 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 
 import axiosInstance from '@/services/interceptor';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
+import { useSelector } from 'react-redux';
 
 const TutorStudents = () => {
   const [students, setStudents] = useState([]);
+  
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [hasPrevious, setHasPrevious] = useState(false);
+  const {user} = useSelector((state)=> state.login )
+
+
 
   useEffect(() => {
     fetchStudents();
+    
   }, [searchQuery, page]);
 
   const fetchStudents = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`auth/tutor/students/`);
+      const response = await axiosInstance.get(`payment/tutor/${user.id}/students/`);
       console.log('vallathum nadakko',response.data);
       
-      setStudents(response.data.results.students);
-      setTotalCount(response.data.results.total_count);
-      setHasNext(response.data.results.has_next);
-      setHasPrevious(response.data.results.has_previous);
+      setStudents(response.data);
+      console.log('ppppppppppp',students);
+
+      
+      // setTotalCount(response.data);
+      // setHasNext(response.data.results.has_next);
+      // setHasPrevious(response.data.results.has_previous);
     } catch (error) {
       console.error('Error fetching students:', error);
     } finally {
@@ -72,6 +81,8 @@ const TutorStudents = () => {
                     <th className="text-left p-4 font-medium text-gray-400">Email</th>
                     <th className="text-left p-4 font-medium text-gray-400">Phone</th>
                     <th className="text-left p-4 font-medium text-gray-400">Purchased Tutorials</th>
+                    <th className="text-left p-4 font-medium text-gray-400">Actions</th>
+
                   </tr>
                 </thead>
                 <tbody>
@@ -94,7 +105,29 @@ const TutorStudents = () => {
                         </td>
                         <td className="p-4">{student.email}</td>
                         <td className="p-4">{student.phone_number}</td>
-                        <td className="p-4">{student.purchased_tutorials}</td>
+                        <td className="p-4">
+                          {student.purchased_courses.length > 0 ? (
+                            <ul className="list-disc list-inside">
+                              {student.purchased_courses.map((course) => (
+                                <li key={course.id} className="text-gray-300">
+                                  {course.course_title}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <span className="text-gray-400">No courses purchased</span>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <button
+                            // onClick={() => handleChatClick(student.id)}
+                            className="flex items-center space-x-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            <span>Chat</span>
+                          </button>
+                        </td>
+
                       </tr>
                     ))
                   )}

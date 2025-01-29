@@ -12,6 +12,7 @@ import TutorialVideoList from "@/Pages/UserSide/TutorialVideoList";
 import PurchasedCoursesPage from "@/Pages/UserSide/PurchasedCourses";
 import PaymentStatus from "@/Pages/UserSide/Payment";
 import VideoPage from "@/Pages/UserSide/VideoPage";
+import StudentChat from "@/Pages/UserSide/StudentChat";
 
 
 const StudentRoutes = () =>{
@@ -37,6 +38,8 @@ const StudentRoutes = () =>{
 
             <Route path='/courses' element={<CoursesPage/>}/>
             <Route path='/VideoPage/:tutorialId/:videoId' element={<VideoPage/>}/>
+            <Route path='/chat' element={<StudentChat/>}/>
+
 
 
         </Route>

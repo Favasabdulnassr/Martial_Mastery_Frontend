@@ -6,7 +6,8 @@ import {
   Target,
   Star,
   Search,
-  ChevronRight 
+  ChevronRight, 
+  MessageCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Header from '../../Components/Header';
@@ -195,15 +196,22 @@ const TutorialVideoList = () => {
         </div>
       </main>
 
-      {/* {showVideoModal && selectedVideo && (
-        <Modal isOpen={showVideoModal} onClose={() => setShowVideoModal(false)}>
-          <VideoModal
-            video={selectedVideo}
-            onClose={() => setShowVideoModal(false)}
-          />
-        </Modal>
-      )}
-       */}
+      <motion.button
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-8 right-8 flex items-center gap-2 px-6 py-3 
+          bg-gradient-to-r from-cyan-500 to-cyan-400 
+          text-black font-semibold rounded-full shadow-lg 
+          transition-all duration-300 hover:shadow-[0_0_20px_rgba(79,236,255,0.3)]
+          group z-50"
+      >
+        <MessageCircle className="w-5 h-5" />
+        <span>Chat with Tutor</span>
+      </motion.button>
+
       <Footer />
     </div>
   );

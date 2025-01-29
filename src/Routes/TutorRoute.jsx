@@ -13,6 +13,7 @@ import CourseManagement from '@/Pages/TutorSide/CourseManagement'
 import AddCourse from '@/Pages/TutorSide/AddCourse'
 import PurchasedCourses from '@/Pages/TutorSide/UserPurchasedCourses'
 import TutorVideoPage from '@/Pages/TutorSide/TutorVideoPage'
+import TutorChat from '@/Pages/TutorSide/TutorChat'
 
 function TutorRoute() {
     return (
@@ -32,6 +33,7 @@ function TutorRoute() {
                     <Route path='/wallet' element={<TutorWallet />} />
                     <Route path='/PurchasedCourse' element={<PurchasedCourses/>}/>
                      <Route path='/VideoPage/:tutorialId/:videoId' element={<TutorVideoPage/>}/>
+                     <Route path='/chat' element={<TutorChat/>}/>
 
 
 
