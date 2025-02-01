@@ -45,6 +45,12 @@ const TutorStudents = () => {
     }
   };
 
+
+
+  const handleChatClick = (studentId) => {
+    navigate(`/tutor/chat/${studentId}`);
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-900 text-gray-100">
       <TutorSidebar />
@@ -120,7 +126,7 @@ const TutorStudents = () => {
                         </td>
                         <td className="p-4">
                           <button
-                            // onClick={() => handleChatClick(student.id)}
+                             onClick={() => handleChatClick(student.id)}
                             className="flex items-center space-x-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                           >
                             <MessageCircle className="w-4 h-4" />

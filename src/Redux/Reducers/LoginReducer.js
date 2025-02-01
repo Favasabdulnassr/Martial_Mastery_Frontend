@@ -46,7 +46,7 @@ export const loginAsync = createAsyncThunk(
             console.log('is_superuser:aaaaaaaaaaaayesffffffffffffffff9y',role,email);
 
             // Return required details
-            return { role,email,first_name,phone_number,last_name,profile,user_id,bio,experience};
+            return { role,email,first_name,phone_number,last_name,profile,bio,user_id,experience};
         }catch(error){
             console.error(error,'ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui')
             return rejectWithValue(error?.message || 'something went wrong');
@@ -94,7 +94,6 @@ const loginSlice = createSlice({
             state.bio = action.payload.bio
             state.experience = action.payload.experience
             state.user = {  // Store the whole user object here
-                id: action.payload.user_id,
                 first_name: action.payload.first_name,
                 last_name: action.payload.last_name,
                 role: action.payload.role,
@@ -184,7 +183,7 @@ const loginSlice = createSlice({
             state.error = null
             state.loader = null
             state.user = {  // Store the whole user object here
-                id: action.payload.user_id,
+                id: action.payload.id,
                 first_name: action.payload.first_name,
                 last_name: action.payload.last_name,
                 role: action.payload.role,

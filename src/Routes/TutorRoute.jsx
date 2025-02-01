@@ -33,7 +33,7 @@ function TutorRoute() {
                     <Route path='/wallet' element={<TutorWallet />} />
                     <Route path='/PurchasedCourse' element={<PurchasedCourses/>}/>
                      <Route path='/VideoPage/:tutorialId/:videoId' element={<TutorVideoPage/>}/>
-                     <Route path='/chat' element={<TutorChat/>}/>
+                     <Route path='/chat/:studentId' element={<TutorChat/>}/>
 
 
 

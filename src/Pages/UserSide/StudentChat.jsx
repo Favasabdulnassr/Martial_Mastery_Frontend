@@ -11,25 +11,112 @@ import {
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
 import axiosInstance from '@/services/interceptor';
+import { useSelector } from 'react-redux';
+import { fetchMessages,WebSocketService,createOrGetChatRoom } from '@/services/chatService';
+
 
 const StudentChat = () => {
-  const { tutorialId } = useParams();
+  const { tutorId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  
-  // Sample initial messages - replace with actual API data
+  const [tutor, setTutor] = useState(null);
+  const [wsService, setWsService] = useState(null);
+  const { user } = useSelector((state) => state.login);
+  const studentId = user?.id;
+
+
   useEffect(() => {
-    setMessages([
-      {
-        id: 1,
-        sender: 'tutor',
-        text: 'Hello! How can I help you with the course today?',
-        timestamp: new Date().toISOString()
+    const fetchTutorData = async () => {
+      try {
+        console.log(studentId,tutorId);
+        
+        const tutorResponse = await axiosInstance.get(`chat/tutor/${tutorId}/`);
+        setTutor(tutorResponse.data);
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
-    ]);
-  }, []);
+    };
+
+    fetchTutorData();
+  }, [tutorId]);
+
+
+
+
+
+
+
+
+  
+  // // Sample initial messages - replace with actual API data
+  // useEffect(() => {
+  //   setMessages([
+  //     {
+  //       id: 1,
+  //       sender: 'tutor',
+  //       text: 'Hello! How can I help you with the course today?',
+  //       timestamp: new Date().toISOString()
+  //     }
+  //   ]);
+  // }, []);
+
+
+  useEffect(() => {
+    if (!tutor?.id || !studentId) return;
+
+    const initializeChat = async () => {
+      
+      try {
+        // Create or get chat room
+        const authTokens = JSON.parse(localStorage.getItem('authTokens'));
+        const accessToken = authTokens?.access;
+
+        if (!accessToken) {
+          console.error('No authentication token found');
+          return;
+        }
+
+        
+        const room = await createOrGetChatRoom(studentId, tutorId);
+        console.log('vvvvvvvvvvvvvv',room);
+        
+        if (!room || !room.id) {
+          console.error('Invalid room data received:', room);
+          return;
+      }
+        // Fetch existing messages
+        const existingMessages = await fetchMessages(room.id);
+        setMessages(existingMessages);
+
+        // Initialize WebSocket connection
+        
+        const ws = new WebSocketService(room.id, accessToken);
+        ws.addMessageHandler(handleNewMessage);
+        ws.connect();
+        setWsService(ws);
+
+        return () => {
+          if (ws) {
+            ws.disconnect();
+        }
+        };
+      } catch (error) {
+        console.error('Error initializing chat:', error);
+      }
+    };
+
+    initializeChat();
+  }, [tutor, studentId, user?.token]);
+
+
+
+
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,32 +126,48 @@ const StudentChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
 
-    const userMessage = {
-      id: messages.length + 1,
-      sender: 'user',
-      text: newMessage,
-      timestamp: new Date().toISOString()
-    };
 
-    setMessages(prev => [...prev, userMessage]);
-    setNewMessage('');
-    setLoading(true);
-
-    // Simulate tutor response - replace with actual API call
-    setTimeout(() => {
-      const tutorMessage = {
-        id: messages.length + 2,
-        sender: 'tutor',
-        text: 'Thank you for your message. I understand your question and I\'ll be happy to help.',
-        timestamp: new Date().toISOString()
-      };
-      setMessages(prev => [...prev, tutorMessage]);
-      setLoading(false);
-    }, 1500);
+  const handleNewMessage = (data) => {
+    setMessages(prev => [...prev, {
+      id: data.id,
+      content: data.message,
+      sender_email: data.sender_email,
+      sender_name: data.sender_name,
+      timestamp: new Date(data.timestamp).toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
+    }]);
+    scrollToBottom();
   };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    
+    if (newMessage.trim() && wsService) {
+      
+      wsService.sendMessage(newMessage.trim());
+      setNewMessage('');
+    }
+  };
+
+  //   setMessages(prev => [...prev, userMessage]);
+  //   setNewMessage('');
+  //   setLoading(true);
+
+  //   // Simulate tutor response - replace with actual API call
+  //   setTimeout(() => {
+  //     const tutorMessage = {
+  //       id: messages.length + 2,
+  //       sender: 'tutor',
+  //       text: 'Thank you for your message. I understand your question and I\'ll be happy to help.',
+  //       timestamp: new Date().toISOString()
+  //     };
+  //     setMessages(prev => [...prev, tutorMessage]);
+  //     setLoading(false);
+  //   }, 1500);
+  // };
 
   return (
     <div className="min-h-screen flex flex-col bg-black">
@@ -79,7 +182,7 @@ const StudentChat = () => {
             <div className="flex items-center gap-4">
               <UserCircle className="w-12 h-12 text-black" />
               <div>
-                <h2 className="text-2xl font-bold text-black">Course Tutor</h2>
+                <h2 className="text-2xl font-bold text-black">Tutor {tutor?.first_name}</h2>
                 <div className="flex items-center gap-2 text-black/80">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   Online
@@ -93,20 +196,20 @@ const StudentChat = () => {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${message.sender_email === user?.email ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={`max-w-[70%] p-4 rounded-2xl ${
-                    message.sender === 'user'
+                    message.sender_email === user?.email
                       ? 'bg-gradient-to-r from-cyan-500 to-cyan-400 text-black'
                       : 'bg-zinc-800 text-white'
                   }`}
                 >
-                  <p>{message.text}</p>
+                  <p>{message.content}</p>
                   <div className={`text-xs mt-2 ${
-                    message.sender === 'user' ? 'text-black/70' : 'text-zinc-400'
+                    message.sender_email === user?.email ? 'text-black/70' : 'text-zinc-400'
                   }`}>
-                    {new Date(message.timestamp).toLocaleTimeString()}
+                    {message.timestamp}
                   </div>
                 </div>
               </div>

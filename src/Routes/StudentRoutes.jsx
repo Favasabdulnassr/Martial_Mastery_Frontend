@@ -29,7 +29,7 @@ const StudentRoutes = () =>{
 
 
         <Route element={<StudentPrivateRoutes/>}>
-            <Route path="/tutorials/:tutorialId/list" element={<TutorialVideoList/>}/>
+            <Route path="/tutorials/:tutorialId/list/:tutorId" element={<TutorialVideoList/>}/>
             <Route path="/purchased-courses" element={<PurchasedCoursesPage/>}/>
 
 
@@ -38,7 +38,7 @@ const StudentRoutes = () =>{
 
             <Route path='/courses' element={<CoursesPage/>}/>
             <Route path='/VideoPage/:tutorialId/:videoId' element={<VideoPage/>}/>
-            <Route path='/chat' element={<StudentChat/>}/>
+            <Route path='/chat/:tutorId' element={<StudentChat/>}/>
 
 
 

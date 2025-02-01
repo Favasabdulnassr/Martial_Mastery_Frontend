@@ -17,7 +17,7 @@ import Modal from '@/Components/Modal/ModalPortal';
 import VideoModal from '@/Components/Modal/Videos/VideoModal';
 
 const TutorialVideoList = () => {
-  const { tutorialId } = useParams();
+  const { tutorialId ,tutorId} = useParams();
   const [tutorial, setTutorial] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   // const [showVideoModal, setShowVideoModal] = useState(false);
@@ -29,9 +29,9 @@ const TutorialVideoList = () => {
     const fetchTutorial = async () => {
       try {
         const response = await axiosInstance.get(`payment/purchased-courses/${tutorialId}/lessons/`);
-        console.log('entte ',response.data);
-        
+      
         setTutorial(response.data);
+        
         setLoading(false);
       } catch (error) {
         console.error('Error fetching tutorial:', error);
@@ -76,6 +76,9 @@ const TutorialVideoList = () => {
   }
 
 
+  const handleChatWithTutor = () => {
+    navigate(`/chat/${tutorId}`);
+  };
 
 
 
@@ -197,6 +200,7 @@ const TutorialVideoList = () => {
       </main>
 
       <motion.button
+      onClick={handleChatWithTutor}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}

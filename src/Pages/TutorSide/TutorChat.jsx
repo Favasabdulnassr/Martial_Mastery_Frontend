@@ -5,15 +5,90 @@ import { useSelector } from 'react-redux';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
 import axiosInstance from '@/services/interceptor';
+import { createOrGetChatRoom,fetchMessages,WebSocketService } from '@/services/chatService';
 
 const TutorChat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [student, setStudent] = useState(null);
+  const [wsService, setWsService] = useState(null);
+  const { studentId } = useParams(); 
   const messagesEndRef = useRef(null);
+  const [student, setStudent] = useState(null);
   const { user } = useSelector((state) => state.login);
+  const tutorId = user?.id
 
-  // Scroll to bottom of messages
+
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const response = await axiosInstance.get(`chat/students/${studentId}/`);
+        setStudent(response.data);
+      } catch (error) {
+        console.error('Error fetching student:', error);
+      }
+    };
+
+    if (studentId) fetchStudent();
+  }, [studentId]);
+
+
+  useEffect(() => {
+    console.log('tutoraaaaaaaaaaano',tutorId,studentId);
+    if (!user || !studentId || !tutorId) return;
+
+    
+    const initializeChat = async () => {
+      try {
+        // Create or get chat room
+        const room = await createOrGetChatRoom(studentId, tutorId);
+        
+        // Fetch existing messages
+        const existingMessages = await fetchMessages(room.id);
+        setMessages(existingMessages);
+
+        // Initialize WebSocket connection
+        const ws = new WebSocketService(room.id, user.token);
+        ws.addMessageHandler(handleNewMessage);
+        ws.connect();
+        setWsService(ws);
+
+        return () => {
+          ws.disconnect();
+        };
+      } catch (error) {
+        console.error('Error initializing chat:', error);
+        // Handle error appropriately
+      }
+    };
+
+    initializeChat();
+  }, [studentId, tutorId]);
+
+  const handleNewMessage = (data) => {
+    setMessages(prev => [...prev, {
+      id: data.id, // temporary id
+      content: data.message,
+      sender_email: data.sender_email,
+      sender_name: data.sender_name,
+      timestamp: new Date(data.timestamp).toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
+    }]);
+    scrollToBottom();
+  };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (newMessage.trim() && wsService) {
+      wsService.sendMessage(newMessage.trim());
+      setNewMessage('');
+    }
+  };
+
+
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -23,24 +98,26 @@ const TutorChat = () => {
   }, [messages]);
 
   // Example message data structure
-  const sampleMessages = [
-    { id: 1, sender: 'tutor', content: 'Hello! How can I help you today?', timestamp: '10:00 AM' },
-    { id: 2, sender: 'student', content: 'I have a question about the course material.', timestamp: '10:02 AM' },
-  ];
+  // const sampleMessages = [
+  //   { id: 1, sender: 'tutor', content: 'Hello! How can I help you today?', timestamp: '10:00 AM' },
+  //   { id: 2, sender: 'student', content: 'I have a question about the course material.', timestamp: '10:02 AM' },
+  // ];
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (newMessage.trim()) {
-      const message = {
-        id: messages.length + 1,
-        sender: 'tutor',
-        content: newMessage,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages([...messages, message]);
-      setNewMessage('');
-    }
-  };
+  // const handleSendMessage = (e) => {
+  //   e.preventDefault();
+  //   if (newMessage.trim()) {
+  //     const message = {
+  //       id: messages.length + 1,
+  //       sender: 'tutor',
+  //       content: newMessage,
+  //       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  //     };
+  //     setMessages([...messages, message]);
+  //     setNewMessage('');
+  //   }
+  // };
+
+  
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-gray-100">
@@ -56,20 +133,23 @@ const TutorChat = () => {
             </button>
             <div>
               <h1 className="text-2xl font-bold">Chat with Student</h1>
-              <p className="text-gray-400">John Doe • Computer Science 101</p>
+              <p className="text-gray-400">
+                John Doe • Computer Science 101
+                {student ? `${student.name} • ${student.course}` : 'Loading...'}
+                </p>
             </div>
           </div>
 
           <Card className="flex-1 bg-gray-800 border-gray-700 overflow-hidden flex flex-col">
             <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.length === 0 ? sampleMessages.map((message) => (
+              {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender === 'tutor' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${message.sender_email === user.email ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
                     className={`max-w-[70%] rounded-lg p-3 ${
-                      message.sender === 'tutor'
+                      message.sender_email === user?.email
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-700 text-gray-100'
                     }`}
@@ -80,24 +160,7 @@ const TutorChat = () => {
                     </span>
                   </div>
                 </div>
-              )) : messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.sender === 'tutor' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
-                      message.sender === 'tutor'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-100'
-                    }`}
-                  >
-                    <p>{message.content}</p>
-                    <span className="text-xs opacity-75 mt-1 block">
-                      {message.timestamp}
-                    </span>
-                  </div>
-                </div>
+             
               ))}
               <div ref={messagesEndRef} />
             </CardContent>
