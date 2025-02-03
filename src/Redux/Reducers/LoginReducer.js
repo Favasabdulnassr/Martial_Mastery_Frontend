@@ -40,15 +40,13 @@ export const loginAsync = createAsyncThunk(
 
             // Decode the JWT token
             const decodeToken = JSON.parse(atob(token.access.split('.')[1]));
-            console.log('Decoded Token Payload:', decodeToken);
 
             const {role,email,first_name,phone_number,last_name,profile,user_id,bio,experience } = decodeToken;
-            console.log('is_superuser:aaaaaaaaaaaayesffffffffffffffff9y',role,email);
 
             // Return required details
             return { role,email,first_name,phone_number,last_name,profile,bio,user_id,experience};
         }catch(error){
-            console.error(error,'ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui')
+            console.error('ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui',error)
             return rejectWithValue(error?.message || 'something went wrong');
 
         }
@@ -94,6 +92,8 @@ const loginSlice = createSlice({
             state.bio = action.payload.bio
             state.experience = action.payload.experience
             state.user = {  // Store the whole user object here
+                id: action.payload.user_id,
+
                 first_name: action.payload.first_name,
                 last_name: action.payload.last_name,
                 role: action.payload.role,

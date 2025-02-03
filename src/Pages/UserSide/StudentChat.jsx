@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { 
   Send,
@@ -53,25 +53,29 @@ const StudentChat = () => {
 
 
   
-  // // Sample initial messages - replace with actual API data
-  // useEffect(() => {
-  //   setMessages([
-  //     {
-  //       id: 1,
-  //       sender: 'tutor',
-  //       text: 'Hello! How can I help you with the course today?',
-  //       timestamp: new Date().toISOString()
-  //     }
-  //   ]);
-  // }, []);
-
+  
 
   useEffect(() => {
-    if (!tutor?.id || !studentId) return;
+    if (!user?.id || !tutorId || !studentId) {
+      console.log('Missing required IDs:', { userId: user?.id, tutorId, studentId });
+      return;
+    }
+
+
+
+    let mounted = true;
+
 
     const initializeChat = async () => {
       
       try {
+
+        if (wsService) {
+          wsService.disconnect();
+        }
+
+
+
         // Create or get chat room
         const authTokens = JSON.parse(localStorage.getItem('authTokens'));
         const accessToken = authTokens?.access;
@@ -83,35 +87,34 @@ const StudentChat = () => {
 
         
         const room = await createOrGetChatRoom(studentId, tutorId);
-        console.log('vvvvvvvvvvvvvv',room);
         
-        if (!room || !room.id) {
-          console.error('Invalid room data received:', room);
-          return;
-      }
+       
         // Fetch existing messages
         const existingMessages = await fetchMessages(room.id);
-        setMessages(existingMessages);
-
-        // Initialize WebSocket connection
+         if (mounted) {
+                  setMessages(existingMessages);
         
-        const ws = new WebSocketService(room.id, accessToken);
-        ws.addMessageHandler(handleNewMessage);
-        ws.connect();
-        setWsService(ws);
+                  const ws = new WebSocketService(room.id,accessToken);
+                  ws.addMessageHandler(handleNewMessage);
+                  ws.connect();
+                  setWsService(ws);
+                }
 
-        return () => {
-          if (ws) {
-            ws.disconnect();
-        }
-        };
       } catch (error) {
         console.error('Error initializing chat:', error);
       }
     };
 
     initializeChat();
-  }, [tutor, studentId, user?.token]);
+
+
+    return () => {
+      mounted = false;
+      if (wsService) {
+        wsService.disconnect();
+      }
+    };
+  }, [tutorId, studentId,user]);
 
 
 
@@ -128,46 +131,61 @@ const StudentChat = () => {
 
 
 
-  const handleNewMessage = (data) => {
-    setMessages(prev => [...prev, {
-      id: data.id,
-      content: data.message,
-      sender_email: data.sender_email,
-      sender_name: data.sender_name,
-      timestamp: new Date(data.timestamp).toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      })
-    }]);
-    scrollToBottom();
-  };
+ const handleNewMessage = useCallback((data) => {
+     setMessages(prev => {
+       // Check if message already exists
+       const messageExists = prev.some(msg => msg.id === data.id);
+       if (messageExists) {
+         return prev;
+       }
+       
+       // Create new message object
+       const newMessage = {
+         id: data.id,
+         content: data.message,
+         sender_email: data.sender_email,
+         sender_name: data.sender_name,
+         timestamp: new Date(data.timestamp).toLocaleTimeString([], { 
+           hour: '2-digit', 
+           minute: '2-digit' 
+         })
+       };
+ 
+       return [...prev, newMessage];
+     });
+   }, []);
+
+
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    
-    if (newMessage.trim() && wsService) {
-      
-      wsService.sendMessage(newMessage.trim());
-      setNewMessage('');
+    if (newMessage.trim() && wsService && wsService.socket?.readyState === WebSocket.OPEN) {
+      const sent = wsService.sendMessage(newMessage.trim());
+      if (sent) {
+        setNewMessage('');
+      } else {
+        console.error('Failed to send message');
+        // Optionally show an error to the user
+      }
     }
   };
 
-  //   setMessages(prev => [...prev, userMessage]);
-  //   setNewMessage('');
-  //   setLoading(true);
 
-  //   // Simulate tutor response - replace with actual API call
-  //   setTimeout(() => {
-  //     const tutorMessage = {
-  //       id: messages.length + 2,
-  //       sender: 'tutor',
-  //       text: 'Thank you for your message. I understand your question and I\'ll be happy to help.',
-  //       timestamp: new Date().toISOString()
-  //     };
-  //     setMessages(prev => [...prev, tutorMessage]);
-  //     setLoading(false);
-  //   }, 1500);
-  // };
+
+
+  
+    useEffect(() => {
+      return () => {
+        if (wsService) {
+          wsService.disconnect();
+        }
+      };
+    }, [wsService]);
+  
+  
+  
+  
+
 
   return (
     <div className="min-h-screen flex flex-col bg-black">
@@ -230,26 +248,28 @@ const StudentChat = () => {
 
           {/* Message Input */}
           <div className="p-6 bg-zinc-800 border-t border-zinc-700">
-            <div className="flex gap-4">
+            <form onSubmit={handleSendMessage} className="flex gap-4">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                // onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Type your message..."
                 className="flex-1 px-4 py-3 bg-zinc-900 text-white rounded-full border border-zinc-700 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
               />
               <button
-                onClick={handleSendMessage}
+              type='submit'
                 className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-400 
                   text-black font-semibold rounded-full shadow-lg 
                   transition-all duration-300 hover:shadow-[0_0_20px_rgba(79,236,255,0.3)]
                   flex items-center gap-2"
+                  disabled={!newMessage.trim()}
+
               >
                 <Send className="w-5 h-5" />
                 Send
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </main>

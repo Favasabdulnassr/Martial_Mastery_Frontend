@@ -6,6 +6,7 @@ import axiosInstance from '@/services/interceptor';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const TutorStudents = () => {
   const [students, setStudents] = useState([]);
@@ -17,6 +18,7 @@ const TutorStudents = () => {
   const [hasNext, setHasNext] = useState(false);
   const [hasPrevious, setHasPrevious] = useState(false);
   const {user} = useSelector((state)=> state.login )
+  const navigate = useNavigate()
 
 
 
@@ -28,6 +30,8 @@ const TutorStudents = () => {
   const fetchStudents = async () => {
     try {
       setLoading(true);
+      console.log(user);
+      
       const response = await axiosInstance.get(`payment/tutor/${user.id}/students/`);
       console.log('vallathum nadakko',response.data);
       

@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Send, ArrowLeft } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
 import axiosInstance from '@/services/interceptor';
-import { createOrGetChatRoom,fetchMessages,WebSocketService } from '@/services/chatService';
+import { createOrGetChatRoom, fetchMessages, WebSocketService } from '@/services/chatService';
+import { useParams } from 'react-router-dom';
 
 const TutorChat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [wsService, setWsService] = useState(null);
-  const { studentId } = useParams(); 
+  const { studentId } = useParams();
   const messagesEndRef = useRef(null);
   const [student, setStudent] = useState(null);
   const { user } = useSelector((state) => state.login);
@@ -34,58 +35,88 @@ const TutorChat = () => {
 
 
   useEffect(() => {
-    console.log('tutoraaaaaaaaaaano',tutorId,studentId);
     if (!user || !studentId || !tutorId) return;
 
-    
+    let mounted = true
     const initializeChat = async () => {
       try {
+
+
+        if (wsService) {
+          wsService.disconnect();
+        }
         // Create or get chat room
+        const authTokens = JSON.parse(localStorage.getItem('authTokens'));
+        const accessToken = authTokens?.access;
+
+        if (!accessToken) {
+          console.error('No authentication token found');
+          return;
+        }
+
         const room = await createOrGetChatRoom(studentId, tutorId);
-        
+
         // Fetch existing messages
         const existingMessages = await fetchMessages(room.id);
-        setMessages(existingMessages);
+        if (mounted) {
+          setMessages(existingMessages);
 
-        // Initialize WebSocket connection
-        const ws = new WebSocketService(room.id, user.token);
-        ws.addMessageHandler(handleNewMessage);
-        ws.connect();
-        setWsService(ws);
-
-        return () => {
-          ws.disconnect();
-        };
+          const ws = new WebSocketService(room.id, accessToken);
+          ws.addMessageHandler(handleNewMessage);
+          ws.connect();
+          setWsService(ws);
+        }
       } catch (error) {
         console.error('Error initializing chat:', error);
-        // Handle error appropriately
       }
     };
 
     initializeChat();
+
+    return () => {
+      mounted = false;
+      if (wsService) {
+        wsService.disconnect();
+      }
+    };
   }, [studentId, tutorId]);
 
-  const handleNewMessage = (data) => {
-    setMessages(prev => [...prev, {
-      id: data.id, // temporary id
-      content: data.message,
-      sender_email: data.sender_email,
-      sender_name: data.sender_name,
-      timestamp: new Date(data.timestamp).toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      })
-    }]);
-    scrollToBottom();
-  };
+
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (newMessage.trim() && wsService) {
-      wsService.sendMessage(newMessage.trim());
-      setNewMessage('');
+    if (newMessage.trim() && wsService && wsService.socket?.readyState === WebSocket.OPEN) {
+      const sent = wsService.sendMessage(newMessage.trim());
+      if (sent) {
+        setNewMessage('');
+      } else {
+        console.error('Failed to send message');
+        // Optionally show an error to the user
+      }
     }
   };
+
+  const handleNewMessage = useCallback((data) => {
+    setMessages(prev => {
+      // Check if message already exists
+      const messageExists = prev.some(msg => msg.id === data.id);
+      if (messageExists) {
+        return prev;
+      }
+
+      // Create new message object
+      const newMessage = {
+        id: data.id,
+        content: data.message,
+        sender_email: data.sender_email,
+        sender_name: data.sender_name,
+        timestamp: data.timestamp
+      };
+
+      return [...prev, newMessage];
+    });
+  }, []);
+
 
 
 
@@ -97,35 +128,27 @@ const TutorChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Example message data structure
-  // const sampleMessages = [
-  //   { id: 1, sender: 'tutor', content: 'Hello! How can I help you today?', timestamp: '10:00 AM' },
-  //   { id: 2, sender: 'student', content: 'I have a question about the course material.', timestamp: '10:02 AM' },
-  // ];
 
-  // const handleSendMessage = (e) => {
-  //   e.preventDefault();
-  //   if (newMessage.trim()) {
-  //     const message = {
-  //       id: messages.length + 1,
-  //       sender: 'tutor',
-  //       content: newMessage,
-  //       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  //     };
-  //     setMessages([...messages, message]);
-  //     setNewMessage('');
-  //   }
-  // };
+  useEffect(() => {
+    return () => {
+      if (wsService) {
+        wsService.disconnect();
+      }
+    };
+  }, [wsService]);
 
-  
+
+
+
+
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-gray-100">
       <TutorSidebar />
-      
+
       <div className="flex-1 lg:ml-80">
         <TutorTopbar />
-        
+
         <div className="p-6 h-[calc(100vh-64px)] flex flex-col">
           <div className="flex items-center mb-6">
             <button className="mr-4 p-2 hover:bg-gray-800 rounded-full">
@@ -136,7 +159,7 @@ const TutorChat = () => {
               <p className="text-gray-400">
                 John Doe • Computer Science 101
                 {student ? `${student.name} • ${student.course}` : 'Loading...'}
-                </p>
+              </p>
             </div>
           </div>
 
@@ -148,23 +171,25 @@ const TutorChat = () => {
                   className={`flex ${message.sender_email === user.email ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
-                      message.sender_email === user?.email
+                    className={`max-w-[70%] rounded-lg p-3 ${message.sender_email === user?.email
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-700 text-gray-100'
-                    }`}
+                      }`}
                   >
                     <p>{message.content}</p>
                     <span className="text-xs opacity-75 mt-1 block">
-                      {message.timestamp}
+                      {new Date(message.timestamp).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
                     </span>
                   </div>
                 </div>
-             
+
               ))}
               <div ref={messagesEndRef} />
             </CardContent>
-            
+
             <div className="p-4 border-t border-gray-700">
               <form onSubmit={handleSendMessage} className="flex space-x-4">
                 <input

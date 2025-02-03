@@ -33,7 +33,7 @@ export class WebSocketService {
       this.socket = null;
       this.roomId = roomId;
       this.token = token || JSON.parse(localStorage.getItem('authTokens'))?.access;
-      this.messageHandlers = new Set();
+      this.messageHandlers = null
       this.reconnectAttempts = 0;
       this.maxReconnectAttempts = 5;
       this.isConnecting = false;
@@ -44,12 +44,12 @@ export class WebSocketService {
 
     // Add this new method
     addMessageHandler(handler) {
-        this.messageHandlers.add(handler);
+        this.messageHandler = handler;
     }
   
     // Add this new method to remove handlers if needed
     removeMessageHandler(handler) {
-        this.messageHandlers.delete(handler);
+        this.messageHandlers = null;
     }
 
 
@@ -57,7 +57,7 @@ export class WebSocketService {
 
 
   connect() {
-      if (this.isConnecting) return;
+      if (this.isConnecting || this.socket?.readyState === WebSocket.OPEN) return;
       this.isConnecting = true;
 
      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -79,21 +79,18 @@ export class WebSocketService {
           this.socket.onmessage = (event) => {
               try {
                   const data = JSON.parse(event.data);
-                  console.log('Received message:', data);
-                  this.messageHandlers.forEach(handler => handler(data));
+                  if (this.messageHandler) {
+                    this.messageHandler(data);
+                }
               } catch (error) {
                   console.error('Error parsing message:', error);
               }
           };
           
           this.socket.onerror = (error) => {
-              console.error('WebSocket connection error details:', {
-                  error: error,
-                  readyState: this.socket?.readyState,
-                  url: wsUrl
-              });
-              this.isConnecting = false;
-          };
+            console.error('WebSocket error:', error);
+            this.isConnecting = false;
+        };
           
           this.socket.onclose = (event) => {
               console.log('WebSocket disconnected. Code:', event.code, 'Reason:', event.reason);
@@ -120,16 +117,20 @@ export class WebSocketService {
           return false;
       }
 
-      try {
-          this.socket.send(JSON.stringify({
+    try {
+          const messageData = {
               message: message,
               timestamp: new Date().toISOString()
-          }));
+          };
+          console.log('Sending message:', messageData);
+          this.socket.send(JSON.stringify(messageData));
           return true;
       } catch (error) {
           console.error('Error sending message:', error);
           return false;
       }
+
+
   }
 
   disconnect() {
