@@ -119,6 +119,7 @@ export class WebSocketService {
 
     try {
           const messageData = {
+             type: 'send_message', 
               message: message,
               timestamp: new Date().toISOString()
           };
@@ -132,6 +133,28 @@ export class WebSocketService {
 
 
   }
+
+
+
+  sendDeleteMessage(messageId) {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+        console.error('WebSocket is not connected.');
+        return false;
+    }
+
+    try {
+        const deleteData = {
+            type: 'delete_message',
+            message_id: messageId,
+            timestamp: new Date().toISOString()
+        };
+        this.socket.send(JSON.stringify(deleteData));
+        return true;
+    } catch (error) {
+        console.error('Error sending delete message:', error);
+        return false;
+    }
+}
 
   disconnect() {
       if (this.socket) {

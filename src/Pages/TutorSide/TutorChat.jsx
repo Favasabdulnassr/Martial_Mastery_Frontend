@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Send, ArrowLeft } from 'lucide-react';
+import { Send, ArrowLeft, Trash2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
 import axiosInstance from '@/services/interceptor';
 import { createOrGetChatRoom, fetchMessages, WebSocketService } from '@/services/chatService';
 import { useParams } from 'react-router-dom';
+import Modal from '@/Components/Modal/ModalPortal';
+import ConfirmationModal from '@/Components/Modal/ChatDelete';
+import { toast } from 'react-toastify';
 
 const TutorChat = () => {
   const [messages, setMessages] = useState([]);
@@ -15,6 +18,9 @@ const TutorChat = () => {
   const { studentId } = useParams();
   const messagesEndRef = useRef(null);
   const [student, setStudent] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [MessageId,SetMessageId] = useState(null)
+  
   const { user } = useSelector((state) => state.login);
   const tutorId = user?.id
 
@@ -97,6 +103,13 @@ const TutorChat = () => {
   };
 
   const handleNewMessage = useCallback((data) => {
+
+    if (data.type === 'message_deleted') {
+      setMessages(prev => prev.filter(msg => msg.id !== data.message_id));
+      return;
+    }
+
+
     setMessages(prev => {
       // Check if message already exists
       const messageExists = prev.some(msg => msg.id === data.id);
@@ -118,6 +131,25 @@ const TutorChat = () => {
   }, []);
 
 
+  const handleDeleteConfirm = (messageId) =>{
+    SetMessageId(messageId)
+    setShowDeleteModal(true)
+  }
+
+  const handleDeleteMessage = (messageId) => {
+    if (wsService) {
+      const deleted = wsService.sendDeleteMessage(messageId);
+      setShowDeleteModal(false)
+
+      if (deleted) {
+        setMessages(prev => prev.filter(msg => msg.id !== messageId));
+        toast.success('Message deleted successfully')
+
+      }else{
+        toast.error('Message could not delete')
+      }
+    }
+  };
 
 
   const scrollToBottom = () => {
@@ -171,11 +203,22 @@ const TutorChat = () => {
                   className={`flex ${message.sender_email === user.email ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[70%] rounded-lg p-3 ${message.sender_email === user?.email
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-100'
+                    className={`max-w-[70%] rounded-lg p-3 relative ${message.sender_email === user?.email
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-100'
                       }`}
                   >
+
+                    {message.sender_email === user?.email && (
+                      <button
+                        onClick={() => handleDeleteConfirm(message.id)}
+                        className="absolute right-0 top-0   opacity-100 transition-opacity duration-200 p-1.5 rounded-full hover:bg-gray-700 text-gray-400 hover:text-red-500"
+                        title="Delete message"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
+
                     <p>{message.content}</p>
                     <span className="text-xs opacity-75 mt-1 block">
                       {new Date(message.timestamp).toLocaleTimeString([], {
@@ -183,6 +226,7 @@ const TutorChat = () => {
                         minute: '2-digit'
                       })}
                     </span>
+
                   </div>
                 </div>
 
@@ -212,8 +256,26 @@ const TutorChat = () => {
           </Card>
         </div>
       </div>
+
+
+      {showDeleteModal && (
+        <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+          <ConfirmationModal
+          title={'Delete Message'}
+          message={'Are you sure you want to delete this message. This action cannot be undone'}       
+          onConfirm={() => handleDeleteMessage(MessageId)}   
+          onCancel={() => setShowDeleteModal(false)}
+          />
+
+        </Modal>
+      )}
+
+
+
+
     </div>
   );
 };
 
 export default TutorChat;
+
