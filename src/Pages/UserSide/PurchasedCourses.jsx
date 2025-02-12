@@ -1,16 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Play, Clock, Award } from 'lucide-react';
+import { Search, Play, Clock, Award,  AlertOctagon } from 'lucide-react';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
 import axiosInstance from '@/services/interceptor';
 import { useNavigate } from 'react-router-dom';
+import Modal from '@/Components/Modal/ModalPortal';
+import ReportModal from '@/Components/Modal/ReportModal';
+import { toast } from 'react-toastify';
 
 function PurchasedCoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [selectedCourseForReport, setSelectedCourseForReport] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleReportSubmit = async (reportData) => {
+    try {
+      setIsSubmitting(true);
+      await axiosInstance.post('report/course', reportData);
+      
+      setReportModalOpen(false);
+      setSelectedCourseForReport(null);
+      
+      // Show success notification
+      toast.success('Course reported successfully');
+    } catch (error) {
+      console.error('Error reporting course:', error);
+      if (error.response && error.response.data && error.response.data.detail) {
+        toast.error(error.response.data.detail);
+    } else {
+        toast.error('Something went wrong. Please try again.');
+    }
+    } finally {
+      setIsSubmitting(false);
+      setReportModalOpen(false);
+
+    }
+  };
 
   useEffect(() => {
     const fetchPurchasedCourses = async () => {
@@ -37,6 +67,34 @@ function PurchasedCoursesPage() {
 
   const handleWatchTutorial = (courseId,tutorId) => {
     navigate(`/tutorials/${courseId}/list/${tutorId}`);
+  };
+
+  
+  // const submitReport = async () => {
+  //   try {
+  //     await axiosInstance.post('/report/course', {
+  //       courseId: selectedCourseForReport.id,
+  //       reason: reportReason,
+  //       tutorId: selectedCourseForReport.tutor_id
+  //     });
+      
+  //     // Reset report state
+  //     setReportModalOpen(false);
+  //     setReportReason('');
+  //     setSelectedCourseForReport(null);
+      
+  //     // Optional: Show success notification
+  //     alert('Course reported successfully');
+  //   } catch (error) {
+  //     console.error('Error reporting course:', error);
+  //     alert('Failed to report course. Please try again.');
+  //   }
+  // };
+
+
+  const openReportModal = (course) => {
+    setSelectedCourseForReport(course);
+    setReportModalOpen(true);
   };
 
   return (
@@ -97,8 +155,24 @@ function PurchasedCoursesPage() {
                   <motion.div
                     key={course.id}
                     whileHover={{ scale: 1.02 }}
-                    className="p-6 bg-black rounded-2xl shadow-xl border border-cyan-900/20"
+                    className="p-6 bg-black rounded-2xl shadow-xl border border-cyan-900/20 relative"
                   >
+                   <div className='flex justify-end items-center gap-2 mb-6 text-white'>
+                   <span className="text-zinc-300 text-sm">Report</span>
+
+                   <button
+                      onClick={() => openReportModal(course)}
+                      className="text-zinc-400 hover:text-red-500 transition-colors duration-200"
+                      aria-label="Report course"
+                    >
+                      <AlertOctagon ssName='w-5 h-5'/>
+
+                    </button>
+
+                    </div>
+
+
+
                     <div className="relative">
                       <div className="mb-4">
                         <h3 className="text-2xl font-bold text-white mb-2">{course.course_title}</h3>
@@ -151,6 +225,24 @@ function PurchasedCoursesPage() {
           </div>
         </motion.div>
       </main>
+
+
+      {reportModalOpen && (
+        <Modal isOpen={reportModalOpen} onClose={() => !isSubmitting && setReportModalOpen(false)}>
+          <ReportModal
+          course ={selectedCourseForReport}
+          onClose={() => !isSubmitting && setReportModalOpen(false)}
+          onSubmit={handleReportSubmit}
+          isSubmitting={isSubmitting}
+          />
+
+        </Modal>
+      )}
+
+
+
+
+      
       <Footer />
     </div>
   );

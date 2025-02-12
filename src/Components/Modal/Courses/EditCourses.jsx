@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useSelector } from 'react-redux';
 
 const CourseEditModal = ({ course, onSave, onCancel }) => {
+  const {user} = useSelector((state) => state.login)
   const [formData, setFormData] = useState({
     title: course.title,
     description: course.description,

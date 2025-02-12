@@ -245,7 +245,7 @@ const AddCourse = () => {
                     {loading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
-                      'Create Tutorial'
+                      'Create Course'
                     )}
                   </button>
                 </div>

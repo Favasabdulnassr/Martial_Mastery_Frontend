@@ -9,6 +9,7 @@ import {
   Settings,
   Mail,
   Calendar,
+  AlertTriangle,
 } from 'lucide-react';
 import { useSidebar } from './SidebarProvider';
 import { Link, useLocation } from 'react-router-dom';
@@ -26,6 +27,9 @@ const AdminSidebar = () => {
     { icon: <Users />, label: 'Students' ,path: '/admin/students'},
     { icon: <UserPlus />, label: 'Tutors' ,path: '/admin/tutors'},
     { icon: <Target />, label: 'Courses' ,path: '/admin/courses'},
+    { icon: <AlertTriangle />, label: 'Reports' ,path: '/admin/reports'},
+
+    
     // { icon: <BarChart2 />, label: 'Analytics' ,path: ''},
     // { icon: <Mail />, label: 'Messages',path: '' },
     // { icon: <Settings />, label: 'Settings' ,path: ''},

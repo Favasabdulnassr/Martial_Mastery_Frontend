@@ -5,7 +5,6 @@ import TutorPrivateRoute from './PrivateRoutes/TutorPrivateRoute'
 import TutorRegistrationPage from '@/Pages/TutorSide/TutorRegister'
 import TutorProfilePage from '@/Pages/TutorSide/TutorProfile'
 import TutorStudents from '@/Pages/TutorSide/TutorStudents'
-import TutorCourse from '@/Pages/TutorSide/AddCourse'
 import TutorTutorial from '@/Pages/TutorSide/MyTutorial'
 import AddVideo from '@/Pages/TutorSide/AddVideo'
 import TutorWallet from '@/Pages/TutorSide/TutorWallet'
@@ -34,6 +33,7 @@ function TutorRoute() {
                     <Route path='/PurchasedCourse' element={<PurchasedCourses/>}/>
                      <Route path='/VideoPage/:tutorialId/:videoId' element={<TutorVideoPage/>}/>
                      <Route path='/chat/:studentId' element={<TutorChat/>}/>
+                      <Route path='/wallet' element={<TutorWallet/>}/>
 
 
 

@@ -131,7 +131,7 @@ const CourseManagement = () => {
   const handleUpdateCourse = async (updatedData) => {
     try {
       const response = await axiosInstance.put(
-        `course/${courseToEdit.id}/`,
+        `course/${courseToEdit.id}/update/`,
         updatedData
       );
       if (response.status === 200) {

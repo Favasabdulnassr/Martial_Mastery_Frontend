@@ -212,7 +212,7 @@ const TutorChat = () => {
                     {message.sender_email === user?.email && (
                       <button
                         onClick={() => handleDeleteConfirm(message.id)}
-                        className="absolute right-0 top-0   opacity-100 transition-opacity duration-200 p-1.5 rounded-full hover:bg-gray-700 text-gray-400 hover:text-red-500"
+                        className="absolute -right-1 -top-0.5  opacity-100 transition-opacity duration-200 p-1.5 rounded-full hover:bg-gray-700 text-gray-400 hover:text-red-500"
                         title="Delete message"
                       >
                         <Trash2 className="w-3 h-3" />
