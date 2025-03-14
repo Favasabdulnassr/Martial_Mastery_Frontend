@@ -38,12 +38,12 @@ function AdminTopbar() {
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div> */}
 
-              <button className="relative p-2 rounded-lg hover:bg-gray-100">
+              {/* <button className="relative p-2 rounded-lg hover:bg-gray-100">
                 <Bell className="w-6 h-6 text-gray-600" />
                 <span className="absolute top-0 right-0 h-5 w-5 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">
                   3
                 </span>
-              </button>
+              </button> */}
 
               <div className="relative">
                 <button 
@@ -51,7 +51,7 @@ function AdminTopbar() {
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100"
                 >
                   <div className="h-8 w-8 rounded-lg bg-gray-900 flex items-center justify-center">
-                    <span className="text-white text-sm">JD</span>
+                    <span className="text-white text-sm">AD</span>
                   </div>
                   <ChevronDown className="w-4 h-4 text-gray-600" />
                 </button>
@@ -59,13 +59,13 @@ function AdminTopbar() {
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2">
                     <div className="px-4 py-2 border-b border-gray-200">
-                      <p className="text-sm font-medium text-gray-900">John Doe</p>
+                      <p className="text-sm font-medium text-gray-900">Admin</p>
                       <p className="text-xs text-gray-500">Administrator</p>
                     </div>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 flex items-center space-x-2">
+                    {/* <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 flex items-center space-x-2">
                       <Settings className="w-4 h-4" />
                       <span>Settings</span>
-                    </button>
+                    </button> */}
                     <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-50 flex items-center space-x-2">
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>

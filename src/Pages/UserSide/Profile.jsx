@@ -187,7 +187,7 @@ const ProfilePage = () => {
                   {profile ? (
                     // If profileImage exists, show the profile image
                     <img
-                      src={`http://127.0.0.1:8000/${profile}`}
+                      src={`http://127.0.0.1:8000${profile}`}
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />

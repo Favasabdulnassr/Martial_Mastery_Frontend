@@ -182,11 +182,11 @@ function PurchasedCoursesPage() {
                       <div className="space-y-3 mb-6">
                         <div className="flex items-center text-zinc-400">
                           <Clock className="w-4 h-4 mr-2" />
-                          <span>{course.duration_weeks} weeks duration</span>
+                          <span>{course.course_duration} weeks duration</span>
                         </div>
                         <div className="flex items-center text-zinc-400">
                           <Award className="w-4 h-4 mr-2" />
-                          <span>Tutor: {course.tutor?.first_name} {course.tutor?.last_name || ''}</span>
+                          <span>Tutor: {course.tutor_name}</span>
                         </div>
                       </div>
 
@@ -209,7 +209,7 @@ function PurchasedCoursesPage() {
                         className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white rounded-full hover:shadow-[0_0_20px_rgba(79,236,255,0.3)] transition-all duration-300"
                       >
                         <Play className="w-5 h-5" />
-                        <span>Continue Learning</span>
+                        <span>Start Learning</span>
                       </button>
                     </div>
                   </motion.div>

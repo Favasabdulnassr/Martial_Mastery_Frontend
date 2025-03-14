@@ -36,7 +36,7 @@ const StudentChat = () => {
   useEffect(() => {
     const fetchTutorData = async () => {
       try {
-        console.log(studentId, tutorId);
+        console.log('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',studentId, tutorId);
 
         const tutorResponse = await axiosInstance.get(`chat/tutor/${tutorId}/`);
         setTutor(tutorResponse.data);

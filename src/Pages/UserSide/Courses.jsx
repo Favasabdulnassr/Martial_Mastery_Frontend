@@ -61,7 +61,7 @@
         
       } catch (error) {
         console.log('Payment errror',error);
-        toast.error(error.response?.data?.message || 'Payment initiation failed');
+        toast.info(error.response?.data?.message || 'You have already purchased this course, or an issue has occurred');
 
         
 

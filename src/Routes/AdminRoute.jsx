@@ -30,11 +30,6 @@ const AdminRoute = () =>{
            
             
 
-
-
-
-
-
         </Route>
     </Routes>
     </SidebarProvider>

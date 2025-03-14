@@ -107,23 +107,23 @@ const TutorProfilePage = () => {
         }
     };
 
-    const tutorStats = [
-        {
-            icon: <Users className="w-6 h-6 text-blue-400" />,
-            label: 'Total Students',
-            value: '45'
-        },
-        {
-            icon: <BookOpen className="w-6 h-6 text-blue-400" />,
-            label: 'Active Courses',
-            value: '6'
-        },
-        {
-            icon: <Clipboard className="w-6 h-6 text-blue-400" />,
-            label: 'Completed Assignments',
-            value: '22'
-        }
-    ];
+    // const tutorStats = [
+    //     {
+    //         icon: <Users className="w-6 h-6 text-blue-400" />,
+    //         label: 'Total Students',
+    //         value: '45'
+    //     },
+    //     {
+    //         icon: <BookOpen className="w-6 h-6 text-blue-400" />,
+    //         label: 'Active Courses',
+    //         value: '6'
+    //     },
+    //     {
+    //         icon: <Clipboard className="w-6 h-6 text-blue-400" />,
+    //         label: 'Completed Assignments',
+    //         value: '22'
+    //     }
+    // ];
 
     const formik = useFormik({
         initialValues: {
@@ -245,7 +245,7 @@ const TutorProfilePage = () => {
                                 <p className="text-gray-400 mb-4">Professional Tutor • Martial Arts Specialist</p>
 
                                 {/* Tutor Stats */}
-                                <div className="flex justify-center md:justify-start space-x-6 mt-4">
+                                {/* <div className="flex justify-center md:justify-start space-x-6 mt-4">
                                     {tutorStats.map((stat, index) => (
                                         <div key={index} className="flex items-center space-x-2">
                                             {stat.icon}
@@ -255,7 +255,7 @@ const TutorProfilePage = () => {
                                             </div>
                                         </div>
                                     ))}
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </motion.div>

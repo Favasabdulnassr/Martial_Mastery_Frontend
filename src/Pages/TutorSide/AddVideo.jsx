@@ -146,6 +146,17 @@ const AddVideo = () => {
       <div className="flex-1 lg:ml-80">
         <TutorTopbar />  {/* Add the topbar */}
 
+
+        {loading && (
+          <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+            <div className="bg-gray-800 p-8 rounded-xl shadow-2xl flex flex-col items-center">
+              <Loader2 className="w-16 h-16 text-blue-500 animate-spin mb-4" />
+              <h3 className="text-xl font-semibold text-white">Uploading Video...</h3>
+              <p className="text-gray-400 text-sm mt-2">Please wait</p>
+            </div>
+          </div>
+        )}
+
         <div className="p-6">
           <div className="flex items-center mb-6">
             <button
@@ -269,11 +280,7 @@ const AddVideo = () => {
                       disabled={loading}
                       className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-lg"
                     >
-                      {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        'Add Video'
-                      )}
+                     Add Video
                     </button>
                   </div>
                 </form>

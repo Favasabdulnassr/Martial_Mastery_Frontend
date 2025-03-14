@@ -17,8 +17,9 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/Redux/Reducers/LoginReducer';
+import NotificationBell from './Notification';
 
 const TutorTopbar = () => {
 //   const [activeMenu, setActiveMenu] = useState('Dashboard');
@@ -26,6 +27,7 @@ const TutorTopbar = () => {
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const dispatch = useDispatch()
+  const {first_name} = useSelector((state)=>state.login)
 
   const handleLogout = ()=>{
     dispatch(logout())
@@ -79,6 +81,7 @@ const TutorTopbar = () => {
             </div>
 
             <div className="flex items-center space-x-4 ml-auto">
+              <NotificationBell/>
               {/* <div className="hidden md:flex relative">
                 <input
                   type="text"
@@ -88,12 +91,12 @@ const TutorTopbar = () => {
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div> */}
 
-              <button className="relative p-2 rounded-lg hover:bg-gray-700">
+              {/* <button className="relative p-2 rounded-lg hover:bg-gray-700">
                 <Bell className="w-6 h-6 text-gray-300" />
                 <span className="absolute top-0 right-0 h-5 w-5 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
                   3
                 </span>
-              </button>
+              </button> */}
 
               <div className="relative">
                 <button 
@@ -101,7 +104,7 @@ const TutorTopbar = () => {
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700"
                 >
                   <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                    <span className="text-white text-sm">JW</span>
+                    <span className="text-white text-sm">TR</span>
                   </div>
                   <ChevronDown className="w-4 h-4 text-gray-300" />
                 </button>
@@ -109,13 +112,13 @@ const TutorTopbar = () => {
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-lg border border-gray-700 py-2">
                     <div className="px-4 py-2 border-b border-gray-700">
-                      <p className="text-sm font-medium text-gray-100">John Walker</p>
+                      <p className="text-sm font-medium text-gray-100">{first_name}</p>
                       <p className="text-xs text-gray-400">Professional Tutor</p>
                     </div>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center space-x-2">
+                    {/* <button className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center space-x-2">
                       <Settings className="w-4 h-4" />
                       <span>Profile Settings</span>
-                    </button>
+                    </button> */}
                     <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 flex items-center space-x-2">
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>

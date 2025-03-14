@@ -19,6 +19,7 @@ const initialState = {
     phone_number:null,
     bio:null,
     experience:null,
+    user:null
 
 };
 
@@ -26,15 +27,12 @@ export const loginAsync = createAsyncThunk(
     'login/loginAsync',
     async(loginData,{rejectWithValue})=>{
         try{
-            console.log('aaaaaaaaa')
             const response = await axios.post(`${BASE_URL}/auth/token/`,loginData);
             console.log('Token received:', response.data);
 
             const token = response.data;
 
             const tokens = { access: token.access, refresh: token.refresh };
-            localStorage.setItem('authTokens', JSON.stringify(tokens));
-            localStorage.setItem('authTokens', JSON.stringify(tokens));
             localStorage.setItem('authTokens', JSON.stringify(tokens));
             console.log('Tokens stored in localStorage:', tokens);
 

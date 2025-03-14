@@ -1,7 +1,6 @@
 import { BASE_URL } from "@/services/constents";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
 
 export const handleGoogleSuccess = createAsyncThunk(
