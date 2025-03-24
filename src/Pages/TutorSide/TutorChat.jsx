@@ -65,6 +65,7 @@ const TutorChat = () => {
         // Fetch existing messages
         const existingMessages = await fetchMessages(room.id);
         if (mounted) {
+          
           setMessages(existingMessages);
 
           const ws = new WebSocketService(room.id, accessToken);
@@ -189,8 +190,8 @@ const TutorChat = () => {
             <div>
               <h1 className="text-2xl font-bold">Chat with Student</h1>
               <p className="text-gray-400">
-                John Doe • Computer Science 101
-                {student ? `${student.name} • ${student.course}` : 'Loading...'}
+                
+                {student ? `${student.first_name} ` : 'Loading...'}
               </p>
             </div>
           </div>

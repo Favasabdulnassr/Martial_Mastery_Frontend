@@ -93,6 +93,8 @@ const StudentChat = () => {
 
 
         const room = await createOrGetChatRoom(studentId, tutorId);
+        console.log('ssssssssssssssssssssssssssssssss',room.id);
+        
 
 
         // Fetch existing messages
