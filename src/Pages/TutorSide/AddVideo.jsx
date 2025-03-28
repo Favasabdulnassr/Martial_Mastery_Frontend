@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/Components/ui/card';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import axiosInstance from '@/services/interceptor';
 import { toast } from 'react-toastify';

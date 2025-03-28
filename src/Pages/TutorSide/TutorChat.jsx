@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { Send, ArrowLeft, Trash2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import TutorSidebar from '@/Components/TutorSidebar';

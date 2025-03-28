@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { Search, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 
 import axiosInstance from '@/services/interceptor';

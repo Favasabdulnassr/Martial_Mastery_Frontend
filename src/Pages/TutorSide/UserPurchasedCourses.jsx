@@ -8,7 +8,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/services/interceptor';
 import Modal from '@/Components/Modal/ModalPortal';

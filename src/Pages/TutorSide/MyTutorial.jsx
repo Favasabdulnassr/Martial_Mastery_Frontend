@@ -13,7 +13,7 @@ import {
   ChevronUp,
   Plus
 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axiosInstance from '@/services/interceptor';

@@ -7,7 +7,7 @@ import {
   AlertCircle,
   ChevronDown
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/Components/ui/card';
 // import { Alert, AlertDescription } from '@/components/ui/alert';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
