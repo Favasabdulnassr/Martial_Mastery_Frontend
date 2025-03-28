@@ -4,9 +4,14 @@ import { logout } from "@/Redux/Reducers/LoginReducer";
 
 
 
+// const axiosInstance = axios.create({
+//     baseURL: "http://127.0.0.1:8000",
+// });
+
 const axiosInstance = axios.create({
-    baseURL: "http://127.0.0.1:8000",
+  baseURL: "http://13.60.50.237",
 });
+
 
 // Define a function to handle token refresh and logout
 export const setupAxiosInterceptors = (dispatch) => {
