@@ -16,7 +16,7 @@ import {
   X,
   ChevronDown
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/Components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/Redux/Reducers/LoginReducer';
 import NotificationBell from './Notification';

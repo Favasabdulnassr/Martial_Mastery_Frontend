@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { useSelector } from 'react-redux';
 
 const CourseEditModal = ({ course, onSave, onCancel }) => {

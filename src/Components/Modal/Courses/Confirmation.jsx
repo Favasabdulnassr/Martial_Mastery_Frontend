@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 
 const ConfirmationModal = ({ title, message, onConfirm, onCancel }) => {
