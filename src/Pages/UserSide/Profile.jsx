@@ -29,7 +29,7 @@ const ProfilePage = () => {
   const [lastName, setLastName] = useState('');
   const [Email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { isAuthenticated, first_name, role, phone_number, email, last_name, profile } = useSelector((state) => state.login)
+  const { isAuthenticated, first_name, role, phone_number, email, last_name, profile, google_login } = useSelector((state) => state.login)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -185,21 +185,26 @@ const ProfilePage = () => {
               <div className="relative group">
                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-violet-500/20">
                   {profile ? (
-                    // If profileImage exists, show the profile image
-                    <img
-                      src={`http://127.0.0.1:8000${profile}`}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                    google_login ? (
+                      <img
+                        src={profile}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={`http://127.0.0.1:8000${profile}`}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    )
                   ) : previewImage ? (
-                    // If no profileImage but previewImage exists (i.e., user selected an image)
                     <img
                       src={previewImage}
                       alt="Preview"
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    // If no profileImage and no previewImage, show placeholder (camera icon)
                     <div className="w-full h-full flex items-center justify-center">
                       <Shield className="w-12 h-12 text-cyan-400" />
                     </div>

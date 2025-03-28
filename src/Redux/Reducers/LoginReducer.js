@@ -19,7 +19,8 @@ const initialState = {
     phone_number:null,
     bio:null,
     experience:null,
-    user:null
+    user:null,
+    google_login:null
 
 };
 
@@ -69,6 +70,7 @@ const loginSlice = createSlice({
             state.profile = null,
             state.bio = null,
             state.experience = null
+            state.google_login = null
             localStorage.removeItem('authTokens');
         },
     },
@@ -126,6 +128,7 @@ const loginSlice = createSlice({
             state.role = action.payload.role || state.role   
             state.profile = action.payload.profile || state.profile
             state.bio = action.payload.bio 
+            state.google_login=null
             state.experience = action.payload.experience
             state.user = {  // Store the whole user object here
                 id: action.payload.user_id,
@@ -150,6 +153,7 @@ const loginSlice = createSlice({
             state.profile = action.payload.profile
             state.loader = null
             state.error = null
+            state.google_login = null
         })
         .addCase(UploadImage.rejected,(state,action) =>{
             state.error = action.payload || 'image uploading failed'
@@ -162,6 +166,7 @@ const loginSlice = createSlice({
             state.profile = null
             state.loader = null
             state.error = null
+            state.google_login = null
         })
         .addCase(DeleteImage.rejected,(state,action) =>{
             state.error = action.payload || 'image uploading failed'
@@ -180,6 +185,7 @@ const loginSlice = createSlice({
             state.isAuthenticated = true;
             state.error = null
             state.loader = null
+            state.google_login = true
             state.user = {  // Store the whole user object here
                 id: action.payload.id,
                 first_name: action.payload.first_name,
@@ -188,6 +194,7 @@ const loginSlice = createSlice({
                 email: action.payload.email,
                 phone_number: action.payload.phone_number,
                 profile: action.payload.profile,
+                
             };
 
         })

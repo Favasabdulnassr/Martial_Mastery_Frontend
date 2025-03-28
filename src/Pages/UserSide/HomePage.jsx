@@ -13,7 +13,8 @@ import {
   Award,
   CheckCircle,
   Sparkles,
-  GraduationCap
+  GraduationCap,
+  MessageSquare
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
@@ -158,9 +159,9 @@ function HomePage() {
                   color: "cyan"
                 },
                 {
-                  icon: <Video className="w-12 h-12" />,
-                  title: "Live Sessions",
-                  description: "Interactive video training sessions with real-time feedback and personalized guidance",
+                  icon: <MessageSquare className="w-12 h-12" />,
+                  title: "Chat Sessions",
+                  description: "Interactive Chat sessions with real-time feedback and personalized guidance",
                   color: "fuchsia"
                 },
                 {
@@ -208,106 +209,123 @@ function HomePage() {
 
         {/* Pricing Plans */}
         <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="py-24 bg-black"
-        >
-          <div className="container mx-auto px-4">
-            <motion.div 
-              variants={staggerChildren}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <motion.div
-                animate={{
-                  y: [0, -10, 0],
-                  filter: ['brightness(1)', 'brightness(1.3)', 'brightness(1)']
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                className="inline-block"
-              >
-                <Sparkles className="w-12 h-12 text-fuchsia-400 mb-4" />
-              </motion.div>
-              <h2 className="text-4xl font-bold text-white">
-                Choose Your Path
-              </h2>
-            </motion.div>
+  initial={{ opacity: 0 }}
+  whileInView={{ opacity: 1 }}
+  transition={{ duration: 0.8 }}
+  viewport={{ once: true }}
+  className="py-24 bg-black"
+>
+  <div className="container mx-auto px-4">
+    <motion.div 
+      variants={staggerChildren}
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <motion.div
+        animate={{
+          y: [0, -10, 0],
+          filter: ['brightness(1)', 'brightness(1.3)', 'brightness(1)']
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+        className="inline-block"
+      >
+        <MessageCircle className="w-12 h-12 text-fuchsia-400 mb-4" />
+      </motion.div>
+      <h2 className="text-4xl font-bold text-white">
+        Personalized Learning Experience
+      </h2>
+    </motion.div>
 
-            <motion.div 
-              variants={staggerChildren}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              className="grid sm:grid-cols-3 gap-8 max-w-5xl mx-auto"
-            >
-              {[
-                {
-                  title: "Monthly Plan",
-                  price: "$49",
-                  features: ["4 Live Sessions", "Chat Support", "Basic Techniques", "Training Resources"],
-                  color: "cyan"
-                },
-                {
-                  title: "Six-month Plan",
-                  price: "$239",
-                  features: ["24 Live Sessions", "Priority Support", "Advanced Techniques", "Custom Training Plan"],
-                  color: "fuchsia"
-                },
-                {
-                  title: "Yearly Plan",
-                  price: "$399",
-                  features: ["Unlimited Sessions", "24/7 Support", "Master Classes", "Private Coaching"],
-                  color: "violet"
-                }
-              ].map((plan, index) => (
-                <motion.div
-                  key={index}
-                  variants={slideInUp}
-                  whileHover={{ scale: 1.05 }}
-                  className={`bg-black p-8 rounded-2xl shadow-xl border border-${plan.color}-900/20
-                    group relative overflow-hidden`}
-                >
-                  <motion.div
-                    animate={{
-                      opacity: [0.1, 0.2],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }}
-                    className={`absolute inset-0 bg-gradient-to-br from-${plan.color}-500/10 to-transparent`}
-                  />
-                  <div className="relative">
-                    <Star className={`w-8 h-8 text-${plan.color}-400 mb-4`} />
-                    <h3 className={`text-2xl font-bold text-${plan.color}-400 mb-2`}>
-                      {plan.title}
-                    </h3>
-                    <div className="text-3xl font-bold text-white mb-6">
-                      {plan.price}
-                    </div>
-                    <ul className="space-y-3">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-zinc-300">
-                          <CheckCircle className={`w-5 h-5 text-${plan.color}-400 mr-2`} />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+    <motion.div 
+      variants={staggerChildren}
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true }}
+      className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+    >
+      {[
+        {
+          icon: <Star className="w-8 h-8" />,
+          title: "Expert Tutors",
+          description: "Choose from a diverse range of experienced tutors specializing in different martial arts disciplines and teaching styles.",
+          color: "cyan"
+        },
+        {
+          icon: <Video className="w-8 h-8" />,
+          title: "Interactive Learning",
+          description: "Engage directly with tutors through in-video comments and a dedicated chat system. Get personalized feedback and guidance.",
+          color: "fuchsia"
+        },
+        {
+          icon: <Target className="w-8 h-8" />,
+          title: "Flexible Learning",
+          description: "Purchase individual courses based on your interests, skill level, and preferred tutor. Learn at your own pace and schedule.",
+          color: "violet"
+        }
+      ].map((feature, index) => (
+        <motion.div
+          key={index}
+          variants={slideInUp}
+          whileHover={{ scale: 1.05 }}
+          className={`bg-black p-8 rounded-2xl shadow-xl border border-${feature.color}-900/20
+            group relative overflow-hidden`}
+        >
+          <motion.div
+            animate={{
+              opacity: [0.1, 0.2],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+            className={`absolute inset-0 bg-gradient-to-br from-${feature.color}-500/10 to-transparent`}
+          />
+          <div className="relative">
+            <div className={`text-${feature.color}-400 mb-4`}>
+              {feature.icon}
+            </div>
+            <h3 className={`text-2xl font-bold text-${feature.color}-400 mb-3`}>
+              {feature.title}
+            </h3>
+            <p className="text-zinc-400">
+              {feature.description}
+            </p>
           </div>
         </motion.div>
+      ))}
+    </motion.div>
+
+    <motion.div 
+      variants={slideInUp}
+      className="text-center mt-16"
+    >
+      <p className="text-xl text-zinc-300 max-w-3xl mx-auto mb-8">
+        Our platform offers a unique learning experience where you can explore courses from various tutors, 
+        interact directly through video comments, and use our chat system for personalized guidance.
+      </p>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="px-10 py-4 bg-gradient-to-r from-cyan-500 via-cyan-400 to-cyan-500 
+          text-black font-semibold rounded-full shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 
+          transition-all duration-300 group"
+        onClick={() => navigate('/courses')}
+      >
+        <span className="flex items-center gap-2 text-lg">
+          Explore Courses
+          <ArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+        </span>
+      </motion.button>
+    </motion.div>
+  </div>
+</motion.div>
 
         {/* Become a Tutor Section */}
         <motion.div 

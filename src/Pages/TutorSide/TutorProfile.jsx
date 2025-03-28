@@ -176,7 +176,7 @@ const TutorProfilePage = () => {
                                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-700">
                                     {profile ? (
                                         <img
-                                            src={`http://127.0.0.1:8000/${profile}`}
+                                            src={`http://127.0.0.1:8000${profile}`}
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />
@@ -215,7 +215,7 @@ const TutorProfilePage = () => {
 
                             <div className="flex-1">
                                 <h1 className="text-3xl font-bold text-white mb-2">{firstName}</h1>
-                                <p className="text-zinc-400 mb-4">Martial Arts Enthusiast • Member since 2024</p>
+                                <p className="text-zinc-400 mb-4">Martial Arts Enthusiast </p>
                                 <div className="flex flex-wrap gap-4">
                                     {!profile ? (
                                         <motion.button
@@ -242,7 +242,7 @@ const TutorProfilePage = () => {
                             {/* Profile Info */}
                             <div className="flex-1 text-center md:text-left">
                                 <h1 className="text-3xl font-bold text-white mb-2">{firstName}</h1>
-                                <p className="text-gray-400 mb-4">Professional Tutor • Martial Arts Specialist</p>
+                                <p className="text-gray-400 mb-4">Professional Tutor </p>
 
                                 {/* Tutor Stats */}
                                 {/* <div className="flex justify-center md:justify-start space-x-6 mt-4">

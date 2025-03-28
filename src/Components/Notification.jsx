@@ -66,7 +66,6 @@ const NotificationBell = () => {
     // Connect to WebSocket
     wsRef.current = new WebSocket(url);
 
-
     wsRef.current.onopen = () => {
       console.log('WebSocket connected');
 
@@ -79,21 +78,38 @@ const NotificationBell = () => {
       const data = JSON.parse(e.data);
       
       if (data.type === 'new_notification') {
-        // Add new notification to the list
-        setNotifications(prev => [data.notification, ...prev]);
-        setNotificationCount(prev => prev + 1);
-        
-        // Show browser notification if permitted
-        // if (Notification.permission === 'granted') {
-        //   new Notification('TutorPro', {
-        //     body: data.notification.message,
-        //     icon: '/logo.png' // Add your app logo path
-        //   });
-        // }
+        // Prevent duplicate notifications by checking if the notification already exists
+        setNotifications(prev => {
+          // Check if the notification is already in the list
+          const isDuplicate = prev.some(notification => 
+            notification.id === data.notification.id
+          );
+
+          // Only add if it's not a duplicate
+          if (!isDuplicate) {
+            return [data.notification, ...prev];
+          }
+
+          return prev;
+        });
+
+        // Only increment count if it's a new notification
+        setNotificationCount(prev => {
+          const isDuplicate = notifications.some(notification => 
+            notification.id === data.notification.id
+          );
+
+          return isDuplicate ? prev : prev + 1;
+        });
+      
       } else if (data.type === 'recent_notifications') {
-        // Initialize with unread notifications
-        setNotifications(data.notifications);
-        setNotificationCount(data.notifications.length);
+        // Remove duplicates from recent notifications
+        const uniqueNotifications = data.notifications.filter((notification, index, self) => 
+          index === self.findIndex(t => t.id === notification.id)
+        );
+
+        setNotifications(uniqueNotifications);
+        setNotificationCount(uniqueNotifications.length);
 
       } else if (data.type === 'notification_deleted') {
         setNotifications(prev => prev.filter(notification => notification.id !== data.notification_id))
@@ -118,7 +134,6 @@ const NotificationBell = () => {
       }, 3000);
     };
   };
-
 
   const deletNotifications = async(notificationId,e) => {
     // Stop the event from propagating to parent (important to prevent navigation)
@@ -232,7 +247,7 @@ const NotificationBell = () => {
                     <h4 className="font-medium text-gray-100">{notification.title}</h4>
                     <button
                         onClick={(e) => deletNotifications(notification.id, e)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-400 opacity-100"
+                        className="group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-400 opacity-100"
                         aria-label="Delete notification"
                       >
                         <X className="w-4 h-4" />
