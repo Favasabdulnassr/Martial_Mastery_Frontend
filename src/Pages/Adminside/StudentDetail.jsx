@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/Components/ui/card';
 import AdminSidebar from '@/Components/AdminSidebar';
 import AdminTopbar from '@/Components/AdminTopbar';
 import { useDispatch, useSelector } from 'react-redux';
