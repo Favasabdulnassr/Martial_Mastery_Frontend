@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { User, Lock, Mail, Phone, ArrowUpRight, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { handleRegister } from '@/services/api/register';
 import { RegisterValidationSchema } from '@/services/validation/Register';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -90,7 +91,7 @@ const SignupPage = () => {
             <h1 className="text-3xl font-bold text-white mb-6">
               Sign Up to Martial Mastery
             </h1>
-           
+
           </div>
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div>
@@ -204,9 +205,9 @@ const SignupPage = () => {
             <div className="text-center mt-6">
               <p className="text-gray-400">
                 Already have an account?{' '}
-                <a href="/login" className="text-cyan-400 hover:text-cyan-300">
-                  Sign in
-                </a>
+                <Link to="/signup" className="text-cyan-400 hover:text-cyan-300">
+                  Sign up
+                </Link>
               </p>
             </div>
           </form>
