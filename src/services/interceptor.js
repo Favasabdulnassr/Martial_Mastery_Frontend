@@ -9,7 +9,7 @@ import { logout } from "@/Redux/Reducers/LoginReducer";
 // });
 
 const axiosInstance = axios.create({
-  baseURL: "http://0.0.0.0:9090",
+  baseURL: "http://13.60.50.237",
 });
 
 
