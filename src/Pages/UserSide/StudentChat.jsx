@@ -224,6 +224,63 @@ const StudentChat = () => {
 
 
 
+   // Function to group messages by date
+   const groupMessagesByDate = (messages) => {
+    const groupedMessages = {};
+    
+    // Get today and yesterday dates for comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+    
+    messages.forEach(message => {
+      const messageDate = new Date(message.timestamp);
+      messageDate.setHours(0, 0, 0, 0);
+      
+      let dateKey;
+      
+      if (messageDate.getTime() === today.getTime()) {
+        dateKey = 'Today';
+      } else if (messageDate.getTime() === yesterday.getTime()) {
+        dateKey = 'Yesterday';
+      } else {
+        // Format date as DD/MM/YYYY for older messages
+        dateKey = messageDate.toLocaleDateString('en-GB');
+      }
+      
+      if (!groupedMessages[dateKey]) {
+        groupedMessages[dateKey] = [];
+      }
+      
+      groupedMessages[dateKey].push(message);
+    });
+    
+    return groupedMessages;
+  };
+
+  // Group messages by date
+  const groupedMessages = groupMessagesByDate(messages);
+  
+  // Sort date keys to ensure chronological order
+  const sortedDateKeys = Object.keys(groupedMessages).sort((a, b) => {
+    if (a === 'Today') return 1;
+    if (b === 'Today') return -1;
+    if (a === 'Yesterday') return 1;
+    if (b === 'Yesterday') return -1;
+    
+    // Convert other dates from DD/MM/YYYY to Date objects for comparison
+    const [dayA, monthA, yearA] = a.split('/').map(Number);
+    const [dayB, monthB, yearB] = b.split('/').map(Number);
+    
+    return new Date(yearB, monthB - 1, dayB) - new Date(yearA, monthA - 1, dayA);
+  });
+
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <div className="h-20">
@@ -248,39 +305,56 @@ const StudentChat = () => {
 
           {/* Messages Container */}
           <div className="h-[60vh] overflow-y-auto p-6 space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.sender_email === user?.email ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[70%] p-4 rounded-2xl relative ${message.sender_email === user?.email
-                      ? 'bg-gradient-to-r from-cyan-500 to-cyan-400 text-black'
-                      : 'bg-zinc-800 text-white'
-                    }`}
-                >
-
-
-                  {message.sender_email === user?.email && (
-                    <button
-                    onClick={() => handleDeleteConfirm(message.id)}
-                      className="absolute right-0 top-0   opacity-100 transition-opacity duration-200 p-1.5 rounded-full hover:bg-gray-700 text-gray-900 hover:text-red-500"
-                      title="Delete message"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  )}
-                  <p>{message.content}</p>
-                  <div className={`text-xs mt-2 ${message.sender_email === user?.email ? 'text-black/70' : 'text-zinc-400'
-                    }`}>
-                     {new Date(message.timestamp).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
+            {sortedDateKeys.map(dateKey => (
+              <div key={dateKey} className="mb-6">
+                {/* Date Separator */}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="bg-zinc-800 px-4 py-1 rounded-full">
+                    <span className="text-xs text-zinc-400">{dateKey}</span>
                   </div>
+                </div>
+                
+                {/* Messages for this date */}
+                <div className="space-y-4">
+                  {groupedMessages[dateKey].map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.sender_email === user?.email ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[70%] p-4 rounded-2xl relative ${message.sender_email === user?.email
+                          ? 'bg-gradient-to-r from-cyan-500 to-cyan-400 text-black'
+                          : 'bg-zinc-800 text-white'
+                        }`}
+                      >
+                        {message.sender_email === user?.email && (
+                          <button
+                            onClick={() => handleDeleteConfirm(message.id)}
+                            className="absolute right-0 top-0 opacity-100 transition-opacity duration-200 p-1.5 rounded-full hover:bg-gray-700 text-gray-900 hover:text-red-500"
+                            title="Delete message"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
+                        <p>{message.content}</p>
+                        <div className={`text-xs mt-2 ${message.sender_email === user?.email ? 'text-black/70' : 'text-zinc-400'}`}>
+                          {new Date(message.timestamp).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
+
+
+
+
+
+
             {loading && (
               <div className="flex justify-start">
                 <div className="bg-zinc-800 p-4 rounded-2xl">
