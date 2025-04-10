@@ -33,6 +33,7 @@ const VideoPage = () => {
   const [quality, setQuality] = useState(1080);
   const [isDragging, setIsDragging] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoContainerRef = useRef(null);
 
 
   // Comments states
@@ -102,11 +103,14 @@ const VideoPage = () => {
 
     if (videoRef.current && videoUrl) {
       videoRef.current.src = videoUrl;
+
     }
   }, [video]);
 
   useEffect(() => {
     const videoElement = videoRef.current;
+    const videoContainer = videoContainerRef.current;
+
     if (!videoElement) return;
 
     const onTimeUpdate = () => {
@@ -116,9 +120,56 @@ const VideoPage = () => {
     const onDurationChange = () => setDuration(videoElement.duration);
     const onLoadedMetadata = () => setDuration(videoElement.duration);
 
+
+
+
+
+
+    // Prevent context menu on video
+    const preventContextMenu = (e) => {
+      e.preventDefault();
+      return false;
+    };
+
+    // Prevent keyboard shortcuts
+    const preventKeyboardShortcuts = (e) => {
+      // Prevent common download shortcuts
+      if ((e.ctrlKey && e.key === 's') || // Ctrl+S
+          (e.ctrlKey && e.key === 'c') || // Ctrl+C
+          (e.key === 'F12') ||           // F12 (DevTools)
+          (e.ctrlKey && e.shiftKey && e.key === 'i')) { // Ctrl+Shift+I (DevTools)
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    // Disable dragging of video
+    const preventDrag = (e) => {
+      e.preventDefault();
+      return false;
+    };
+
+
+
+
     videoElement.addEventListener('timeupdate', onTimeUpdate);
     videoElement.addEventListener('durationchange', onDurationChange);
     videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
+
+
+
+      // Add protection event listeners
+      videoElement.addEventListener('contextmenu', preventContextMenu);
+      videoContainer.addEventListener('contextmenu', preventContextMenu);
+      window.addEventListener('keydown', preventKeyboardShortcuts);
+      videoElement.addEventListener('dragstart', preventDrag);
+      
+      // Disable picture-in-picture
+      if (videoElement.disablePictureInPicture !== undefined) {
+        videoElement.disablePictureInPicture = true;
+      }
+
+
 
     return () => {
       videoElement.removeEventListener('timeupdate', onTimeUpdate);
@@ -169,13 +220,24 @@ const VideoPage = () => {
           {/* Main Video Section */}
           <div className="lg:w-3/4">
             {/* Video Player */}
-            <div className="relative w-full rounded-lg overflow-hidden mt-20 bg-black">
+            <div 
+            ref={videoContainerRef}
+
+            className="relative w-full rounded-lg overflow-hidden mt-20 bg-black"
+            onContextMenu={(e) => e.preventDefault()}
+
+
+            >
               <div className="relative w-full pt-[56.25%]">
                 <video
                   ref={videoRef}
                   className="absolute top-0 left-0 w-full h-full"
                   crossOrigin="anonymous"
                   onClick={togglePlayPause}
+                  onContextMenu={(e) => e.preventDefault()}
+                  controlsList="nodownload nofullscreen noremoteplayback"
+                  disablePictureInPicture
+                  disableRemotePlayback
                 >
                   <source src={video?.cloudinary_url} type="video/mp4" />
                 </video>
