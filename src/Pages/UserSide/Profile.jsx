@@ -193,7 +193,7 @@ const ProfilePage = () => {
                       />
                     ) : (
                       <img
-                        src={`http://127.0.0.1:8000${profile}`}
+                        src={`${BASE_URL}${profile}`}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
