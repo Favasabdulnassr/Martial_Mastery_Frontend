@@ -40,7 +40,7 @@ const LoginPage = () => {
                     toast.success('Login successful!');
                 })
                 .catch((error) => {
-                    toast.error(`Login failed: ${error}`);
+                    toast.error(`Login failed Check Username and password`);
                 });
         },
     });

@@ -29,13 +29,11 @@ export const loginAsync = createAsyncThunk(
     async(loginData,{rejectWithValue})=>{
         try{
             const response = await axios.post(`${BASE_URL}/auth/token/`,loginData);
-            console.log('Token received:', response.data);
 
             const token = response.data;
 
             const tokens = { access: token.access, refresh: token.refresh };
             localStorage.setItem('authTokens', JSON.stringify(tokens));
-            console.log('Tokens stored in localStorage:', tokens);
 
             // Decode the JWT token
             const decodeToken = JSON.parse(atob(token.access.split('.')[1]));

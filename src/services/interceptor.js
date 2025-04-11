@@ -9,7 +9,7 @@ import { logout } from "@/Redux/Reducers/LoginReducer";
 // });
 
 const axiosInstance = axios.create({
-  baseURL: "https://www.martia.sbs/",
+  baseURL: "https://www.martia.sbs",
 });
 
 
