@@ -43,7 +43,7 @@ const OTPVerificationPage = () => {
       console.log('exppppp', expirationTimestamp)
       const currentTime = expirationTimestamp - 90000
       console.log('current', currentTime)
-      const remainingTime = Math.max(0, Math.floor((expirationTimestamp - currentTime) / 1000));
+      const remainingTime = 85
       console.log('remaa', remainingTime)
       setTimeLeft(remainingTime);
 
