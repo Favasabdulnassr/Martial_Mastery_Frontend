@@ -43,7 +43,7 @@ export const loginAsync = createAsyncThunk(
             // Return required details
             return { role,email,first_name,phone_number,last_name,profile,bio,user_id,experience};
         }catch(error){
-            console.error('ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui')
+            console.error('ssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuui',error)
             return rejectWithValue(error?.message || 'something went wrong');
 
         }
