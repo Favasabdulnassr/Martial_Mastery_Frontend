@@ -61,9 +61,7 @@ export class WebSocketService {
       this.isConnecting = true;
 
      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    //   const host = process.env.NODE_ENV === 'development' ? '127.0.0.1:8000' : window.location.host;
-    const host = process.env.NODE_ENV === 'development' ? 'www.martia.sbs' : window.location.host;
-
+      const host = process.env.NODE_ENV === 'development' ? '127.0.0.1:8000' : window.location.host;
       // Remove trailing slash from URL
       const wsUrl = `${wsProtocol}//${host}/ws/chat/${this.roomId}?token=${this.token}`;
       
