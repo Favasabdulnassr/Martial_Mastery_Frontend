@@ -41,19 +41,19 @@ function AboutUs() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="relative pt-20"
+        className="relative pt-16 sm:pt-20"
       >
-        <div className="container mx-auto px-4 py-20 text-center">
+        <div className="container mx-auto px-4 py-12 sm:py-20 text-center">
           <motion.h1 
             variants={fadeInUp}
-            className="text-5xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-400 bg-clip-text text-transparent"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-400 bg-clip-text text-transparent px-2"
           >
             Connecting Learners with Expert Tutors
           </motion.h1>
 
           <motion.p 
             variants={fadeInUp}
-            className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed px-2"
           >
             A dynamic online learning platform where tutors create courses and students gain direct access to expert knowledge, interactive learning, and personalized educational experiences.
           </motion.p>
@@ -66,25 +66,25 @@ function AboutUs() {
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
-        className="py-20 bg-[#0a0a0a]"
+        className="py-12 sm:py-20 bg-[#0a0a0a]"
       >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">How Our Platform Works</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-12">How Our Platform Works</h2>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             {[
               {
-                icon: <BookOpen className="w-10 h-10" />,
+                icon: <BookOpen className="w-8 h-8 md:w-10 md:h-10" />,
                 title: "Diverse Course Catalog",
                 description: "Tutors create and offer a wide range of courses across multiple disciplines"
               },
               {
-                icon: <Users className="w-10 h-10" />,
+                icon: <Users className="w-8 h-8 md:w-10 md:h-10" />,
                 title: "Course Purchase",
                 description: "Students browse and purchase courses directly from their preferred tutors"
               },
               {
-                icon: <MessageCircle className="w-10 h-10" />,
+                icon: <MessageCircle className="w-8 h-8 md:w-10 md:h-10" />,
                 title: "Direct Interaction",
                 description: "Seamless communication between students and tutors after course purchase"
               }
@@ -92,10 +92,10 @@ function AboutUs() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-6 bg-black rounded-xl border border-zinc-800 hover:border-cyan-900/40 transition-colors"
+                className="p-4 sm:p-6 bg-black rounded-xl border border-zinc-800 hover:border-cyan-900/40 transition-colors"
               >
                 <div className="text-cyan-400 mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{item.title}</h3>
                 <p className="text-zinc-400">{item.description}</p>
               </motion.div>
             ))}
@@ -109,34 +109,34 @@ function AboutUs() {
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
-        className="py-20"
+        className="py-12 sm:py-20"
       >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">Platform Features</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-12">Platform Features</h2>
           
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             {[
               {
-                icon: <VideoIcon className="w-6 h-6 text-cyan-400 mr-3" />,
+                icon: <VideoIcon className="w-6 h-6 text-cyan-400 mr-3 flex-shrink-0" />,
                 text: "Video-based courses created by expert tutors"
               },
               {
-                icon: <MessageSquare className="w-6 h-6 text-cyan-400 mr-3" />,
+                icon: <MessageSquare className="w-6 h-6 text-cyan-400 mr-3 flex-shrink-0" />,
                 text: "Direct chat functionality with course tutors"
               },
               {
-                icon: <MessageCircle className="w-6 h-6 text-cyan-400 mr-3" />,
+                icon: <MessageCircle className="w-6 h-6 text-cyan-400 mr-3 flex-shrink-0" />,
                 text: "Comment sections for each video to interact with students and tutors"
               },
               {
-                icon: <FileText className="w-6 h-6 text-cyan-400 mr-3" />,
+                icon: <FileText className="w-6 h-6 text-cyan-400 mr-3 flex-shrink-0" />,
                 text: "Comprehensive reporting system for course-related issues"
               }
             ].map((feature, index) => (
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="flex items-center"
+                className="flex items-center p-2"
               >
                 {feature.icon}
                 <span className="text-zinc-300">{feature.text}</span>
@@ -152,19 +152,19 @@ function AboutUs() {
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
-        className="py-20 bg-[#0a0a0a]"
+        className="py-12 sm:py-20 bg-[#0a0a0a]"
       >
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-3xl font-bold text-white">Ready to Explore Learning?</h2>
-            <p className="text-zinc-400">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready to Explore Learning?</h2>
+            <p className="text-zinc-400 px-2">
               Discover courses from expert tutors, engage directly with instructors, 
               and enhance your skills through our interactive learning platform.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-full 
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold rounded-full 
                 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300"
             >
               Browse Courses

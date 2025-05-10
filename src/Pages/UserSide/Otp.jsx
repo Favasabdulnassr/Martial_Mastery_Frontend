@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Lock, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -13,61 +12,50 @@ const OTPVerificationPage = () => {
 
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-  const sessionId = localStorage.getItem('session_id')
+  const sessionId = localStorage.getItem('session_id');
 
-  const {isAuthenticated,role} = useSelector((state)=>state.login)
-
-  useEffect(()=>{
-    if(role === 'admin'){
-        navigate('/admin/dashboard')
-    }
-    else if(role === 'tutor'){
-      navigate('/tutor/dashboard')
-
-    }
-    
-},[isAuthenticated,role])
-
-
-
-
-  
+  const {isAuthenticated, role} = useSelector((state) => state.login);
 
   useEffect(() => {
+    if(role === 'admin') {
+        navigate('/admin/dashboard');
+    }
+    else if(role === 'tutor') {
+      navigate('/tutor/dashboard');
+    }
+  }, [isAuthenticated, role, navigate]);
 
-    const expirationTime = localStorage.getItem('otpExpirationTime')
-    console.log('expiiiiiiiiii', expirationTime)
-
+  useEffect(() => {
+    const expirationTime = localStorage.getItem('otpExpirationTime');
+    
     if (expirationTime) {
       const expirationTimestamp = new Date(expirationTime).getTime();
-      console.log('exppppp', expirationTimestamp)
-      const currentTime = expirationTimestamp - 90000
-      console.log('current', currentTime)
-      const remainingTime = 85
-      console.log('remaa', remainingTime)
+      const currentTime = expirationTimestamp - 90000;
+      const remainingTime = 85;
       setTimeLeft(remainingTime);
-
 
       const timer = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(timer);
             localStorage.removeItem('otpExpirationTime');
-            toast.error('OTP has expired.please request a new one');
+            toast.error('OTP has expired. Please request a new one');
             return 0;
           }
-          return prevTime - 1
+          return prevTime - 1;
         });
-
       }, 1000);
 
       return () => clearInterval(timer); // Cleanup on component unmount
-
     }
-
   }, []);
 
   const handleOtpChange = (index, value) => {
+    // Only allow numbers
+    if (value && !/^\d+$/.test(value)) {
+      return;
+    }
+    
     const newOtpDigits = [...otpDigits];
     newOtpDigits[index] = value;
     setOtpDigits(newOtpDigits);
@@ -88,26 +76,20 @@ const OTPVerificationPage = () => {
     }
 
     try {
-      // Simulated verification
-      const response = await axios.post(`${BASE_URL}/auth/verify/`, { otp: otpCode, sessionId: sessionId },
-      );
+      const response = await axios.post(`${BASE_URL}/auth/verify/`, { 
+        otp: otpCode, 
+        sessionId: sessionId 
+      });
 
       toast.success(response.data.message);
-      localStorage.removeItem('otpExpirationTime'); // Remove after successful submission
+      localStorage.removeItem('otpExpirationTime');
       localStorage.removeItem('session_id');
       navigate('/login');
 
     } catch (error) {
-
-
-      // Handle error response
       if (error.response) {
-        console.log(error, 'firstttttttttt')
-        // Show the error message returned from the backend
         toast.error(error.response.data.error);
       } else {
-        console.error(error, 'sssssseconondddddddddddd')
-        // Handle other errors (e.g., network issues)
         toast.error('Something went wrong. Please try again.');
       }
     }
@@ -120,28 +102,34 @@ const OTPVerificationPage = () => {
     }
   };
 
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text/plain').trim();
+    
+    // Only process if it's a 6-digit number
+    if (/^\d{6}$/.test(pastedData)) {
+      const newOtpDigits = pastedData.split('');
+      setOtpDigits(newOtpDigits);
+      
+      // Focus on the last input
+      if (inputRefs.current[5]) {
+        inputRefs.current[5].focus();
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-pink-400 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-md w-full bg-[#1a1a1a] rounded-xl shadow-xl p-8 transform transition-all duration-300 hover:shadow-2xl"
-      >
-        <div className="text-center mb-8">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500"
-          >
+      <div className="max-w-md w-full bg-[#1a1a1a] rounded-xl shadow-xl p-4 sm:p-6 md:p-8 transform transition-all duration-300 hover:shadow-2xl">
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500">
             Verify OTP
-          </motion.h1>
-          <p className="text-gray-300 mt-2">Enter the 6-digit code sent to your email</p>
+          </h1>
+          <p className="text-gray-300 mt-2 text-sm sm:text-base">Enter the 6-digit code sent to your email</p>
         </div>
 
-        <form onSubmit={handleOtpSubmit} className="space-y-6">
-          <div className="flex justify-center gap-2">
+        <form onSubmit={handleOtpSubmit} className="space-y-4 sm:space-y-6">
+          <div className="flex justify-center gap-1 sm:gap-2" onPaste={handlePaste}>
             {otpDigits.map((digit, index) => (
               <input
                 key={index}
@@ -151,47 +139,34 @@ const OTPVerificationPage = () => {
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-10 h-12 text-center text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all text-xl"
+                className="w-8 h-10 sm:w-10 sm:h-12 text-center text-white bg-black border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all text-lg sm:text-xl"
                 pattern="\d*"
                 inputMode="numeric"
+                aria-label={`Digit ${index + 1} of OTP`}
               />
             ))}
           </div>
 
           {/* Countdown Timer */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-2 sm:mt-4">
             {timeLeft > 0 ? (
-              <p className="text-sm text-gray-400">Time left: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</p>
+              <p className="text-xs sm:text-sm text-gray-400">Time left: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</p>
             ) : (
-              <p className="text-sm text-red-500">OTP expired</p>
+              <p className="text-xs sm:text-sm text-red-500">OTP expired</p>
             )}
           </div>
 
-          {/* <div className="text-center mt-4">
-            <p className="text-sm text-gray-400">
-              Didn't receive the code?
-              <button
-                type="button"
-                className="ml-2 font-medium text-cyan-500 hover:text-cyan-700 hover:underline transition-colors"
-              >
-                Resend OTP
-              </button>
-            </p>
-          </div> */}
-
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             type="submit"
-            className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black p-3 rounded-lg hover:bg-cyan-500 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black p-2 sm:p-3 rounded-lg hover:bg-cyan-500 transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             Verify
-            <ArrowRight size={20} />
-          </motion.button>
+            <ArrowRight size={18} />
+          </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-400">
+        <div className="mt-4 sm:mt-6 text-center">
+          <p className="text-xs sm:text-sm text-gray-400">
             <button
               onClick={() => navigate('/login')}
               className="font-medium text-cyan-500 hover:text-cyan-700 hover:underline transition-colors"
@@ -200,7 +175,7 @@ const OTPVerificationPage = () => {
             </button>
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

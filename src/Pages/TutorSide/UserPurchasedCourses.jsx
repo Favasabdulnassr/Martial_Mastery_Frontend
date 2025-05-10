@@ -6,24 +6,21 @@ import {
   Play,
   AlertCircle,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Menu
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/services/interceptor';
-import Modal from '@/Components/Modal/ModalPortal';
-import VideoModal from '@/Components/Modal/Videos/VideoModal';
 import { toast } from 'react-toastify';
+
 const PurchasedCourses = () => {
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [expandedCourse, setExpandedCourse] = useState(null);
-  const [purchased_lessons,setPurchasedLessons] = useState([])
-  const [tutorialId,setTutorialId] = useState(null)
-  const navigate = useNavigate()
-
-//   const [showVideoModal, setShowVideoModal] = useState(false);
-//   const [selectedVideo, setSelectedVideo] = useState(null);
-//   const navigate = useNavigate();
+  const [purchased_lessons, setPurchasedLessons] = useState([]);
+  const [tutorialId, setTutorialId] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPurchasedCourses();
@@ -32,151 +29,160 @@ const PurchasedCourses = () => {
   const fetchPurchasedCourses = async () => {
     try {
       const response = await axiosInstance.get('payment/tutor/purchased-courses/');
-      console.log('yyyyyyyyyyyyy',response.data);
-      
+      console.log('Purchased courses:', response.data);
       setPurchasedCourses(response.data);
     } catch (error) {
       console.error('Error fetching purchased courses:', error);
     }
   };
 
-  const toggleCourse = async(courseId) => {
-   
+  const toggleCourse = async (courseId) => {
     setExpandedCourse(expandedCourse === courseId ? null : courseId);
-    if (expandedCourse !== courseId){
-
-        setTutorialId(courseId)
-        fetchLessons(courseId)
-    
+    if (expandedCourse !== courseId) {
+      setTutorialId(courseId);
+      fetchLessons(courseId);
     }
   };
 
-  const fetchLessons  = async (courseId) => {
+  const fetchLessons = async (courseId) => {
     try {
-        const response = await axiosInstance.get(`payment/tutor/courses/${courseId}/lessons/`);
-        console.log('lesson',response.data);
-        
-        setPurchasedLessons(response.data);
-      } catch (error) {
-        console.error('Error fetching purchased courses:', error);
-      }
-
-  }
-
-  const navigateVideo = (video) => {
-    navigate(`/tutor/videoPage/${tutorialId}/${video.id}`,{replace:true})
+      const response = await axiosInstance.get(`payment/tutor/courses/${courseId}/lessons/`);
+      console.log('lessons:', response.data);
+      setPurchasedLessons(response.data);
+    } catch (error) {
+      console.error('Error fetching lessons:', error);
+    }
   };
 
+  const navigateVideo = (video) => {
+    navigate(`/tutor/videoPage/${tutorialId}/${video.id}`, { replace: true });
+  };
 
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-100">
-      <TutorSidebar />
+    <div className="flex h-screen bg-gray-900 text-gray-100">
+      {/* Sidebar - visible on medium screens and up */}
+      <aside className="hidden md:block w-64 lg:w-72 flex-shrink-0 bg-gray-800 h-full overflow-y-auto">
+        <TutorSidebar />
+      </aside>
 
-      <div className="flex-1 lg:ml-80">
-        <TutorTopbar />
+      {/* Main content area - always full width on mobile, adjusted width on larger screens */}
+      <div className="flex flex-col flex-grow w-full md:w-[calc(100%-16rem)] lg:w-[calc(100%-18rem)] overflow-hidden">
+        {/* Mobile Header */}
+        <header className="md:hidden bg-gray-800 p-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold">Purchased Courses</h1>
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-md bg-gray-700 hover:bg-gray-600 transition"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </header>
 
-        <div className="p-6 space-y-6">
-          {/* Header */}
-          <div>
-            <h1 className="text-2xl font-bold">Purchased Courses</h1>
-            <p className="text-gray-400 mt-1">Manage and view your purchased courses</p>
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-gray-800 border-b border-gray-700 p-4">
+            <TutorSidebar />
           </div>
+        )}
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-400">Total Purchased Courses</p>
-                    <p className="text-2xl font-bold mt-1">
-                      {purchasedCourses.length}
-                    </p>
-                  </div>
-                  <div className="h-12 w-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                    <BookOpen className="w-6 h-6 text-blue-400" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        {/* Desktop Header */}
+        <div className="hidden md:block">
+          <TutorTopbar />
+        </div>
 
-          {/* Purchased Courses List */}
-          <div className="space-y-4">
-            {purchasedCourses.map((course) => (
-              <Card key={course.id} className="bg-gray-800 border-gray-700">
-                <CardHeader
-                  className="cursor-pointer"
-                  onClick={() => toggleCourse(course.id)}
-                >
+        {/* Scrollable Content Area */}
+        <div className="flex-grow overflow-y-auto p-4 md:p-6">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-6">
+              <h1 className="text-xl md:text-2xl font-bold">Purchased Courses</h1>
+              <p className="text-sm md:text-base text-gray-400 mt-1">Manage and view your purchased courses</p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+              <Card className="bg-gray-800 border-gray-700">
+                <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div>
-                        <CardTitle className="text-lg font-semibold">
+                    <div>
+                      <p className="text-xs md:text-sm text-gray-400">Total Purchased Courses</p>
+                      <p className="text-lg md:text-2xl font-bold mt-1">
+                        {purchasedCourses.length}
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 md:h-12 md:w-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-blue-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Purchased Courses List */}
+            <div className="space-y-4">
+              {purchasedCourses.map((course) => (
+                <Card key={course.id} className="bg-gray-800 border-gray-700">
+                  <CardHeader
+                    className="cursor-pointer p-4 md:p-6"
+                    onClick={() => toggleCourse(course.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 pr-2">
+                        <CardTitle className="text-base md:text-lg font-semibold">
                           {course.course_title}
                         </CardTitle>
-                        <p className="text-sm text-gray-400 mt-1">
+                        <p className="text-xs md:text-sm text-gray-400 mt-1 line-clamp-2">
                           {course.course_description}
                         </p>
                       </div>
+                      {expandedCourse === course.id ? (
+                        <ChevronUp className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                      )}
                     </div>
-                    {expandedCourse === course.id ? (
-                      <ChevronUp className="w-5 h-5 text-gray-400" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
-                    )}
-                  </div>
-                </CardHeader>
+                  </CardHeader>
 
-                {expandedCourse === course.id && (
-                  <CardContent>
-                    {purchased_lessons?.length === 0 ? (
-                      <div className="flex items-center justify-center p-6 bg-gray-700/50 rounded-lg">
-                        <AlertCircle className="w-5 h-5 text-gray-400 mr-2" />
-                        <p className="text-gray-400">No lessons available for this course.</p>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {purchased_lessons?.map((lesson) => (
-                          <div key={lesson.id} className="bg-gray-700 rounded-lg overflow-hidden">
-                            <div
-                              className="relative cursor-pointer"
-                              onClick={() => navigateVideo(lesson)}
-                            >
-                              <img
-                                src={lesson.thumbnail || '/api/placeholder/320/180'}
-                                alt={lesson.title}
-                                className="w-full h-40 object-cover"
-                              />
-                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                <Play className="w-12 h-12 text-white" />
+                  {expandedCourse === course.id && (
+                    <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
+                      {purchased_lessons?.length === 0 ? (
+                        <div className="flex items-center justify-center p-4 md:p-6 bg-gray-700/50 rounded-lg">
+                          <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-gray-400 mr-2" />
+                          <p className="text-sm md:text-base text-gray-400">No lessons available for this course.</p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                          {purchased_lessons?.map((lesson) => (
+                            <div key={lesson.id} className="bg-gray-700 rounded-lg overflow-hidden">
+                              <div
+                                className="relative cursor-pointer"
+                                onClick={() => navigateVideo(lesson)}
+                              >
+                                <img
+                                  src={lesson.thumbnail || '/api/placeholder/320/180'}
+                                  alt={lesson.title}
+                                  className="w-full h-32 sm:h-36 md:h-40 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                  <Play className="w-8 h-8 md:w-12 md:h-12 text-white" />
+                                </div>
+                              </div>
+                              <div className="p-3 md:p-4">
+                                <h3 className="text-sm md:text-base font-medium line-clamp-1">{lesson.title}</h3>
+                                <p className="text-xs md:text-sm text-gray-400 mt-1 line-clamp-2">{lesson.description}</p>
                               </div>
                             </div>
-                            <div className="p-4">
-                              <h3 className="font-medium">{lesson.title}</h3>
-                              <p className="text-sm text-gray-400 mt-1">{lesson.description}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                )}
-              </Card>
-            ))}
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Video Modal */}
-      {/* {showVideoModal && selectedVideo && (
-        <Modal isOpen={showVideoModal} onClose={() => setShowVideoModal(false)}>
-          <VideoModal
-            video={selectedVideo}
-            onClose={() => setShowVideoModal(false)}
-          />
-        </Modal>
-      )} */}
     </div>
   );
 };
