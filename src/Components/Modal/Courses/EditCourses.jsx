@@ -25,14 +25,14 @@ const CourseEditModal = ({ course, onSave, onCancel }) => {
   };
 
   return (
-    <Card className="bg-gray-800 border-gray-700 w-full max-w-2xl">
+    <Card className="bg-white border-gray-200 w-full max-w-2xl shadow-sm">
       <CardHeader>
-        <CardTitle className="text-white">Edit Course</CardTitle>
+        <CardTitle className="text-gray-800">Edit Course</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
               Title
             </label>
             <input
@@ -40,13 +40,13 @@ const CourseEditModal = ({ course, onSave, onCancel }) => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+              className="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-800"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
               Description
             </label>
             <textarea
@@ -54,14 +54,14 @@ const CourseEditModal = ({ course, onSave, onCancel }) => {
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+              className="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-800"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
                 Duration (weeks)
               </label>
               <input
@@ -70,12 +70,12 @@ const CourseEditModal = ({ course, onSave, onCancel }) => {
                 value={formData.duration_weeks}
                 onChange={handleChange}
                 min="1"
-                className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                className="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-800"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
                 Fees
               </label>
               <input
@@ -85,7 +85,7 @@ const CourseEditModal = ({ course, onSave, onCancel }) => {
                 onChange={handleChange}
                 min="0"
                 step="0.01"
-                className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                className="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-800"
                 required
               />
             </div>
@@ -95,13 +95,13 @@ const CourseEditModal = ({ course, onSave, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
             >
               Save Changes
             </button>

@@ -61,7 +61,7 @@ const AdminSidebar = () => {
             <div className="h-12 w-12 rounded-xl bg-gray-900 flex items-center justify-center">
               <span className="text-white text-2xl font-bold">M</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900 tracking-tight">MartialMaster</span>
+            <span className="text-2xl font-bold text-gray-900 tracking-tight">MartialMastery</span>
           </div>
         </div>
 

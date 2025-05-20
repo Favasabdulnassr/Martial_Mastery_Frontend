@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/Components/ui/card';
-import { Search, ChevronLeft, ChevronRight, MessageCircle, Menu } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import axiosInstance from '@/services/interceptor';
 import TutorSidebar from '@/Components/TutorSidebar';
 import TutorTopbar from '@/Components/TutorTopbar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTutorSidebar } from '@/Components/TutorSidebarProvider';
 
 const TutorStudents = () => {
   const [students, setStudents] = useState([]);
@@ -16,9 +16,9 @@ const TutorStudents = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [hasPrevious, setHasPrevious] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useSelector((state) => state.login);
   const navigate = useNavigate();
+  const { isSidebarTutorOpen } = useTutorSidebar();
 
   useEffect(() => {
     fetchStudents();
@@ -44,235 +44,200 @@ const TutorStudents = () => {
     navigate(`/tutor/chat/${studentId}`);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setPage(1);
+  };
+
+  const handlePageChange = (direction) => {
+    if (direction === 'next' && hasNext) {
+      setPage(page + 1);
+    } else if (direction === 'previous' && hasPrevious) {
+      setPage(page - 1);
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100">
-      {/* Sidebar - visible on medium screens and up */}
-      <aside className="hidden md:block w-64 lg:w-72 flex-shrink-0 bg-gray-800 h-full overflow-y-auto">
+    <div className="flex min-h-screen bg-gray-50 text-gray-800">
+      {/* Sidebar - Fixed position on large screens, hidden or overlay on mobile */}
+      <div className={`fixed top-0 left-0 h-full w-72 lg:w-80 bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 z-20 ${
+        isSidebarTutorOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
         <TutorSidebar />
-      </aside>
+      </div>
 
-      {/* Main content area - always full width on mobile, adjusted width on larger screens */}
-      <div className="flex flex-col flex-grow w-full md:w-[calc(100%-16rem)] lg:w-[calc(100%-18rem)] overflow-hidden">
-        {/* Mobile Header */}
-        <header className="md:hidden bg-gray-800 p-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">My Students</h1>
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-md bg-gray-700 hover:bg-gray-600 transition"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-        </header>
+      {/* Main content area */}
+      <div className="flex-1 lg:ml-80">
+        {/* Topbar */}
+        <TutorTopbar />
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-gray-800 border-b border-gray-700 p-4">
-            <TutorSidebar />
+        {/* Page Content */}
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <div className="mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800">My Students</h1>
+            <p className="text-sm sm:text-base text-gray-500 mt-1">View and manage your enrolled students</p>
           </div>
-        )}
 
-        {/* Desktop Header */}
-        <div className="hidden md:block">
-          <TutorTopbar />
-        </div>
-
-        {/* Scrollable Content Area */}
-        <div className="flex-grow overflow-y-auto p-4 md:p-6">
-          <div className="max-w-7xl mx-auto">
-            {/* Page Header */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="hidden md:block mb-6"
-            >
-              <h1 className="text-2xl font-bold">My Students</h1>
-              <p className="text-gray-400 mt-1">View and manage your enrolled students</p>
-            </motion.div>
-
-            {/* Search bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="relative mb-6"
-            >
+          {/* Search bar */}
+          <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="relative w-full sm:w-80">
               <input
                 type="text"
                 placeholder="Search students..."
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={handleSearchChange}
+                className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-800 text-sm sm:text-base"
               />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            </motion.div>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+          </div>
 
-            {/* Students card/table - responsive */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <Card className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden mb-6">
-                <CardContent className="p-0 overflow-x-auto">
-                  {/* Desktop table - hidden on mobile */}
-                  <div className="hidden md:block">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-gray-700">
-                          <th className="text-left p-4 font-medium text-gray-400">Name</th>
-                          <th className="text-left p-4 font-medium text-gray-400">Email</th>
-                          <th className="text-left p-4 font-medium text-gray-400">Phone</th>
-                          <th className="text-left p-4 font-medium text-gray-400">Purchased Tutorials</th>
-                          <th className="text-left p-4 font-medium text-gray-400">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {loading ? (
-                          <tr>
-                            <td colSpan="5" className="text-center p-4">Loading...</td>
-                          </tr>
-                        ) : students.length === 0 ? (
-                          <tr>
-                            <td colSpan="5" className="text-center p-4">No students found</td>
-                          </tr>
-                        ) : (
-                          students.map((student) => (
-                            <tr key={student.id} className="border-b border-gray-700">
-                              <td className="p-4">
-                                <div className="flex items-center space-x-3">
-                                  <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                                    <span className="text-white font-medium">
-                                      {student.first_name && student.first_name[0] ? student.first_name[0].toUpperCase() : '?'}
-                                    </span>
-                                  </div>
-                                  <span>{student.first_name}</span>
-                                </div>
-                              </td>
-                              <td className="p-4">{student.email}</td>
-                              <td className="p-4">{student.phone_number || 'N/A'}</td>
-                              <td className="p-4">
-                                {student.purchased_courses && student.purchased_courses.length > 0 ? (
-                                  <ul className="list-disc list-inside">
-                                    {student.purchased_courses.map((course) => (
-                                      <li key={course.id} className="text-gray-300">
-                                        {course.course_title}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  <span className="text-gray-400">No courses purchased</span>
-                                )}
-                              </td>
-                              <td className="p-4">
-                                <button
-                                  onClick={() => handleChatClick(student.id)}
-                                  className="flex items-center space-x-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-                                >
-                                  <MessageCircle className="w-4 h-4" />
-                                  <span>Chat</span>
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
+          {/* Students card/table */}
+          <Card className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <CardContent className="p-0">
+              {/* Mobile card view (displays under 768px) */}
+              <div className="block md:hidden">
+                {loading ? (
+                  <div className="p-4 text-center">Loading...</div>
+                ) : students.length === 0 ? (
+                  <div className="p-4 text-center">No students found</div>
+                ) : (
+                  <div className="divide-y divide-gray-200">
+                    {students.map((student) => (
+                      <div key={student.id} className="p-4 hover:bg-gray-50">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <div className="h-10 w-10 bg-gray-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-medium">
+                              {student.first_name && student.first_name[0] ? student.first_name[0].toUpperCase() : '?'}
+                            </span>
+                          </div>
+                          <span className="font-medium text-gray-800">{student.first_name}</span>
+                        </div>
+                        <div className="ml-13 space-y-1 text-sm">
+                          <div className="text-gray-700">
+                            <span className="text-gray-600">Email: </span>{student.email}
+                          </div>
+                          <div className="text-gray-700">
+                            <span className="text-gray-600">Phone: </span>{student.phone_number || 'N/A'}
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Courses: </span>
+                            {student.purchased_courses && student.purchased_courses.length > 0 ? (
+                              <ul className="pl-2 mt-1">
+                                {student.purchased_courses.map((course) => (
+                                  <li key={course.id} className="text-gray-700">
+                                    {course.course_title}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <span className="text-gray-500">No courses purchased</span>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => handleChatClick(student.id)}
+                            className="w-full mt-2 flex items-center justify-center space-x-2 px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            <span>Chat</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  
-                  {/* Mobile card view */}
-                  <div className="md:hidden">
+                )}
+              </div>
+
+              {/* Desktop table view (displays above 768px) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left p-4 font-medium text-gray-600">Name</th>
+                      <th className="text-left p-4 font-medium text-gray-600">Email</th>
+                      <th className="text-left p-4 font-medium text-gray-600">Phone</th>
+                      <th className="text-left p-4 font-medium text-gray-600">Purchased Tutorials</th>
+                      <th className="text-left p-4 font-medium text-gray-600">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     {loading ? (
-                      <div className="text-center p-4">Loading...</div>
+                      <tr>
+                        <td colSpan="5" className="text-center p-4">Loading...</td>
+                      </tr>
                     ) : students.length === 0 ? (
-                      <div className="text-center p-4">No students found</div>
+                      <tr>
+                        <td colSpan="5" className="text-center p-4">No students found</td>
+                      </tr>
                     ) : (
-                      <div className="divide-y divide-gray-700">
-                        {students.map((student) => (
-                          <div key={student.id} className="p-4 space-y-3">
+                      students.map((student) => (
+                        <tr key={student.id} className="border-b border-gray-200 hover:bg-gray-50">
+                          <td className="p-4">
                             <div className="flex items-center space-x-3">
-                              <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                              <div className="h-10 w-10 bg-gray-600 rounded-lg flex items-center justify-center">
                                 <span className="text-white font-medium">
                                   {student.first_name && student.first_name[0] ? student.first_name[0].toUpperCase() : '?'}
                                 </span>
                               </div>
-                              <span className="font-medium">{student.first_name}</span>
+                              <span className="text-gray-800">{student.first_name}</span>
                             </div>
-                            
-                            <div className="space-y-1 pl-2">
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-400">Email:</span>
-                                <span className="text-sm">{student.email}</span>
-                              </div>
-                              
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-400">Phone:</span>
-                                <span className="text-sm">{student.phone_number || 'N/A'}</span>
-                              </div>
-                              
-                              <div>
-                                <span className="text-gray-400">Courses:</span>
-                                {student.purchased_courses && student.purchased_courses.length > 0 ? (
-                                  <ul className="text-sm mt-1 pl-2">
-                                    {student.purchased_courses.map((course) => (
-                                      <li key={course.id} className="text-gray-300">
-                                        {course.course_title}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  <span className="text-sm text-gray-400 block mt-1">No courses purchased</span>
-                                )}
-                              </div>
-                            </div>
-                            
+                          </td>
+                          <td className="p-4 text-gray-700">{student.email}</td>
+                          <td className="p-4 text-gray-700">{student.phone_number || 'N/A'}</td>
+                          <td className="p-4">
+                            {student.purchased_courses && student.purchased_courses.length > 0 ? (
+                              <ul className="list-disc list-inside">
+                                {student.purchased_courses.map((course) => (
+                                  <li key={course.id} className="text-gray-700">
+                                    {course.course_title}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <span className="text-gray-500">No courses purchased</span>
+                            )}
+                          </td>
+                          <td className="p-4">
                             <button
                               onClick={() => handleChatClick(student.id)}
-                              className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                              className="flex items-center space-x-2 px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
                             >
                               <MessageCircle className="w-4 h-4" />
                               <span>Chat</span>
                             </button>
-                          </div>
-                        ))}
-                      </div>
+                          </td>
+                        </tr>
+                      ))
                     )}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Pagination controls */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex items-center justify-between"
+          {/* Pagination controls */}
+          <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
+            <button
+              disabled={!hasPrevious}
+              onClick={() => handlePageChange('previous')}
+              className="w-full sm:w-auto flex items-center justify-center space-x-1 bg-white border border-gray-300 px-4 py-2 rounded-lg disabled:opacity-50 text-gray-700"
             >
-              <button
-                onClick={() => setPage(page - 1)}
-                disabled={!hasPrevious}
-                className="px-3 py-2 md:px-4 md:py-2 bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-50 flex items-center"
-              >
-                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
-                <span className="hidden md:inline ml-1">Previous</span>
-              </button>
-              <span className="text-sm md:text-base text-gray-400">
-                Page {page}
-                {totalCount > 0 && ` of ${Math.ceil(totalCount / 10)}`}
-              </span>
-              <button
-                onClick={() => setPage(page + 1)}
-                disabled={!hasNext}
-                className="px-3 py-2 md:px-4 md:py-2 bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-50 flex items-center"
-              >
-                <span className="hidden md:inline mr-1">Next</span>
-                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
-              </button>
-            </motion.div>
+              <ChevronLeft className="w-4 h-4" />
+              <span>Previous</span>
+            </button>
+
+            <span className="text-gray-500 text-sm">
+              Page {page} {totalCount > 0 && ` of ${Math.ceil(totalCount / 10)}`}
+            </span>
+
+            <button
+              disabled={!hasNext}
+              onClick={() => handlePageChange('next')}
+              className="w-full sm:w-auto flex items-center justify-center space-x-1 bg-white border border-gray-300 px-4 py-2 rounded-lg disabled:opacity-50 text-gray-700"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>

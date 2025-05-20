@@ -176,16 +176,7 @@ const TutorialVideoList = () => {
                       <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 line-clamp-2">{video.title}</h3>
                       <p className="text-sm md:text-base text-white mb-3 line-clamp-2">{video.description}</p>
 
-                      <div className="flex justify-between items-center text-zinc-400 mb-4 text-sm md:text-base">
-                        <div className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          <span>{video.duration}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                          <span>4.8</span>
-                        </div>
-                      </div>
+                      
 
                       <button
                         onClick={() => navigateVideo(video)}
@@ -216,7 +207,7 @@ const TutorialVideoList = () => {
           group z-50"
       >
         <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
-        <span className="hidden xs:inline">Chat with Tutor</span>
+        <span className="hidden sm:inline">Chat with Tutor</span>
       </button>
 
       <Footer />

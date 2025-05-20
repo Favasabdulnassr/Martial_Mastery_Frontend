@@ -1,4 +1,3 @@
-import { SidebarProvider } from '@/Components/SidebarProvider'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import TutorPrivateRoute from './PrivateRoutes/TutorPrivateRoute'
@@ -13,10 +12,11 @@ import AddCourse from '@/Pages/TutorSide/AddCourse'
 import PurchasedCourses from '@/Pages/TutorSide/UserPurchasedCourses'
 import TutorVideoPage from '@/Pages/TutorSide/TutorVideoPage'
 import TutorChat from '@/Pages/TutorSide/TutorChat'
+import { TutorSidebarProvider } from '@/Components/TutorSidebarProvider'
 
 function TutorRoute() {
     return (
-        <SidebarProvider>
+        <TutorSidebarProvider>
             <Routes>
 
                 <Route path='/tutorRegister' element={<TutorRegistrationPage />} />
@@ -42,7 +42,7 @@ function TutorRoute() {
                 </Route>
 
             </Routes>
-        </SidebarProvider>
+        </TutorSidebarProvider>
     )
 }
 

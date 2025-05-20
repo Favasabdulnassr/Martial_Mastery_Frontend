@@ -140,7 +140,7 @@ const AddVideo = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-100">
+    <div className="flex min-h-screen bg-gray-50 text-gray-800">
       <TutorSidebar />  {/* Add the sidebar */}
 
       <div className="flex-1 lg:ml-80">
@@ -149,10 +149,10 @@ const AddVideo = () => {
 
         {loading && (
           <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
-            <div className="bg-gray-800 p-8 rounded-xl shadow-2xl flex flex-col items-center">
+            <div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
               <Loader2 className="w-16 h-16 text-blue-500 animate-spin mb-4" />
-              <h3 className="text-xl font-semibold text-white">Uploading Video...</h3>
-              <p className="text-gray-400 text-sm mt-2">Please wait</p>
+              <h3 className="text-xl font-semibold text-gray-800">Uploading Video...</h3>
+              <p className="text-gray-600 text-sm mt-2">Please wait</p>
             </div>
           </div>
         )}
@@ -161,14 +161,14 @@ const AddVideo = () => {
           <div className="flex items-center mb-6">
             <button
               onClick={() => navigate(-1)}
-              className="mr-4 p-2 hover:bg-gray-800 rounded-lg"
+              className="mr-4 p-2 hover:bg-gray-100 rounded-lg"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <h1 className="text-2xl font-bold">Add Video to Tutorial</h1>
           </div>
 
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-white border-gray-200">
             <CardContent className="p-6">
               {Course && (
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -184,7 +184,7 @@ const AddVideo = () => {
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      className={`w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 ${errors.title ? 'border-red-500' : ''
+                      className={`w-full bg-gray-50 border-gray-300 rounded-lg px-4 py-2.5 ${errors.title ? 'border-red-500' : ''
                         }`}
                       required
                     />
@@ -200,7 +200,7 @@ const AddVideo = () => {
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
-                      className={`w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 ${errors.description ? 'border-red-500' : ''
+                      className={`w-full bg-gray-50 border-gray-300 rounded-lg px-4 py-2.5 ${errors.description ? 'border-red-500' : ''
                         }`}
                       required
                     />
@@ -215,7 +215,7 @@ const AddVideo = () => {
                       type="file"
                       name="video_file"
                       onChange={handlFileChange}
-                      className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                      className="w-full bg-gray-50 border-gray-300 rounded-lg px-4 py-2.5"
                       accept="video/*" // Only allow video files
                       required
                     />
@@ -233,7 +233,7 @@ const AddVideo = () => {
                       name="order"
                       value={formData.order}
                       onChange={handleInputChange}
-                      className={`w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5 ${errors.order ? 'border-red-500' : ''
+                      className={`w-full bg-gray-50 border-gray-300 rounded-lg px-4 py-2.5 ${errors.order ? 'border-red-500' : ''
                         }`}
                       required
                     />
@@ -248,7 +248,7 @@ const AddVideo = () => {
                       type="file"
                       name="thumbnail"
                       onChange={handlFileChange}
-                      className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                      className="w-full bg-gray-50 border-gray-300 rounded-lg px-4 py-2.5"
                       accept="image/*" // Only allow image files
                       required
                     />
@@ -278,7 +278,7 @@ const AddVideo = () => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-lg"
+                      className="flex items-center space-x-2 bg-gray-600 hover:bg-gray-700 text-white px-6 py-2.5 rounded-lg"
                     >
                      Add Video
                     </button>

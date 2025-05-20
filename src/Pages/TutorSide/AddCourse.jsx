@@ -142,7 +142,7 @@ const AddCourse = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-100">
+    <div className="flex min-h-screen bg-indigo-50 text-gray-800">
       <TutorSidebar />
       
       <div className="flex-1 lg:ml-80">
@@ -153,11 +153,11 @@ const AddCourse = () => {
           <div className="flex items-center mb-6">
             <button
               onClick={() => navigate(-1)}
-              className="mr-4 p-2 hover:bg-gray-800 rounded-lg"
+              className="mr-4 p-2 hover:bg-indigo-100 rounded-lg"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-2xl font-bold">Create New Course</h1>
+            <h1 className="text-2xl font-bold text-indigo-900">Create New Course</h1>
           </div>
 
           {/* {error && (
@@ -167,12 +167,12 @@ const AddCourse = () => {
             </Alert>
           )} */}
 
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-white border-indigo-200">
             <CardContent className="p-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Course Selection */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-indigo-800">
                     Course Title
                   </label>
                   <div className="relative">
@@ -181,23 +181,23 @@ const AddCourse = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    className="w-full bg-indigo-50 border-indigo-200 rounded-lg px-4 py-2.5"
                     required
                   />
                   {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-400" />
                   </div>
                 </div>
 
                  {/* Course Description */}
                  <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <label className="block text-sm font-medium mb-2 text-indigo-800">Description</label>
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
                     rows="4"
-                    className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    className="w-full bg-indigo-50 border-indigo-200 rounded-lg px-4 py-2.5"
                     required
                   />
                   {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
@@ -205,13 +205,13 @@ const AddCourse = () => {
 
                 {/* Duration */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Duration (in weeks)</label>
+                  <label className="block text-sm font-medium mb-2 text-indigo-800">Duration (in weeks)</label>
                   <input
                     type="number"
                     name="duration_weeks"
                     value={formData.duration_weeks}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    className="w-full bg-indigo-50 border-indigo-200 rounded-lg px-4 py-2.5"
                     min="1"
                     required
                   />
@@ -220,13 +220,13 @@ const AddCourse = () => {
 
                 {/* Fees */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Fees</label>
+                  <label className="block text-sm font-medium mb-2 text-indigo-800">Fees</label>
                   <input
                     type="number"
                     name="fees"
                     value={formData.fees}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-700 border-gray-600 rounded-lg px-4 py-2.5"
+                    className="w-full bg-indigo-50 border-indigo-200 rounded-lg px-4 py-2.5"
                     step="0.01" // Allow decimal points
                     min="0"
                     required
@@ -240,7 +240,7 @@ const AddCourse = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-lg"
+                    className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg"
                   >
                     {loading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />

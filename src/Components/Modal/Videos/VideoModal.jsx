@@ -138,12 +138,12 @@ const VideoModal = ({ video, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 border-gray-700 p-6 w-full max-w-3xl mx-4 rounded-lg">
+      <div className="bg-white border border-gray-200 p-6 w-full max-w-3xl mx-4 rounded-lg shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-100">
+          <h3 className="text-lg font-semibold text-gray-800">
             Watch: {video.title}
           </h3>
-          <button onClick={onClose} className="text-white hover:text-gray-400">
+          <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -175,12 +175,12 @@ const VideoModal = ({ video, onClose }) => {
               onTouchStart={handleSeekStart}
               onMouseUp={handleSeekEnd}
               onTouchEnd={handleSeekEnd}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               min="0"
               max="100"
               step="0.1"
             />
-            <span className="text-white text-sm min-w-[80px]">
+            <span className="text-gray-700 text-sm min-w-[80px]">
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
           </div>
@@ -190,7 +190,7 @@ const VideoModal = ({ video, onClose }) => {
               {/* Play/Pause Button */}
               <button
                 onClick={togglePlayPause}
-                className="text-white hover:text-gray-400 px-3 py-1 bg-gray-700 rounded"
+                className="text-white hover:text-gray-200 px-3 py-1 bg-gray-600 rounded-lg"
               >
               {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
 
@@ -199,7 +199,7 @@ const VideoModal = ({ video, onClose }) => {
               {/* Mute Button */}
               <button
                 onClick={toggleMute}
-                className="text-white hover:text-gray-400 px-3 py-1 bg-gray-700 rounded"
+                className="text-white hover:text-gray-200 px-3 py-1 bg-gray-600 rounded-lg"
               >
                                       {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
 
@@ -211,11 +211,11 @@ const VideoModal = ({ video, onClose }) => {
                   type="range"
                   value={volume * 100}
                   onChange={handleVolumeChange}
-                  className="w-20 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                  className="w-20 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   min="0"
                   max="100"
                 />
-                <span className="text-white text-sm">{Math.round(volume * 100)}%</span>
+                <span className="text-gray-700 text-sm">{Math.round(volume * 100)}%</span>
               </div>
             </div>
 
@@ -224,7 +224,7 @@ const VideoModal = ({ video, onClose }) => {
               <select
                 value={speed}
                 onChange={handleSpeedChange}
-                className="bg-gray-700 text-white border rounded px-2 py-1"
+                className="bg-gray-50 text-gray-700 border border-gray-300 rounded-lg px-2 py-1"
               >
                 <option value="0.5">0.5x</option>
                 <option value="1">1x</option>
@@ -236,7 +236,7 @@ const VideoModal = ({ video, onClose }) => {
               <select
                 value={quality}
                 onChange={handleQualityChange}
-                className="bg-gray-700 text-white border rounded px-2 py-1"
+                className="bg-gray-50 text-gray-700 border border-gray-300 rounded-lg px-2 py-1"
               >
                 <option value="1080">1080p</option>
                 <option value="720">720p</option>

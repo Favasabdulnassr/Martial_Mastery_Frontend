@@ -29,6 +29,7 @@ import CourseEditModal from '@/Components/Modal/Courses/EditCourses';
 import ConfirmationModal from '@/Components/Modal/Courses/Confirmation';
 import { toast } from 'react-toastify';
 import StatusConfirmation from '@/Components/Modal/Courses/StatusConfirmation';
+import { useTutorSidebar } from '@/Components/TutorSidebarProvider';
 
 const CourseManagement = () => {
   const [courses, setCourses] = useState([]);
@@ -43,10 +44,10 @@ const CourseManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [courseId, setCourseId] = useState(null);
   const [completed, SetCompleted] = useState('');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
   const { role, user } = useSelector((state) => state.login);
+  const { isSidebarTutorOpen } = useTutorSidebar();
  
   useEffect(() => {
     if (role !== 'tutor') {
@@ -178,49 +179,31 @@ const CourseManagement = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-100">
-      {/* Sidebar - visible on medium screens and up */}
-      <aside className="hidden md:block w-64 lg:w-72 flex-shrink-0 bg-gray-800 h-full overflow-y-auto">
+    <div className="flex min-h-screen bg-gray-50 text-gray-800">
+      {/* Sidebar - Fixed position on all screens with transformation for responsive behavior */}
+      <div className={`fixed top-0 left-0 h-full w-72 lg:w-80 bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 z-20 ${
+        isSidebarTutorOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
         <TutorSidebar />
-      </aside>
+      </div>
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col w-full md:w-[calc(100%-16rem)] lg:w-[calc(100%-18rem)] overflow-hidden">
-        {/* Mobile Header */}
-        <header className="md:hidden bg-gray-800 p-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">Course Management</h1>
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-md bg-gray-700 hover:bg-gray-600 transition"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-        </header>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-gray-800 border-b border-gray-700 p-4">
-            <TutorSidebar />
-          </div>
-        )}
-
-        {/* Desktop Header */}
-        <div className="hidden md:block">
-          <TutorTopbar />
-        </div>
+      <div className="flex-1 lg:ml-80">
+        {/* Topbar */}
+        <TutorTopbar />
 
         {/* Scrollable Content Area */}
-        <div className="flex-grow overflow-y-auto p-4 md:p-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
               <div>
-                <h1 className="text-xl md:text-2xl font-bold">Course Management</h1>
-                <p className="text-gray-400 mt-1 text-sm md:text-base">Create and manage your courses and lessons</p>
+                <h1 className="text-xl md:text-2xl font-bold text-gray-800">Course Management</h1>
+                <p className="text-gray-500 mt-1 text-sm md:text-base">Create and manage your courses and lessons</p>
               </div>
               <button
                 onClick={handleAddCourse}
-                className="flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors w-full md:w-auto"
+                className="flex items-center justify-center px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors w-full md:w-auto text-white"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Add Course
@@ -229,12 +212,12 @@ const CourseManagement = () => {
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-white border-gray-200">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs md:text-sm text-gray-400">Active Courses</p>
-                      <p className="text-lg md:text-2xl font-bold mt-1">
+                      <p className="text-xs md:text-sm text-gray-500">Active Courses</p>
+                      <p className="text-lg md:text-2xl font-bold mt-1 text-gray-800">
                         {courses.filter(c => !c.completed).length}
                       </p>
                     </div>
@@ -245,12 +228,12 @@ const CourseManagement = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-white border-gray-200">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs md:text-sm text-gray-400">Pending Approval</p>
-                      <p className="text-lg md:text-2xl font-bold mt-1">
+                      <p className="text-xs md:text-sm text-gray-500">Pending Approval</p>
+                      <p className="text-lg md:text-2xl font-bold mt-1 text-gray-800">
                         {courses.filter(c => c.completed && c.status === 'pending').length}
                       </p>
                     </div>
@@ -261,12 +244,12 @@ const CourseManagement = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800 border-gray-700 sm:col-span-2 lg:col-span-1">
+              <Card className="bg-white border-gray-200 sm:col-span-2 lg:col-span-1">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs md:text-sm text-gray-400">Approved Courses</p>
-                      <p className="text-lg md:text-2xl font-bold mt-1">
+                      <p className="text-xs md:text-sm text-gray-500">Approved Courses</p>
+                      <p className="text-lg md:text-2xl font-bold mt-1 text-gray-800">
                         {courses.filter(c => c.status === 'approved').length}
                       </p>
                     </div>
@@ -281,14 +264,14 @@ const CourseManagement = () => {
             {/* Courses List */}
             <div className="space-y-4">
               {courses.map((course) => (
-                <Card key={course.id} className="bg-gray-800 border-gray-700">
+                <Card key={course.id} className="bg-white border-gray-200">
                   <CardHeader
                     className="cursor-pointer p-4 md:p-6"
                     onClick={() => toggleCourse(course.id)}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex flex-col">
-                        <CardTitle className="text-base md:text-lg font-semibold flex flex-wrap items-center gap-2">
+                        <CardTitle className="text-base md:text-lg font-semibold flex flex-wrap items-center gap-2 text-gray-800">
                           {course.title}
                           <span className={`flex items-center px-2 py-1 rounded-full text-xs ${
                             course.status === 'approved' ? 'bg-green-500/20 text-green-400' :
@@ -299,7 +282,7 @@ const CourseManagement = () => {
                             <span className="ml-1">{course.status}</span>
                           </span>
                         </CardTitle>
-                        <p className="text-xs md:text-sm text-gray-400 mt-1 line-clamp-2">
+                        <p className="text-xs md:text-sm text-gray-500 mt-1 line-clamp-2">
                           {course.description}
                         </p>
                       </div>
@@ -367,14 +350,14 @@ const CourseManagement = () => {
                               setCourseToEdit(course);
                               setShowEditModal(true);
                             }}
-                            className="text-gray-400 hover:text-gray-300 p-1"
+                            className="text-gray-500 hover:text-gray-700 p-1"
                           >
                             <Edit className="w-4 h-4 md:w-5 md:h-5" />
                           </button>
                           {expandedCourse === course.id ? (
-                            <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                            <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-gray-500" />
                           ) : (
-                            <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                            <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-500" />
                           )}
                         </div>
                       </div>
@@ -384,14 +367,14 @@ const CourseManagement = () => {
                   {expandedCourse === course.id && (
                     <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
                       {course.tutorials?.length === 0 ? (
-                        <div className="flex items-center justify-center p-4 md:p-6 bg-gray-700/50 rounded-lg">
-                          <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-gray-400 mr-2" />
-                          <p className="text-sm text-gray-400">No lessons added yet. Add your first lesson to get started.</p>
+                        <div className="flex items-center justify-center p-4 md:p-6 bg-gray-100 rounded-lg">
+                          <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-gray-500 mr-2" />
+                          <p className="text-sm text-gray-500">No lessons added yet. Add your first lesson to get started.</p>
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           {course.tutorials?.map((lesson) => (
-                            <div key={lesson.id} className="bg-gray-700 rounded-lg overflow-hidden">
+                            <div key={lesson.id} className="bg-gray-100 rounded-lg overflow-hidden">
                               <div
                                 className="relative cursor-pointer"
                                 onClick={() => openVideoModal(lesson)}
@@ -406,8 +389,8 @@ const CourseManagement = () => {
                                 </div>
                               </div>
                               <div className="p-3 md:p-4">
-                                <h3 className="font-medium text-sm md:text-base line-clamp-1">{lesson.title}</h3>
-                                <p className="text-xs md:text-sm text-gray-400 mt-1 line-clamp-2">{lesson.description}</p>
+                                <h3 className="font-medium text-sm md:text-base line-clamp-1 text-gray-800">{lesson.title}</h3>
+                                <p className="text-xs md:text-sm text-gray-500 mt-1 line-clamp-2">{lesson.description}</p>
                                 {!course.completed && (
                                   <button
                                     onClick={(e) => {
@@ -419,7 +402,7 @@ const CourseManagement = () => {
                                       });
                                       setShowDeleteModal(true);
                                     }}
-                                    className="mt-2 md:mt-4 p-1 hover:bg-gray-600 rounded-lg transition-colors"
+                                    className="mt-2 md:mt-4 p-1 hover:bg-gray-200 rounded-lg transition-colors"
                                   >
                                     <Trash2 className="w-4 h-4 text-red-400" />
                                   </button>
