@@ -60,6 +60,7 @@ const CourseManagement = () => {
   const fetchCourses = async () => {
     try {
       const tutorId = user?.id;
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get(`course/`);
       console.log('here is the data', response.data);
       

@@ -45,6 +45,8 @@ function PurchasedCoursesPage() {
     const fetchPurchasedCourses = async () => {
       try {
         setIsLoading(true);
+        // Add a short delay only when the component mounts
+       await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.get('payment/purchased-courses/');
         setPurchasedCourses(response.data);
       } catch (error) {

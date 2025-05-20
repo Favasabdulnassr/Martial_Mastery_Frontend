@@ -12,14 +12,23 @@ function CoursesPage() {
   const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
   const [loadingStates, setLoadingStates] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+
+        setIsLoading(true);
+        // Add a short delay only when the component mounts
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.get('user/completed-courses/');
         setCourses(response.data);
       } catch (error) {
         console.log('Error fetching courses:', error);
+      } finally {
+        setIsLoading(false);
+
       }
     };
 
@@ -103,47 +112,53 @@ function CoursesPage() {
             </div>
 
             {/* Display filtered courses */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {filteredCourses.length > 0 ? (
-                filteredCourses.map((course) => (
-                  <motion.div
-                    key={course.id}
-                    whileHover={{ scale: 1.02 }}
-                    className="p-4 sm:p-6 md:p-8 bg-black rounded-2xl shadow-xl border border-cyan-900/20"
-                  >
-                    <div className="relative">
-                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">{course.title}</h3>
-                      <p className="text-zinc-400 mb-3 sm:mb-4 text-sm sm:text-base line-clamp-3">{course.description}</p>
-                      <p className="text-zinc-400 mb-3 sm:mb-4 text-sm sm:text-base">
-                        <strong>Fees:</strong> {course.fees} USD
-                      </p>
-                      <p className="text-zinc-400 mb-3 sm:mb-4 text-sm sm:text-base">
-                        <strong>Duration:</strong> {course.duration_weeks} weeks
-                      </p>
-                      <div className="text-violet-400 flex items-center font-semibold mb-4 text-sm sm:text-base">
-                        <span className="mr-2">Tutor: {course.tutor.first_name} {course.tutor.last_name || ''}</span>
-                      </div>
+            {isLoading ? (
+              <div className="text-center py-10 md:py-20">
+                <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-t-2 border-b-2 border-cyan-400 mx-auto"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+                {filteredCourses.length > 0 ? (
+                  filteredCourses.map((course) => (
+                    <motion.div
+                      key={course.id}
+                      whileHover={{ scale: 1.02 }}
+                      className="p-4 sm:p-6 md:p-8 bg-black rounded-2xl shadow-xl border border-cyan-900/20"
+                    >
+                      <div className="relative">
+                        <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">{course.title}</h3>
+                        <p className="text-zinc-400 mb-3 sm:mb-4 text-sm sm:text-base line-clamp-3">{course.description}</p>
+                        <p className="text-zinc-400 mb-3 sm:mb-4 text-sm sm:text-base">
+                          <strong>Fees:</strong> {course.fees} USD
+                        </p>
+                        <p className="text-zinc-400 mb-3 sm:mb-4 text-sm sm:text-base">
+                          <strong>Duration:</strong> {course.duration_weeks} weeks
+                        </p>
+                        <div className="text-violet-400 flex items-center font-semibold mb-4 text-sm sm:text-base">
+                          <span className="mr-2">Tutor: {course.tutor.first_name} {course.tutor.last_name || ''}</span>
+                        </div>
 
-                      <div className="flex space-x-4">
-                        {course.tutorials && (
-                          <button
-                            onClick={() => handlePayment(course.id)}
-                            disabled={loadingStates[course.id]}
-                            className="w-full px-4 sm:px-6 py-2 bg-violet-500 text-white rounded-full hover:bg-violet-600 transition disabled:opacity-50 text-sm sm:text-base"
-                          >
-                            {loadingStates[course.id] ? 'Processing...' : 'Purchase Now'}
-                          </button>
-                        )}
+                        <div className="flex space-x-4">
+                          {course.tutorials && (
+                            <button
+                              onClick={() => handlePayment(course.id)}
+                              disabled={loadingStates[course.id]}
+                              className="w-full px-4 sm:px-6 py-2 bg-violet-500 text-white rounded-full hover:bg-violet-600 transition disabled:opacity-50 text-sm sm:text-base"
+                            >
+                              {loadingStates[course.id] ? 'Processing...' : 'Purchase Now'}
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="col-span-1 sm:col-span-2 md:col-span-3 text-center py-10 md:py-20">
-                  <p className="text-zinc-400 text-lg">No courses found matching your search</p>
-                </div>
-              )}
-            </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-1 sm:col-span-2 md:col-span-3 text-center py-10 md:py-20">
+                    <p className="text-zinc-400 text-lg">No courses found matching your search</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </motion.div>
       </main>

@@ -60,16 +60,10 @@ const Comment = ({ comment, onReply, onDelete, onUpdate, currentUser, replyTo, o
   return (
     <div className="flex space-x-4" style={{ marginLeft: `${comment.parent ? '2rem' : '0'}` }}>
       <div
-        className={`w-10 h-10 rounded-full flex items-center justify-center ${comment.user.profile ? '' : 'bg-gray-500 text-white font-semibold'}`}
+        className={'w-10 h-10 rounded-full flex items-center justify-center bg-gray-500 text-white font-semibold'}
       >
-        {comment.user.profile ? (
-          <img
-            src={comment.user.profile}
-            className="w-full h-full rounded-full"
-          />
-        ) : (
-          comment.user.name[0].toUpperCase()
-        )}
+        
+          {comment.user.name[0].toUpperCase()}
       </div>
       <div className="flex-1">
         <div className="flex items-center space-x-2">
@@ -244,6 +238,8 @@ const CommentsSection = ({ lessonId }) => {
   const fetchComments = async () => {
     try {
       setIsLoading(true);
+       // Add a short delay only when the component mounts
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get(`comments/get-comments/${lessonId}/`);
       console.log('appo angane', response.data);
 

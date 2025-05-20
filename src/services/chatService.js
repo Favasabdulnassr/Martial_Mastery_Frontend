@@ -3,6 +3,7 @@ import axiosInstance from "./interceptor"
 
 export const createOrGetChatRoom = async(studentId,tutorId) => {
     try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.post('chat/api/chats/create_or_get_room/',{
             student_id:studentId,
             tutor_id :tutorId
@@ -20,6 +21,7 @@ export const createOrGetChatRoom = async(studentId,tutorId) => {
 
 export const fetchMessages = async (roomId) => {
     try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.get(`chat/api/chats/${roomId}/messages/`);
         return response.data;
       } catch (error) {

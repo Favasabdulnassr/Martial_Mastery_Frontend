@@ -44,6 +44,8 @@ const VideoPage = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
+         // Add a short delay only when the component mounts
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const videoResponse = await axiosInstance.get(`payment/purchased-course/${tutorialId}/lesson/${videoId}/`);
         setVideo(videoResponse.data);
       } catch (error) {
@@ -421,24 +423,7 @@ const VideoPage = () => {
           </div>
 
           {/* Suggested Videos Section */}
-          <div className="lg:w-1/4 hidden lg:block">
-            <div className="bg-[#0f0f0f] rounded-lg p-4 sticky top-24">
-              <h3 className="text-white font-medium mb-4">Up Next</h3>
-              {/* Add suggested videos here */}
-              <div className="space-y-4">
-                {/* Placeholder content for suggested videos */}
-                {Array(3).fill().map((_, i) => (
-                  <div key={i} className="flex space-x-2 cursor-pointer hover:bg-gray-900 p-2 rounded-lg">
-                    <div className="w-24 h-16 bg-gray-800 rounded flex-shrink-0"></div>
-                    <div>
-                      <p className="text-white text-sm font-medium">Suggested Video {i + 1}</p>
-                      <p className="text-gray-400 text-xs mt-1">10:30</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+         
         </div>
       </main>
 

@@ -27,6 +27,7 @@ const PurchasedCourses = () => {
 
   const fetchPurchasedCourses = async () => {
     try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get('payment/tutor/purchased-courses/');
       console.log('Purchased courses:', response.data);
       setPurchasedCourses(response.data);

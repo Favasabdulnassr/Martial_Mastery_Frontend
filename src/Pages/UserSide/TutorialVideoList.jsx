@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 import { 
   Play, 
   Clock, 
@@ -27,6 +28,8 @@ const TutorialVideoList = () => {
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
+         // Add a short delay only when the component mounts
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.get(`payment/purchased-courses/${tutorialId}/lessons/`);
         setTutorial(response.data);
         setLoading(false);
@@ -68,6 +71,10 @@ const TutorialVideoList = () => {
   const toggleSearch = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+
+
+  
 
   return (
     <div className="min-h-screen flex flex-col bg-black">

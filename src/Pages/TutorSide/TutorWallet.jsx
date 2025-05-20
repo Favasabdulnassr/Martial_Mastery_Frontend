@@ -24,6 +24,7 @@ const TutorWallet = () => {
 
   const fetchWalletData = async () => {
     try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get(`tutor-wallet/${user.id}/`);
       setWalletData(response.data);
     } catch (error) {

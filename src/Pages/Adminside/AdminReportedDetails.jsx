@@ -16,8 +16,8 @@ function AdminReportedDetails() {
     useEffect(() => {
         const fetchReportDetails = async () => {
           try {
-            console.log('ssssssssssssss',courseId);
-            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+    
             const response = await axiosInstance.get(`/adminside/course-reports/${courseId}/`);
             console.log('nnnnnnnnnnnnnnn',response.data);
             

@@ -27,6 +27,7 @@ const TutorStudents = () => {
   const fetchStudents = async () => {
     try {
       setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get(`payment/tutor/${user.id}/students/`);
       setStudents(response.data);
       // Uncomment when pagination is implemented in the backend

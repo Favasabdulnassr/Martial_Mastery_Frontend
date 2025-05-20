@@ -25,6 +25,7 @@ const AdminCourseDetail = () => {
 
     const fetchCourseDetails = async () => {
         try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
             const response = await axiosInstance.get(`course/${courseId}/completed/`);
             setCourse(response.data);
         } catch (error) {

@@ -37,6 +37,7 @@ const TutorVideoPage = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const videoResponse = await axiosInstance.get(`payment/tutor-purchased-course/${tutorialId}/lesson/${videoId}/`);
         setVideo(videoResponse.data);
       } catch (error) {

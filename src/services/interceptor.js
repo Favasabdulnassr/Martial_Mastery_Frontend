@@ -4,13 +4,13 @@ import { logout } from "@/Redux/Reducers/LoginReducer";
 
 
 
-const axiosInstance = axios.create({
-    baseURL: "http://127.0.0.1:8000",
-});
-
 // const axiosInstance = axios.create({
-//   baseURL: "https://www.martia.sbs",
+//     baseURL: "http://127.0.0.1:8000",
 // });
+
+const axiosInstance = axios.create({
+  baseURL: "https://www.martia.sbs",
+});
 
 
 // Define a function to handle token refresh and logout
@@ -33,11 +33,13 @@ export const setupAxiosInterceptors = (dispatch) => {
   // Response Interceptor to handle token expiration
   axiosInstance.interceptors.response.use(
     (response) => {
+
         
       return response
     },
     
     async (error) => {
+
       const originalRequest = error.config;
 
       if (error.response?.status === 401 && !originalRequest._retry) {

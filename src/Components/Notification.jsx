@@ -45,6 +45,7 @@ const NotificationBell = () => {
 
   const fetchNotifications = async () => {
     try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get('/api/notifications/recent/');
       setNotifications(response.data);
       setNotificationCount(response.data.length);

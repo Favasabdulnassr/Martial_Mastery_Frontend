@@ -21,6 +21,7 @@ function AdminReports() {
   useEffect(() => {
     const fetchReportedCourses = async () => {
       try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.get('adminside/reported-courses');
         console.log('reeeeeeeeeeeeeeeport', response.data);
         setReportedCourses(response.data)
