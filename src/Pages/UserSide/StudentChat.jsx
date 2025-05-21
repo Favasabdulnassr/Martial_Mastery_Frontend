@@ -44,7 +44,6 @@ const StudentChat = () => {
         setTutor(tutorResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
-        toast.error('Failed to fetch tutor data');
       } finally {
         setLoading(false);
       }
@@ -73,7 +72,6 @@ const StudentChat = () => {
 
         if (!accessToken) {
           console.error('No authentication token found');
-          toast.error('Authentication failed');
           return;
         }
 
@@ -92,7 +90,6 @@ const StudentChat = () => {
 
       } catch (error) {
         console.error('Error initializing chat:', error);
-        toast.error('Failed to initialize chat');
       }
     };
 
@@ -150,7 +147,6 @@ const StudentChat = () => {
         messageInputRef.current?.focus();
       } else {
         console.error('Failed to send message');
-        toast.error('Failed to send message');
       }
     }
   };

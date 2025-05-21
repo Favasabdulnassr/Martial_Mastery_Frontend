@@ -8,6 +8,7 @@ import {
     Lock,
     Users,
 } from 'lucide-react';
+import { BASE_URL } from '@/services/constents';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '@/Redux/Reducers/LoginReducer';
@@ -30,7 +31,7 @@ const TutorProfilePage = () => {
     const [Experience, setExperience] = useState('');
     const [Bio, setBio] = useState('');
 
-    const { isAuthenticated, first_name, last_name, role, phone_number, email, profile, bio, experience } = useSelector((state) => state.login);
+    const { isAuthenticated, first_name, last_name, role, phone_number, email, profile, bio, experience, google_login } = useSelector((state) => state.login);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -139,18 +140,18 @@ const TutorProfilePage = () => {
         <div className="flex min-h-screen bg-gray-50 text-gray-800">
             {/* Sidebar */}
             <TutorSidebar />
-            
+
             {/* Main Content */}
             <div className="flex-1 lg:ml-80">
                 <TutorTopbar />
-                
+
                 <div className="p-4 sm:p-6 space-y-6">
                     {/* Page Header */}
                     <div className="mb-6">
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Your Profile</h1>
                         <p className="text-sm sm:text-base text-gray-500 mt-1">Manage your personal information and account settings</p>
                     </div>
-                    
+
                     {/* Profile Header */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -163,11 +164,19 @@ const TutorProfilePage = () => {
                             <div className="relative">
                                 <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gray-200">
                                     {profile ? (
-                                        <img
-                                            src={`http://127.0.0.1:8000${profile}`}
-                                            alt="Profile"
-                                            className="w-full h-full object-cover"
-                                        />
+                                        google_login ? (
+                                            <img
+                                                src={profile}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <img
+                                                src={`${BASE_URL}${profile}`}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        )
                                     ) : previewImage ? (
                                         <img
                                             src={previewImage}
@@ -176,7 +185,7 @@ const TutorProfilePage = () => {
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
-                                            <Shield className="w-10 h-10 text-gray-400" />
+                                            <Shield className="w-10 h-10 md:w-12 md:h-12 text-cyan-400" />
                                         </div>
                                     )}
                                 </div>
