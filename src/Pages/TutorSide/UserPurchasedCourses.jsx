@@ -86,7 +86,7 @@ const PurchasedCourses = () => {
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs md:text-sm text-gray-600">Total Purchased Courses</p>
+                    <p className="text-xs md:text-sm text-gray-600">Total Purchased Course</p>
                     <p className="text-lg md:text-2xl font-bold mt-1 text-gray-800">
                       {purchasedCourses.length}
                     </p>
