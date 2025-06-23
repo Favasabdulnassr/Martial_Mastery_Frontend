@@ -129,7 +129,7 @@ const loginSlice = createSlice({
             state.google_login=null
             state.experience = action.payload.experience
             state.user = {  // Store the whole user object here
-                id: action.payload.user_id,
+                ...state.user,
                 first_name: action.payload.first_name,
                 last_name: action.payload.last_name,
                 role: action.payload.role,

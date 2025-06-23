@@ -281,6 +281,7 @@ const ProfilePage = () => {
                         type="email"
                         className="w-full p-2 md:p-3 bg-black border border-zinc-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white text-sm md:text-base"
                         placeholder="Enter your email"
+                        disabled={true}
                         onChange={(e) => setEmail(e.target.value)}
                         value={Email}
                       />

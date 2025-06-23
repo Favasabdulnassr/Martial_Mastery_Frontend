@@ -11,7 +11,7 @@ import { SidebarProvider } from './Components/SidebarProvider'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import ForgotPassword from './Components/ForgotPassword'
 import ResetPassword from './Components/ResetPassword'
-import AdminDashboard from './Pages/Adminside/AdminDashboard'
+import AdminDashboard from './Pages/Adminside/AdminDashboard' 
 
 
 

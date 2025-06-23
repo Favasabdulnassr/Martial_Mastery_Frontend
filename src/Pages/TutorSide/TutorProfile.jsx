@@ -286,6 +286,7 @@ const TutorProfilePage = () => {
                                                 type="email"
                                                 className="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 text-gray-800 text-sm"
                                                 placeholder="Enter your email"
+                                                disabled={true}
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />
