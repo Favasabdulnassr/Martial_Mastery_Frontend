@@ -124,7 +124,6 @@ const loginSlice = createSlice({
             state.email = action.payload.email || state.email
             state.phone_number = action.payload.phone_number || state.phone_number
             state.role = action.payload.role || state.role   
-            state.profile = action.payload.profile || state.profile
             state.bio = action.payload.bio 
             state.google_login=null
             state.experience = action.payload.experience
@@ -135,7 +134,7 @@ const loginSlice = createSlice({
                 role: action.payload.role,
                 email: action.payload.email,
                 phone_number: action.payload.phone_number,
-                profile: action.payload.profile,
+                
             };
  
         })

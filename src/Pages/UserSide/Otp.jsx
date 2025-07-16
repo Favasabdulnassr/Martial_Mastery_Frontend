@@ -12,50 +12,109 @@ const OTPVerificationPage = () => {
 
   const inputRefs = useRef([]);
   const navigate = useNavigate();
+  const [isResending, setIsResending] = useState(false);
+
   const sessionId = localStorage.getItem('session_id');
 
-  const {isAuthenticated, role} = useSelector((state) => state.login);
+  const { isAuthenticated, role } = useSelector((state) => state.login);
 
   useEffect(() => {
-    if(role === 'admin') {
-        navigate('/admin/dashboard');
+    if (role === 'admin') {
+      navigate('/admin/dashboard');
     }
-    else if(role === 'tutor') {
+    else if (role === 'tutor') {
       navigate('/tutor/dashboard');
     }
   }, [isAuthenticated, role, navigate]);
 
+
+
+ const startTimer = (duration) => {
+  setTimeLeft(duration);
+  const timer = setInterval(() => {
+    setTimeLeft((prev) => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        localStorage.removeItem('otpExpirationTime');
+        console.error('OTP has expired. Please request a new one');
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(timer);
+};
+
+
+
+
   useEffect(() => {
-    const expirationTime = localStorage.getItem('otpExpirationTime');
-    
-    if (expirationTime) {
-      const expirationTimestamp = new Date(expirationTime).getTime();
-      const currentTime = expirationTimestamp - 90000;
-      const remainingTime = 85;
+  const expirationTime = localStorage.getItem('otpExpirationTime');
+  console.log('expirationtimekkkkkkkkk',expirationTime);
+  
+
+  if (expirationTime) {
+    const remainingTime = Math.floor((parseInt(expirationTime) - Date.now()) / 1000);
+
+    if (remainingTime > 0) {
       setTimeLeft(remainingTime);
-
-      const timer = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
-            clearInterval(timer);
-            localStorage.removeItem('otpExpirationTime');
-            toast.error('OTP has expired. Please request a new one');
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timer); // Cleanup on component unmount
+      const cleanup = startTimer(remainingTime);
+      return cleanup;
+    } else {
+      localStorage.removeItem('otpExpirationTime');
     }
-  }, []);
+  }
+}, []);
+
+
+
+  const handleResendOtp = async () => {
+    if (!sessionId) {
+      toast.error("Session ID not found. Please register again.");
+      return;
+    }
+
+    try {
+      setIsResending(true);
+
+      const response = await axios.post(`${BASE_URL}/auth/resend-otp/`, {
+        sessionId: sessionId,
+      });
+
+      toast.success(response.data.message);
+
+      setOtpDigits(['', '', '', '', '', '']);
+
+      const expirationTime = Date.now() + 90 * 1000; // 90 seconds
+      localStorage.setItem('otpExpirationTime', expirationTime.toString());
+      startTimer(90)
+
+     
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        toast.error(error.response.data.error || "Failed to resend OTP.");
+      } else {
+        toast.error("Something went wrong.");
+      }
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+
+
+
+
+
 
   const handleOtpChange = (index, value) => {
     // Only allow numbers
     if (value && !/^\d+$/.test(value)) {
       return;
     }
-    
+
     const newOtpDigits = [...otpDigits];
     newOtpDigits[index] = value;
     setOtpDigits(newOtpDigits);
@@ -76,9 +135,9 @@ const OTPVerificationPage = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/auth/verify/`, { 
-        otp: otpCode, 
-        sessionId: sessionId 
+      const response = await axios.post(`${BASE_URL}/auth/verify/`, {
+        otp: otpCode,
+        sessionId: sessionId
       });
 
       toast.success(response.data.message);
@@ -105,12 +164,12 @@ const OTPVerificationPage = () => {
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text/plain').trim();
-    
+
     // Only process if it's a 6-digit number
     if (/^\d{6}$/.test(pastedData)) {
       const newOtpDigits = pastedData.split('');
       setOtpDigits(newOtpDigits);
-      
+
       // Focus on the last input
       if (inputRefs.current[5]) {
         inputRefs.current[5].focus();
@@ -163,6 +222,19 @@ const OTPVerificationPage = () => {
             Verify
             <ArrowRight size={18} />
           </button>
+
+          <div className="text-center mt-3">
+            <p className="text-gray-300 text-sm mb-2">Didn't receive the code?</p>
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={timeLeft > 0 || isResending}
+              className={`text-cyan-400 hover:text-cyan-600 text-sm font-medium ${timeLeft > 0 || isResending ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {isResending ? 'Resending...' : 'Resend Code'}
+            </button>
+          </div>
+
         </form>
 
         <div className="mt-4 sm:mt-6 text-center">

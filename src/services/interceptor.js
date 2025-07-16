@@ -1,16 +1,14 @@
 import axios from "axios";
 import { fetchNewAccessToken } from "./api/refresh";
 import { logout } from "@/Redux/Reducers/LoginReducer";
+import { BASE_URL } from "./constents";
 
 
-
-// const axiosInstance = axios.create({
-//     baseURL: "http://127.0.0.1:8000",
-// });
 
 const axiosInstance = axios.create({
-  baseURL: "https://www.martia.sbs",
+    baseURL: BASE_URL,
 });
+
 
 
 // Define a function to handle token refresh and logout

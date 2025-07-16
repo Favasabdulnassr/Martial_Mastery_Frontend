@@ -70,7 +70,8 @@ const ProfilePage = () => {
           toast.success('Profile updated successfully');
         })
         .catch((error) => {
-          toast.error('Error updating profile', error)
+          console.log(error);
+          toast.error('Error updating profile')
         })
     } catch (error) {
       console.log('Error:', error)
