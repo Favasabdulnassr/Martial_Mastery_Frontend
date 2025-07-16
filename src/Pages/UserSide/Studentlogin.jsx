@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const dispatch = useDispatch();
     const { isAuthenticated, role } = useSelector((state) => state.login);
     const navigate = useNavigate();
@@ -34,6 +36,7 @@ const LoginPage = () => {
         },
         validationSchema: LoginValidationSchema,
         onSubmit: (values) => {
+            setIsSubmitting(true);
             dispatch(loginAsync(values))
                 .unwrap()
                 .then(() => {
@@ -41,7 +44,11 @@ const LoginPage = () => {
                 })
                 .catch((error) => {
                     toast.error(`Login failed Check Username and password`);
+                })
+                .finally(() => {
+                    setIsSubmitting(false);
                 });
+
         },
     });
 
@@ -169,10 +176,13 @@ const LoginPage = () => {
                             type="submit"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl mt-4"
+                            disabled={isSubmitting}
+                            className={`w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl mt-4 transition-all duration-200 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''
+                                }`}
                         >
-                            Sign In
+                            {isSubmitting ? 'Signing in...' : 'Sign In'}
                         </motion.button>
+
 
                         <div className="text-center mt-4">
                             <p className="text-gray-400 text-xs sm:text-sm">

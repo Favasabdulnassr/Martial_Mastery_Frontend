@@ -11,6 +11,8 @@ import { useSelector } from 'react-redux';
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const navigate = useNavigate();
   const { isAuthenticated, role } = useSelector((state) => state.login);
@@ -33,19 +35,23 @@ const SignupPage = () => {
     },
     validationSchema: RegisterValidationSchema,
     onSubmit: async (values) => {
+      setIsSubmitting(true);
+
       try {
         const response = await handleRegister(values);
         formik.resetForm();
         const expirationTime = Date.now() + 90 * 1000; // 90 seconds
         localStorage.setItem('otpExpirationTime', expirationTime.toString());
-        console.log('signupexpiration',response.otp_expiration);
-        
+        console.log('signupexpiration', response.otp_expiration);
+
         localStorage.setItem('session_id', response.session_id);
         toast.success('Enter six digit otp');
         navigate('/otp');
       } catch (error) {
         console.error('Api error:', error);
         toast.error('Registration failed');
+      } finally {
+        setIsSubmitting(false);
       }
     }
   });
@@ -105,7 +111,7 @@ const SignupPage = () => {
               </div>
             </div>
           </div>
-          
+
           <form onSubmit={formik.handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1 sm:mb-2">Username</label>
@@ -212,10 +218,12 @@ const SignupPage = () => {
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl mt-4"
+              disabled={isSubmitting}
+              className={`w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl mt-4 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
-              Create Account
+              {isSubmitting ? 'Sending OTP...' : 'Create Account'}
             </motion.button>
+
 
             <div className="text-center mt-4 sm:mt-6">
               <p className="text-gray-400 text-sm sm:text-base">

@@ -13,6 +13,8 @@ const OTPVerificationPage = () => {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const [isResending, setIsResending] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
 
   const sessionId = localStorage.getItem('session_id');
 
@@ -29,43 +31,43 @@ const OTPVerificationPage = () => {
 
 
 
- const startTimer = (duration) => {
-  setTimeLeft(duration);
-  const timer = setInterval(() => {
-    setTimeLeft((prev) => {
-      if (prev <= 1) {
-        clearInterval(timer);
-        localStorage.removeItem('otpExpirationTime');
-        console.error('OTP has expired. Please request a new one');
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
+  const startTimer = (duration) => {
+    setTimeLeft(duration);
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          localStorage.removeItem('otpExpirationTime');
+          console.error('OTP has expired. Please request a new one');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-  return () => clearInterval(timer);
-};
+    return () => clearInterval(timer);
+  };
 
 
 
 
   useEffect(() => {
-  const expirationTime = localStorage.getItem('otpExpirationTime');
-  console.log('expirationtimekkkkkkkkk',expirationTime);
-  
+    const expirationTime = localStorage.getItem('otpExpirationTime');
+    console.log('expirationtimekkkkkkkkk', expirationTime);
 
-  if (expirationTime) {
-    const remainingTime = Math.floor((parseInt(expirationTime) - Date.now()) / 1000);
 
-    if (remainingTime > 0) {
-      setTimeLeft(remainingTime);
-      const cleanup = startTimer(remainingTime);
-      return cleanup;
-    } else {
-      localStorage.removeItem('otpExpirationTime');
+    if (expirationTime) {
+      const remainingTime = Math.floor((parseInt(expirationTime) - Date.now()) / 1000);
+
+      if (remainingTime > 0) {
+        setTimeLeft(remainingTime);
+        const cleanup = startTimer(remainingTime);
+        return cleanup;
+      } else {
+        localStorage.removeItem('otpExpirationTime');
+      }
     }
-  }
-}, []);
+  }, []);
 
 
 
@@ -90,7 +92,7 @@ const OTPVerificationPage = () => {
       localStorage.setItem('otpExpirationTime', expirationTime.toString());
       startTimer(90)
 
-     
+
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -133,7 +135,7 @@ const OTPVerificationPage = () => {
       toast.error('Please enter the complete 6-digit OTP');
       return;
     }
-
+    setIsVerifying(true)
     try {
       const response = await axios.post(`${BASE_URL}/auth/verify/`, {
         otp: otpCode,
@@ -151,6 +153,8 @@ const OTPVerificationPage = () => {
       } else {
         toast.error('Something went wrong. Please try again.');
       }
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -217,11 +221,16 @@ const OTPVerificationPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black p-2 sm:p-3 rounded-lg hover:bg-cyan-500 transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
+            disabled={isVerifying}
+            className={`w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black p-2 sm:p-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base ${isVerifying ? 'opacity-60 cursor-not-allowed' : 'hover:bg-cyan-500'}`}
           >
-            Verify
-            <ArrowRight size={18} />
+            {isVerifying ? 'Verifying OTP...' : (
+              <>
+                Verify <ArrowRight size={18} />
+              </>
+            )}
           </button>
+
 
           <div className="text-center mt-3">
             <p className="text-gray-300 text-sm mb-2">Didn't receive the code?</p>
