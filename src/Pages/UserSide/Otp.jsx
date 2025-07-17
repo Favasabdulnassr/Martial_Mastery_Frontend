@@ -45,7 +45,7 @@ const OTPVerificationPage = () => {
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return timer;
   };
 
 
