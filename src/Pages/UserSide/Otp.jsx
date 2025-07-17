@@ -61,8 +61,9 @@ const OTPVerificationPage = () => {
 
       if (remainingTime > 0) {
         setTimeLeft(remainingTime);
-        const cleanup = startTimer(remainingTime);
-        return cleanup;
+        const timerId  = startTimer(remainingTime);
+        
+        return () => clearInterval(timerId);
       } else {
         localStorage.removeItem('otpExpirationTime');
       }
