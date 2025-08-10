@@ -69,13 +69,11 @@ export class WebSocketService {
       // Remove trailing slash from URL
       const wsUrl = `${wsProtocol}//${host}/ws/chat/${this.roomId}?token=${this.token}`;
       
-      console.log('Attempting to connect to:', wsUrl);
       
       try {
           this.socket = new WebSocket(wsUrl);
           
           this.socket.onopen = () => {
-              console.log('WebSocket connected successfully');
               this.isConnecting = false;
               this.reconnectAttempts = 0;
           };
@@ -97,16 +95,13 @@ export class WebSocketService {
         };
           
           this.socket.onclose = (event) => {
-              console.log('WebSocket disconnected. Code:', event.code, 'Reason:', event.reason);
               this.isConnecting = false;
               
               if (this.reconnectAttempts < this.maxReconnectAttempts) {
                   this.reconnectAttempts++;
                   const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-                  console.log(`Attempting to reconnect in ${delay}ms... Attempt ${this.reconnectAttempts}`);
                   setTimeout(() => this.connect(), delay);
               } else {
-                  console.log('Maximum reconnection attempts reached');
               }
           };
       } catch (error) {
@@ -127,7 +122,6 @@ export class WebSocketService {
               message: message,
               timestamp: new Date().toISOString()
           };
-          console.log('Sending message:', messageData);
           this.socket.send(JSON.stringify(messageData));
           return true;
       } catch (error) {

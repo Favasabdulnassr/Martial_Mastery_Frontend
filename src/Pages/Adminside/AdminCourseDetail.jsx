@@ -29,7 +29,7 @@ const AdminCourseDetail = () => {
             const response = await axiosInstance.get(`course/${courseId}/completed/`);
             setCourse(response.data);
         } catch (error) {
-            console.log(error);
+            toast.error(error);
             
         }
     };

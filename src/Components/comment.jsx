@@ -224,7 +224,6 @@ const CommentsSection = ({ lessonId }) => {
 
 
   useEffect(() => {
-    console.log('aaaaaa', user);
 
     fetchComments();
   }, [lessonId, pointer]);
@@ -241,7 +240,6 @@ const CommentsSection = ({ lessonId }) => {
        // Add a short delay only when the component mounts
       await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get(`comments/get-comments/${lessonId}/`);
-      console.log('appo angane', response.data);
 
 
       setComments(response.data);
@@ -256,7 +254,6 @@ const CommentsSection = ({ lessonId }) => {
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
-    console.log('nnnnnnnnnnnnnnnnnnnnnnnnnn', newComment, lessonId);
 
     if (!newComment.trim()) return;
 

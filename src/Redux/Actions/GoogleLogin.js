@@ -8,7 +8,6 @@ export const handleGoogleSuccess = createAsyncThunk(
     async(response,{rejectWithValue}) =>{
 
         try {
-            console.log('hellllllllllllllllllllllllllll',response);
             const {code} = response;
             
             const backend_response = await axios.post(
@@ -20,7 +19,6 @@ export const handleGoogleSuccess = createAsyncThunk(
                 access :backend_response.data.access,
                 refresh: backend_response.data.refresh
             };
-            console.log('responnnnnnnse',backend_response);
             
 
             localStorage.setItem('authTokens',JSON.stringify(tokens));

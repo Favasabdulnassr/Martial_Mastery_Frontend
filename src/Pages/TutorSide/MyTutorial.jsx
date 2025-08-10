@@ -90,7 +90,6 @@ const TutorTutorial = () => {
       const tutorId = user?.id
       
       const response = await axiosInstance.get(`tutorials/list/${tutorId}/`)
-      console.log(response);
       
       const fetchedTutorials = response.data.map(tutorial => ({
         ...tutorial,
@@ -100,7 +99,6 @@ const TutorTutorial = () => {
       
 
     } catch (error) {
-      console.log(error)
 
     }
 

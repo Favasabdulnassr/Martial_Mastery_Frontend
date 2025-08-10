@@ -6,10 +6,8 @@ export const UploadImage = createAsyncThunk(
     'image/uploadImage',
     async(data,{rejectWithValue}) =>{
         try{
-            console.log('first_respppppppp;;;;;;;',data);
             
             const response = await axiosInstance.post('/auth/profile/profile_picture/',data);
-            console.log('respoooooooooooooo',response);
             
             return response.data
         }catch(error){

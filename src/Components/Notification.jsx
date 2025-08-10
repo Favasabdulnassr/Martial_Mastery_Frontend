@@ -64,20 +64,17 @@ const NotificationBell = () => {
     const token = JSON.parse(localStorage.getItem('authTokens'))?.access
     const url = `${protocol}://${host}/ws/notifications/?token=${token}`;
 
-    console.log('Connecting to WebSocket:', url);
 
     // Connect to WebSocket
     wsRef.current = new WebSocket(url);
 
     wsRef.current.onopen = () => {
-      console.log('WebSocket connected');
 
       // Reset reconnect attempt counter on successful connection
       reconnectTimeoutRef.current = null;
     };
 
     wsRef.current.onmessage = (e) => {
-      console.log('Received message:', e.data);
       const data = JSON.parse(e.data);
       
       if (data.type === 'new_notification') {

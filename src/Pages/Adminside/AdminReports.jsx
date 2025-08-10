@@ -23,7 +23,6 @@ function AdminReports() {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await axiosInstance.get('adminside/reported-courses');
-        console.log('reeeeeeeeeeeeeeeport', response.data);
         setReportedCourses(response.data)
       } catch (error) {
         console.error('Error fetching reported courses', error);

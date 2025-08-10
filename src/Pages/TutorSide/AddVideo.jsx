@@ -37,7 +37,6 @@ const AddVideo = () => {
   // Fetch the selected tutorial
   const fetchCourse = async () => {
     try {
-      console.log('kkkkkkkkkkkkkkkkeeeeeeeeeeeeeeeeeeee', CourseId);
 
 
       const response = await axiosInstance.get(`course/${CourseId}/`);

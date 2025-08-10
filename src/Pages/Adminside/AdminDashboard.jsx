@@ -30,7 +30,6 @@ function AdminDashboard() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get('dashboard/get_stats/')
-      console.log('daaaaaaaaaaaaaaaa',response.data);
       
       setDashboardData(response.data)
     } catch (error) {

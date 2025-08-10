@@ -53,7 +53,6 @@ const OTPVerificationPage = () => {
 
   useEffect(() => {
     const expirationTime = localStorage.getItem('otpExpirationTime');
-    console.log('expirationtimekkkkkkkkk', expirationTime);
 
 
     if (expirationTime) {

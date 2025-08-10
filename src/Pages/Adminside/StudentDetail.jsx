@@ -26,7 +26,6 @@ const StudentDetails = () => {
   }, [isAuthenticated, role, navigate])
 
   useEffect(() => {
-    console.log('sshshshshshscndhiosfho', users)
   })
 
   useEffect(() => {

@@ -29,7 +29,6 @@ const PurchasedCourses = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get('payment/tutor/purchased-courses/');
-      console.log('Purchased courses:', response.data);
       setPurchasedCourses(response.data);
     } catch (error) {
       console.error('Error fetching purchased courses:', error);
@@ -47,7 +46,6 @@ const PurchasedCourses = () => {
   const fetchLessons = async (courseId) => {
     try {
       const response = await axiosInstance.get(`payment/tutor/courses/${courseId}/lessons/`);
-      console.log('lessons:', response.data);
       setPurchasedLessons(response.data);
     } catch (error) {
       console.error('Error fetching lessons:', error);

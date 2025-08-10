@@ -19,7 +19,6 @@ function AdminReportedDetails() {
             await new Promise(resolve => setTimeout(resolve, 1000));
     
             const response = await axiosInstance.get(`/adminside/course-reports/${courseId}/`);
-            console.log('nnnnnnnnnnnnnnn',response.data);
             
             setReportDetails(response.data);
           } catch (error) {

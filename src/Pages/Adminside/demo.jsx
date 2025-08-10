@@ -60,7 +60,6 @@ function Demo() {
   };
 
   const handleEditCourse = (course) => {
-    console.log('Edit course:', course);
   };
 
   const handleAddCourse = () => {

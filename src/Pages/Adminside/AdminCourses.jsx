@@ -24,7 +24,7 @@ const AdminCourses = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get('course/completed/');
-      console.log(response.data);
+     
       
       setCourses(response.data);
     } catch (error) {

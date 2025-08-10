@@ -62,7 +62,6 @@ const CourseManagement = () => {
       const tutorId = user?.id;
       await new Promise(resolve => setTimeout(resolve, 1000));
       const response = await axiosInstance.get(`course/`);
-      console.log('here is the data', response.data);
       
       setCourses(response.data);
     } catch (error) {

@@ -30,13 +30,7 @@ const AddCourse = () => {
 
   });
 
-  // useEffect( () =>{
-
-  //   console.log(user.id)
-
-  // },[])
-
-    // Error state
+ 
     const [errors, setErrors] = useState({
       title: '',
       description: '',
