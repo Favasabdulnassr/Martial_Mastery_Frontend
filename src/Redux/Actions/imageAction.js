@@ -7,7 +7,7 @@ export const UploadImage = createAsyncThunk(
     async(data,{rejectWithValue}) =>{
         try{
             
-            const response = await axiosInstance.post('/auth/profile/profile_picture/',data);
+            const response = await axiosInstance.post('/auth/profile/picture/',data);
             
             return response.data
         }catch(error){
@@ -21,7 +21,7 @@ export const DeleteImage = createAsyncThunk(
     'image/deleteImage',
     async(data,{rejectWithValue})=>{
         try {
-            const response = await axiosInstance.delete('/auth/profile/profile_picture/',data)
+            const response = await axiosInstance.delete('/auth/profile/picture/',data)
             return response.data
             
         } catch (error) {

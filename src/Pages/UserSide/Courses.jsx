@@ -22,7 +22,7 @@ function CoursesPage() {
         setIsLoading(true);
         // Add a short delay only when the component mounts
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.get('user/completed-courses/');
+        const response = await axiosInstance.get('users/completed-courses/');
         setCourses(response.data);
       } catch (error) {
         console.log('Error fetching courses:', error);
@@ -39,7 +39,7 @@ function CoursesPage() {
     try {
       setLoadingStates(prev => ({ ...prev, [courseId]: true }));
 
-      const response = await axiosInstance.post(`payment/purchase/${courseId}/`);
+      const response = await axiosInstance.post(`payments/courses/${courseId}/initiate/`);
 
       if (response.data && response.data.checkout_url) {
         window.location.href = response.data.checkout_url;

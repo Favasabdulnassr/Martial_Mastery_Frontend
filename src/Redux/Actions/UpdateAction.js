@@ -5,7 +5,7 @@ export const updateProfileAsync = createAsyncThunk(
     'update/updateProfileAsync',    
     async(profileData,{rejectWithValue}) => {
         try {
-            const response = await axiosInstance.put('/auth/profile/update/',profileData);
+            const response = await axiosInstance.put('/auth/profile/',profileData);
 
 
             return response.data

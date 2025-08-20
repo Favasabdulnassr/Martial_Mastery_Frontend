@@ -38,7 +38,7 @@ const TutorVideoPage = () => {
     const fetchVideo = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const videoResponse = await axiosInstance.get(`payment/tutor-purchased-course/${tutorialId}/lesson/${videoId}/`);
+        const videoResponse = await axiosInstance.get(`payments/tutors/me/courses/${tutorialId}/lessons/${videoId}/`);
         setVideo(videoResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);

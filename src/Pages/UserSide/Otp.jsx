@@ -137,7 +137,7 @@ const OTPVerificationPage = () => {
     }
     setIsVerifying(true)
     try {
-      const response = await axios.post(`${BASE_URL}/auth/verify/`, {
+      const response = await axios.post(`${BASE_URL}/auth/verify-otp/`, {
         otp: otpCode,
         sessionId: sessionId
       });

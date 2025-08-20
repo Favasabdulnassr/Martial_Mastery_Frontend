@@ -46,7 +46,7 @@ const VideoPage = () => {
       try {
          // Add a short delay only when the component mounts
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const videoResponse = await axiosInstance.get(`payment/purchased-course/${tutorialId}/lesson/${videoId}/`);
+        const videoResponse = await axiosInstance.get(`payments/courses/${tutorialId}/lessons/${videoId}/`);
         setVideo(videoResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);

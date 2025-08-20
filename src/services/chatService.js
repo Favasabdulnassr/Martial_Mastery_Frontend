@@ -4,7 +4,7 @@ import axiosInstance from "./interceptor"
 export const createOrGetChatRoom = async(studentId,tutorId) => {
     try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.post('chat/api/chats/create_or_get_room/',{
+        const response = await axiosInstance.post('chats/api/chats/create_or_get_room/',{
             student_id:studentId,
             tutor_id :tutorId
 
@@ -22,7 +22,7 @@ export const createOrGetChatRoom = async(studentId,tutorId) => {
 export const fetchMessages = async (roomId) => {
     try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.get(`chat/api/chats/${roomId}/messages/`);
+        const response = await axiosInstance.get(`chats/api/chats/${roomId}/messages/`);
         return response.data;
       } catch (error) {
         console.error('Error fetching messages:', error);

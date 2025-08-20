@@ -25,7 +25,7 @@ const TutorWallet = () => {
   const fetchWalletData = async () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const response = await axiosInstance.get(`tutor-wallet/${user.id}/`);
+      const response = await axiosInstance.get(`tutors/${user.id}/wallet/`);
       setWalletData(response.data);
     } catch (error) {
       console.error('Error fetching wallet data:', error);
@@ -47,7 +47,7 @@ const TutorWallet = () => {
     setIsSubmitting(true);
 
     try {
-      await axiosInstance.post('tutor-withdrawal/', {
+      await axiosInstance.post('tutors/withdrawals/', {
         amount: parseFloat(withdrawalAmount),
         user_id: user.id
       });

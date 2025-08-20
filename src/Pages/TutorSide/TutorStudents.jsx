@@ -28,7 +28,7 @@ const TutorStudents = () => {
     try {
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const response = await axiosInstance.get(`payment/tutor/${user.id}/students/`);
+      const response = await axiosInstance.get(`payments/tutors/${user.id}/students/`);
       setStudents(response.data);
       // Uncomment when pagination is implemented in the backend
       // setTotalCount(response.data.count);

@@ -13,6 +13,17 @@ export const handleRegister = async (data) =>{
     }
 };
 
+export const handleTutorRegister = async (data) =>{
+    try{
+        const response = await axios.post(BASE_URL + '/auth/tutors/register/',data);
+        return response.data;
+
+    }catch(error){
+        throw error
+    }
+};
+
+
 
 
 

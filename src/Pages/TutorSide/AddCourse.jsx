@@ -125,7 +125,7 @@ const AddCourse = () => {
       console.log('Course creation response:', CourseData);
 
 
-      await axiosInstance.post('course/', CourseData);
+      await axiosInstance.post('courses/', CourseData);
       toast.success('Course created  Successfully')
       navigate('/tutor/CourseManagement')
     } catch (error) {

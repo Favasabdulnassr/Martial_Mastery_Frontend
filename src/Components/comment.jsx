@@ -239,7 +239,7 @@ const CommentsSection = ({ lessonId }) => {
       setIsLoading(true);
        // Add a short delay only when the component mounts
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const response = await axiosInstance.get(`comments/get-comments/${lessonId}/`);
+      const response = await axiosInstance.get(`comments/lessons/${lessonId}/`);
 
 
       setComments(response.data);
@@ -258,7 +258,7 @@ const CommentsSection = ({ lessonId }) => {
     if (!newComment.trim()) return;
 
     try {
-      const response = await axiosInstance.post(`comments/create/${lessonId}/`, {
+      const response = await axiosInstance.post(`comments/lessons/${lessonId}/create/`, {
         content: newComment,
         parent_id: replyTo
       });
@@ -278,7 +278,7 @@ const CommentsSection = ({ lessonId }) => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await axiosInstance.delete(`comments/manage/${commentId}/`);
+      await axiosInstance.delete(`comments/${commentId}/`);
       setComments(prevComments =>
         prevComments.filter(comment => comment.id !== commentId)
       );
@@ -292,7 +292,7 @@ const CommentsSection = ({ lessonId }) => {
 
   const handleUpdateComment = async (commentId, content) => {
     try {
-      const response = await axiosInstance.put(`comments/manage/${commentId}/`, {
+      const response = await axiosInstance.put(`comments/${commentId}/`, {
         content
       });
       setComments(prevComments =>
@@ -317,7 +317,7 @@ const CommentsSection = ({ lessonId }) => {
     if (!content.trim()) return;
 
     try {
-      await axiosInstance.post(`comments/create/${lessonId}/`, {
+      await axiosInstance.post(`comments/lessons/${lessonId}/create/`, {
         content: content,
         parent_id: replyTo
       });

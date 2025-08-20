@@ -21,7 +21,7 @@ function PurchasedCoursesPage() {
   const handleReportSubmit = async (reportData) => {
     try {
       setIsSubmitting(true);
-      await axiosInstance.post('report/course', reportData);
+      await axiosInstance.post('reports/', reportData);
       
       setReportModalOpen(false);
       setSelectedCourseForReport(null);
@@ -47,7 +47,7 @@ function PurchasedCoursesPage() {
         setIsLoading(true);
         // Add a short delay only when the component mounts
        await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.get('payment/purchased-courses/');
+        const response = await axiosInstance.get('payments/courses/');
         setPurchasedCourses(response.data);
       } catch (error) {
         console.error('Error fetching purchased courses:', error);

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { TutorRegistrationSchema } from '@/services/validation/TutorRegister';
-import { handleRegister } from '@/services/api/register';
+import { handleTutorRegister } from '@/services/api/register';
 import { toast } from 'react-toastify';
 
 const TutorRegistrationPage = () => {
@@ -25,12 +25,12 @@ const TutorRegistrationPage = () => {
     validationSchema: TutorRegistrationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await handleRegister(values)
+        const response = await handleTutorRegister(values)
         formik.resetForm();
         localStorage.setItem('otpExpirationTime', response.otp_expiration);
         localStorage.setItem('session_id', response.session_id)
-        toast.success('Enter six digit otp')
-        navigate('/otp');
+        toast.success('Tutor Registered successfully')
+        navigate('/login');
       } catch (error) {
         console.error('Registration Error:', error);
         toast.error('Registration failed', error.message)

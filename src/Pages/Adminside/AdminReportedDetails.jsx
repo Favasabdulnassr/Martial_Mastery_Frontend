@@ -18,7 +18,7 @@ function AdminReportedDetails() {
           try {
             await new Promise(resolve => setTimeout(resolve, 1000));
     
-            const response = await axiosInstance.get(`/adminside/course-reports/${courseId}/`);
+            const response = await axiosInstance.get(`/reports/${courseId}/`);
             
             setReportDetails(response.data);
           } catch (error) {
@@ -32,7 +32,7 @@ function AdminReportedDetails() {
       const sendReportEmails = async () => {
         try {
           setIsSubmitting(true);
-          await axiosInstance.post('send-report-emails/', {
+          await axiosInstance.post('reports/notify/', {
             courseIds: courseId,
             emailContent
           });

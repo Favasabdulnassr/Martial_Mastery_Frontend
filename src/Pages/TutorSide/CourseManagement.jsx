@@ -61,7 +61,7 @@ const CourseManagement = () => {
     try {
       const tutorId = user?.id;
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const response = await axiosInstance.get(`course/`);
+      const response = await axiosInstance.get(`courses/`);
       
       setCourses(response.data);
     } catch (error) {
@@ -88,7 +88,7 @@ const CourseManagement = () => {
 
   const handleDeleteCourse = async (course) => {
     try {
-      const response = await axiosInstance.delete(`course/${course.id}/`);
+      const response = await axiosInstance.delete(`courses/${course.id}/`);
       if (response.status === 200) {
         setCourses(courses.filter(c => c.id !== course.id));
         setShowDeleteModal(false);
@@ -102,7 +102,7 @@ const CourseManagement = () => {
 
   const handleDeleteLesson = async (lesson, courseId) => {
     try {
-      const response = await axiosInstance.delete(`course/${courseId}/lesson/${lesson.id}/`);
+      const response = await axiosInstance.delete(`courses/${courseId}/lessons/${lesson.id}/`);
       if (response.status === 200) {
         const updatedCourses = courses.map(course => {
           if (course.id === courseId) {
@@ -126,7 +126,7 @@ const CourseManagement = () => {
   const handleUpdateCourse = async (updatedData) => {
     try {
       const response = await axiosInstance.put(
-        `course/${courseToEdit.id}/update/`,
+        `courses/${courseToEdit.id}/update/`,
         updatedData
       );
       if (response.status === 200) {
@@ -151,7 +151,7 @@ const CourseManagement = () => {
 
   const handleConfirmAction = async (Id) => {
     try {
-      await axiosInstance.put(`course/${Id}/mark_as_completed/`);
+      await axiosInstance.put(`courses/${Id}/completion/`);
       toast.success('Course marked as completed!');
       setIsModalOpen(false);
       setAction((prev) => !prev);

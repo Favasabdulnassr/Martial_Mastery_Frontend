@@ -39,7 +39,7 @@ const AddVideo = () => {
     try {
 
 
-      const response = await axiosInstance.get(`course/${CourseId}/`);
+      const response = await axiosInstance.get(`courses/${CourseId}/`);
       setCourse(response.data);
     } catch (error) {
       console.error('Error fetching tutorial:', error);
@@ -127,7 +127,7 @@ const AddVideo = () => {
       videoData.append('order', formData.order);
       
 
-      await axiosInstance.post(`course/${CourseId}/upload_lesson/`, videoData);
+      await axiosInstance.post(`courses/${CourseId}/lessons/upload/`, videoData);
       toast.success('Video added successfully');
       navigate(`/tutor/CourseManagement`);
     } catch (error) {

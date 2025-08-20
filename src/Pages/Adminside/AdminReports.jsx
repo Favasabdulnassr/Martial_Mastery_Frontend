@@ -22,7 +22,7 @@ function AdminReports() {
     const fetchReportedCourses = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.get('adminside/reported-courses');
+        const response = await axiosInstance.get('admins/reports/');
         setReportedCourses(response.data)
       } catch (error) {
         console.error('Error fetching reported courses', error);
@@ -33,7 +33,7 @@ function AdminReports() {
 
   const handleUnlistCourse = async (courseId) => {
     try {
-      await axiosInstance.post(`unlist-course/${courseId}/`)
+      await axiosInstance.post(`courses/${courseId}/unlist/`)
       setFlag((prev) => !prev)
     } catch (error) {
       console.error('Error unlisting course', error)

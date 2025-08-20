@@ -30,7 +30,7 @@ const TutorChat = () => {
     const fetchStudent = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.get(`chat/students/${studentId}/`);
+        const response = await axiosInstance.get(`chats/students/${studentId}/`);
         setStudent(response.data);
       } catch (error) {
         console.error('Error fetching student:', error);

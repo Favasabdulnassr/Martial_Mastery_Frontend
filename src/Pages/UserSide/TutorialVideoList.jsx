@@ -30,7 +30,7 @@ const TutorialVideoList = () => {
       try {
          // Add a short delay only when the component mounts
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await axiosInstance.get(`payment/purchased-courses/${tutorialId}/lessons/`);
+        const response = await axiosInstance.get(`payments/courses/${tutorialId}/lessons/`);
         setTutorial(response.data);
         setLoading(false);
       } catch (error) {

@@ -40,7 +40,7 @@ const StudentChat = () => {
     const fetchTutorData = async () => {
       try {
         setLoading(true);
-        const tutorResponse = await axiosInstance.get(`chat/tutor/${tutorId}/`);
+        const tutorResponse = await axiosInstance.get(`chats/tutors/${tutorId}/`);
         setTutor(tutorResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -26,7 +26,7 @@ const AdminCourseDetail = () => {
     const fetchCourseDetails = async () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            const response = await axiosInstance.get(`course/${courseId}/completed/`);
+            const response = await axiosInstance.get(`admins/courses/${courseId}/completed/`);
             setCourse(response.data);
         } catch (error) {
             toast.error(error);
@@ -48,7 +48,7 @@ const AdminCourseDetail = () => {
         if (action) {
             try {
                 // Make the request to update course status
-                await axiosInstance.put(`course/${course.id}/update_status/`, {
+                await axiosInstance.put(`courses/${course.id}/status/`, {
                     status: action,  // Pass the selected action (approve/reject)
                 });
 

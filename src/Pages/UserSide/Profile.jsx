@@ -117,7 +117,7 @@ const ProfilePage = () => {
       try {
         const { current_password, new_password, confirm_password } = values;
 
-        const response = await axiosInstance.post('/auth/change_password/', {
+        const response = await axiosInstance.post('/auth/change-password/', {
           current_password,
           new_password,
           confirm_password,
