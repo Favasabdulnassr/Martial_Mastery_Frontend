@@ -17,7 +17,14 @@ export const RegisterValidationSchema = Yup.object({
         .required('Email is required'),
     phone_number: Yup.string()
         .required('Phone number is required')
-        .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
+        .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits')
+        .notOneOf(['0000000000'], 'Phone number cannot be all zeros')
+        .test(
+            'no-long-repeats',
+            'Phone number cannot contain more than 5 identical digits in a row',
+            (value) => !/(\d)\1{5,}/.test(value || '')
+        ),
+
 
     password: Yup.string()
         .min(8, 'Password must be at least 8 characters')
