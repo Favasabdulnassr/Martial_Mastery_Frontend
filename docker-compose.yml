@@ -4,6 +4,7 @@ services:
   frontend:
     build: .
     container_name: martial_mastery_frontend
+    restart: always
     ports:
       - "5173:5173"
     volumes:
