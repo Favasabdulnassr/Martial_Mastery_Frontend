@@ -58,8 +58,9 @@ const NotificationBell = () => {
     // Get the protocol (ws or wss)
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     // Get the host
-    // const host = process.env.NODE_ENV === 'development' ? '127.0.0.1:8000' : window.location.host;
-    const host = process.env.NODE_ENV === 'development' ? '127.0.0.1:8000' : 'www.martia.sbs';
+    const host = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+        ? '127.0.0.1:8000' 
+        : 'api.martialmastery.online';
 
     const token = JSON.parse(localStorage.getItem('authTokens'))?.access
     const url = `${protocol}://${host}/ws/notifications/?token=${token}`;
