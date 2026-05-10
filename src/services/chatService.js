@@ -63,7 +63,9 @@ export class WebSocketService {
       this.isConnecting = true;
 
      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = process.env.NODE_ENV === 'development' ? '127.0.0.1:8000' : 'api.martialmastery.online';
+    const host = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+        ? '127.0.0.1:8000' 
+        : 'api.martialmastery.online';
 
       // Remove trailing slash from URL
       const wsUrl = `${wsProtocol}//${host}/ws/chat/${this.roomId}?token=${this.token}`;
